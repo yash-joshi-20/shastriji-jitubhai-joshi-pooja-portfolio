@@ -3,7 +3,12 @@ const path = require('path');
 const fs = require('fs');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
+
+// Health check endpoint for Render proxy and monitoring
+app.get(['/health', '/healthz'], (req, res) => {
+  res.status(200).send('OK');
+});
 
 // Enable JSON request body parsing (up to 20MB for photo uploads)
 app.use(express.json({ limit: '20mb' }));
@@ -163,6 +168,12 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-app.listen(PORT, '0.0.0.0', () => {
+const server = app.listen(PORT, '0.0.0.0', () => {
   console.log(`શાસ્ત્રીજી પોર્ટલ સર્વર લાઈવ છે: http://0.0.0.0:${PORT}`);
 });
+
+process.on('SIGTERM', () => {
+  console.log('SIGTERM signal received: closing HTTP server');
+  server.close(() => console.log('HTTP server closed'));
+});
+
