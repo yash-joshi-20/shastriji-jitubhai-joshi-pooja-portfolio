@@ -79,18 +79,17 @@ class App {
     const heroSubtitle = document.getElementById('heroSubtitle');
     if (heroSubtitle) heroSubtitle.textContent = this.profile.subtitle;
 
-    // Action CTA buttons: Only Phone Call and WhatsApp
+    // Action CTA buttons: Phone number hidden until clicked
     const callBtn = document.getElementById('heroCallBtn');
     if (callBtn) {
-      callBtn.href = `tel:+91${this.profile.phone.replace(/[^0-9]/g, '')}`;
-      callBtn.innerHTML = `<span>📞</span> <span>ફોન કરો (${this.profile.phone})</span>`;
+      callBtn.onclick = () => this.openContactModal();
     }
 
     const whatsappBtn = document.getElementById('heroWhatsappBtn');
     if (whatsappBtn) {
+      const cleanWa = this.profile.whatsapp ? this.profile.whatsapp.replace(/[^0-9]/g, '') : '9925264929';
       const waMsg = encodeURIComponent(`પ્રણામ શાસ્ત્રીજી, મારે પૂજા/વિધિ સંબંધિત માર્ગદર્શન જોઈએ છે.`);
-      whatsappBtn.href = `https://wa.me/91${this.profile.whatsapp.replace(/[^0-9]/g, '')}?text=${waMsg}`;
-      whatsappBtn.innerHTML = `<span>💬</span> <span>WhatsApp પર પૂછો</span>`;
+      whatsappBtn.href = `https://wa.me/91${cleanWa}?text=${waMsg}`;
     }
   }
 
@@ -99,23 +98,57 @@ class App {
     const footerName = document.getElementById('footerShastrijiName');
     if (footerName) footerName.textContent = this.profile.name;
 
-    const footerContactsWrapper = document.getElementById('footerContactsWrapper');
-    if (footerContactsWrapper) {
-      const cleanPhone = this.profile.phone.replace(/[^0-9]/g, '');
-      const cleanWa = this.profile.whatsapp.replace(/[^0-9]/g, '');
-      const waMsg = encodeURIComponent(`પ્રણામ શાસ્ત્રીજી, મારે પૂજા/વિધિ સંબંધિત માર્ગદર્શન જોઈએ છે.`);
-
-      footerContactsWrapper.innerHTML = `
-        <a href="tel:+91${cleanPhone}" class="footer-phone-cta">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-          <span>ફોન કરો (${this.profile.phone})</span>
-        </a>
-        <a href="https://wa.me/91${cleanWa}?text=${waMsg}" target="_blank" class="footer-phone-cta" style="border-color: var(--color-whatsapp); color: var(--color-whatsapp-dark);">
-          <span style="font-size: 1.2rem;">💬</span>
-          <span>WhatsApp (${this.profile.whatsapp})</span>
-        </a>
-      `;
+    const footerPhoneBtn = document.getElementById('footerPhoneCta');
+    if (footerPhoneBtn) {
+      footerPhoneBtn.onclick = () => this.openContactModal();
     }
+
+    const footerWaCta = document.getElementById('footerWaCta');
+    if (footerWaCta) {
+      const cleanWa = this.profile.whatsapp ? this.profile.whatsapp.replace(/[^0-9]/g, '') : '9925264929';
+      const waMsg = encodeURIComponent(`પ્રણામ શાસ્ત્રીજી, મારે પૂજા/વિધિ સંબંધિત માર્ગદર્શન જોઈએ છે.`);
+      footerWaCta.href = `https://wa.me/91${cleanWa}?text=${waMsg}`;
+    }
+  }
+
+  openContactModal() {
+    const overlay = document.getElementById('contactModalOverlay');
+    if (!overlay) return;
+
+    const phone = this.profile?.phone || '99252 64929';
+    const cleanPhone = phone.replace(/[^0-9]/g, '');
+    const cleanWa = (this.profile?.whatsapp || '9925264929').replace(/[^0-9]/g, '');
+
+    const nameEl = document.getElementById('contactModalName');
+    if (nameEl) nameEl.textContent = this.profile?.name || 'શાસ્ત્રીજી જીતેન્દ્ર જોષી (જીતુભાઈ જોષી)';
+
+    const subEl = document.getElementById('contactModalSubtitle');
+    if (subEl) subEl.textContent = this.profile?.subtitle || 'કર્મકાંડ • ધાર્મિક પૂજા • સામાજિક વિધિઓ';
+
+    const phoneEl = document.getElementById('contactModalPhone');
+    if (phoneEl) phoneEl.textContent = phone;
+
+    const callLink = document.getElementById('contactModalCallLink');
+    if (callLink) {
+      callLink.href = `tel:+91${cleanPhone}`;
+      callLink.innerHTML = `<span>📞</span> <span>હમણાં જ કૉલ કરો (${phone})</span>`;
+    }
+
+    const waLink = document.getElementById('contactModalWaLink');
+    if (waLink) {
+      const waMsg = encodeURIComponent(`પ્રણામ શાસ્ત્રીજી, મારે પૂજા/વિધિ સંબંધિત માર્ગદર્શન જોઈએ છે.`);
+      waLink.href = `https://wa.me/91${cleanWa}?text=${waMsg}`;
+    }
+
+    // Reveal number in header button
+    const headerBtn = document.getElementById('headerContactTrigger');
+    if (headerBtn) {
+      headerBtn.classList.add('revealed');
+      const textEl = document.getElementById('headerContactBtnText');
+      if (textEl) textEl.textContent = phone;
+    }
+
+    overlay.classList.add('active');
   }
 
   renderCategoryPills() {
@@ -189,6 +222,25 @@ class App {
         shareOnWhatsApp(this.activePamphletService, this.profile);
       }
     });
+
+    // Header contact button
+    document.getElementById('headerContactTrigger')?.addEventListener('click', () => {
+      this.openContactModal();
+    });
+
+    // Contact modal close handlers
+    const contactOverlay = document.getElementById('contactModalOverlay');
+    const contactCloseBtn = document.getElementById('contactModalCloseBtn');
+    if (contactCloseBtn && contactOverlay) {
+      contactCloseBtn.addEventListener('click', () => {
+        contactOverlay.classList.remove('active');
+      });
+      contactOverlay.addEventListener('click', (e) => {
+        if (e.target === contactOverlay) {
+          contactOverlay.classList.remove('active');
+        }
+      });
+    }
   }
 
   filterAndRenderServices() {
