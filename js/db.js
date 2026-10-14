@@ -1,178 +1,109 @@
 /**
- * Dynamic Dual-Mode Data Layer (Firebase Firestore/Storage + Real-time Sync)
- * Real-time listeners for live cloud data from Firestore.
+ * શાસ્ત્રીજી જીતેન્દ્ર જોષી - ડાયનેમિક ડેટા મેનેજર (100% Firebase મુક્ત)
+ * સોફ્ટ-કોડેડ JSON API + LocalStorage ફોલબેક સાથે સંપૂર્ણ ડાયનેમિક CRUD
  */
 
-import { firebaseConfig, isFirebaseConfigured } from './firebase-config.js';
-import { INITIAL_PROFILE, INITIAL_SERVICES } from './data.js';
-
 const STORAGE_KEYS = {
-  PROFILE: 'shastriji_profile_v1',
-  SERVICES: 'shastriji_services_v1'
+  PROFILE: 'shastriji_profile_v2',
+  SERVICES: 'shastriji_services_v2'
 };
 
 class DatabaseManager {
   constructor() {
-    this.useFirebase = isFirebaseConfigured;
-    this.firestore = null;
-    this.storage = null;
-    this.analytics = null;
-    this.initialized = false;
     this.servicesSubscribers = [];
     this.profileSubscribers = [];
     this.cachedServices = null;
     this.cachedProfile = null;
+    this.initialized = false;
     this.init();
   }
 
   async init() {
-    if (this.useFirebase) {
-      try {
-        const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js');
-        const { getFirestore, collection, doc, onSnapshot, getDocs, setDoc, query } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js');
-        const { getStorage } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js');
-
-        const app = initializeApp(firebaseConfig);
-        this.firestore = getFirestore(app);
-        this.storage = getStorage(app);
-
-        // Optional Firebase Analytics
-        if (typeof window !== 'undefined' && firebaseConfig.measurementId) {
-          try {
-            const { getAnalytics, isSupported } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js');
-            if (await isSupported()) {
-              this.analytics = getAnalytics(app);
-              console.log('Firebase Analytics સક્રિય છે!');
-            }
-          } catch (analyticsErr) {
-            // Analytics optional
-          }
-        }
-
-        console.log('Firebase Cloud Firestore & Storage સક્રિય છે!');
-
-        // Check if Firestore is empty and auto-seed initial data to cloud
-        this.autoSeedFirestore();
-
-        // Attach Real-time listener for Services
-        const servicesQuery = query(collection(this.firestore, 'services'));
-        onSnapshot(servicesQuery, (snapshot) => {
-          if (!snapshot.empty) {
-            const list = [];
-            snapshot.forEach(docSnap => {
-              list.push({ id: docSnap.id, ...docSnap.data() });
-            });
-            this.cachedServices = list;
-            localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(list));
-            this.notifyServicesSubscribers(list);
-          }
-        }, (err) => {
-          console.warn('Real-time Firestore listener error, using local fallback:', err);
-        });
-
-        // Attach Real-time listener for Profile
-        const profileDocRef = doc(this.firestore, 'settings', 'profile');
-        onSnapshot(profileDocRef, (docSnap) => {
-          if (docSnap.exists()) {
-            const profileData = { ...INITIAL_PROFILE, ...docSnap.data() };
-            this.cachedProfile = profileData;
-            localStorage.setItem(STORAGE_KEYS.PROFILE, JSON.stringify(profileData));
-            this.notifyProfileSubscribers(profileData);
-          }
-        }, (err) => {
-          console.warn('Profile listener error, using local fallback:', err);
-        });
-
-      } catch (err) {
-        console.warn('Firebase કનેક્ટ ન થયું. LocalStorage મોડમાં સ્વિચ કરીએ છીએ:', err);
-        this.useFirebase = false;
-      }
-    }
-
-    // Ensure LocalStorage has initial seed data
-    if (!localStorage.getItem(STORAGE_KEYS.PROFILE)) {
-      localStorage.setItem(STORAGE_KEYS.PROFILE, JSON.stringify(INITIAL_PROFILE));
-    }
-    if (!localStorage.getItem(STORAGE_KEYS.SERVICES)) {
-      localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(INITIAL_SERVICES));
+    try {
+      // First try to load from soft-coded server API or JSON
+      await Promise.allSettled([this.getServices(), this.getProfile()]);
+    } catch (e) {
+      console.warn('ડેટાબેઝ પ્રારંભિક લોડિંગ સૂચના:', e);
     }
     this.initialized = true;
   }
 
-  async autoSeedFirestore() {
-    if (!this.useFirebase || !this.firestore) return;
-    try {
-      const { collection, getDocs, doc, getDoc, setDoc } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js');
-      
-      // Check services
-      const srvSnap = await getDocs(collection(this.firestore, 'services'));
-      if (srvSnap.empty) {
-        console.log('Cloud Firestore માં સેવાઓ સીડ કરી રહ્યા છીએ...');
-        for (const s of INITIAL_SERVICES) {
-          await setDoc(doc(this.firestore, 'services', s.id), s);
-        }
-      }
-
-      // Check profile
-      const profSnap = await getDoc(doc(this.firestore, 'settings', 'profile'));
-      if (!profSnap.exists()) {
-        console.log('Cloud Firestore માં પ્રોફાઈલ સીડ કરી રહ્યા છીએ...');
-        await setDoc(doc(this.firestore, 'settings', 'profile'), INITIAL_PROFILE);
-      }
-    } catch (e) {
-      console.warn('Auto-seed check notice:', e);
-    }
-  }
-
-  // ---- REAL-TIME SUBSCRIPTIONS ----
+  // ---- રીઅલ-ટાઇમ સબસ્ક્રિપ્શન્સ (UI રીએક્ટિવિટી) ----
   subscribeServices(callback) {
     this.servicesSubscribers.push(callback);
-    // Immediately emit current data
-    this.getServices().then(data => callback(data));
+    this.getServices().then(data => {
+      if (typeof callback === 'function') callback(data);
+    });
   }
 
   subscribeProfile(callback) {
     this.profileSubscribers.push(callback);
-    // Immediately emit current data
-    this.getProfile().then(data => callback(data));
+    this.getProfile().then(data => {
+      if (typeof callback === 'function') callback(data);
+    });
   }
 
   notifyServicesSubscribers(services) {
     this.servicesSubscribers.forEach(cb => {
-      try { cb(services); } catch (e) { console.error(e); }
+      try { cb(services); } catch (e) { console.error('સબસ્ક્રાઇબર એરર:', e); }
     });
   }
 
   notifyProfileSubscribers(profile) {
     this.profileSubscribers.forEach(cb => {
-      try { cb(profile); } catch (e) { console.error(e); }
+      try { cb(profile); } catch (e) { console.error('સબસ્ક્રાઇબર એરર:', e); }
     });
   }
 
-  // ---- PROFILE METHODS ----
+  // ---- પ્રોફાઈલ મેનેજમેન્ટ (PROFILE CRUD) ----
   async getProfile() {
-    if (this.cachedProfile) return this.cachedProfile;
-
-    if (this.useFirebase && this.firestore) {
-      try {
-        const { doc, getDoc, setDoc } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js');
-        const snap = await getDoc(doc(this.firestore, 'settings', 'profile'));
-        if (snap.exists()) {
-          this.cachedProfile = { ...INITIAL_PROFILE, ...snap.data() };
-          return this.cachedProfile;
-        } else {
-          await setDoc(doc(this.firestore, 'settings', 'profile'), INITIAL_PROFILE);
-          this.cachedProfile = INITIAL_PROFILE;
-          return INITIAL_PROFILE;
+    // 1. Check Server API
+    try {
+      const res = await fetch('/api/profile');
+      if (res.ok) {
+        const data = await res.json();
+        if (data && Object.keys(data).length > 0) {
+          this.cachedProfile = data;
+          localStorage.setItem(STORAGE_KEYS.PROFILE, JSON.stringify(data));
+          return data;
         }
-      } catch (e) {
-        console.error('Firebase profile fetch error:', e);
       }
+    } catch (err) {
+      // Server API unreachable, proceed to fallback
     }
 
+    // 2. Check LocalStorage
     const local = localStorage.getItem(STORAGE_KEYS.PROFILE);
-    this.cachedProfile = local ? JSON.parse(local) : INITIAL_PROFILE;
-    return this.cachedProfile;
+    if (local) {
+      try {
+        this.cachedProfile = JSON.parse(local);
+        return this.cachedProfile;
+      } catch (e) {}
+    }
+
+    // 3. Check data/profile.json file directly
+    try {
+      const res = await fetch('data/profile.json');
+      if (res.ok) {
+        const data = await res.json();
+        this.cachedProfile = data;
+        localStorage.setItem(STORAGE_KEYS.PROFILE, JSON.stringify(data));
+        return data;
+      }
+    } catch (e) {}
+
+    // Default safe fallback
+    const fallbackProfile = {
+      name: "શાસ્ત્રીજી જીતેન્દ્ર જોષી (જીતુભાઈ જોષી)",
+      phone: "99252 64929",
+      whatsapp: "9925264929",
+      subtitle: "કર્મકાંડ • ધાર્મિક • સામાજિક • વ્રત વિધાન સંબંધિત આવશ્યક માર્ગદર્શન",
+      avatarUrl: "assets/images/shastriji-profile.jpg",
+      visitingCardUrl: "assets/images/shastriji-visiting-card.jpg",
+      pin: "1234"
+    };
+    this.cachedProfile = fallbackProfile;
+    return fallbackProfile;
   }
 
   async updateProfile(updatedData) {
@@ -180,175 +111,194 @@ class DatabaseManager {
     const merged = { ...current, ...updatedData };
     this.cachedProfile = merged;
 
-    // Save to LocalStorage
+    // Save to LocalStorage immediately
     localStorage.setItem(STORAGE_KEYS.PROFILE, JSON.stringify(merged));
     this.notifyProfileSubscribers(merged);
 
-    // Save to Firestore
-    if (this.useFirebase && this.firestore) {
-      try {
-        const { doc, setDoc } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js');
-        await setDoc(doc(this.firestore, 'settings', 'profile'), merged, { merge: true });
-      } catch (e) {
-        console.error('Firebase profile update error:', e);
+    // Save to Server JSON via API
+    try {
+      const res = await fetch('/api/profile', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(merged)
+      });
+      if (res.ok) {
+        const serverData = await res.json();
+        this.cachedProfile = serverData;
+        localStorage.setItem(STORAGE_KEYS.PROFILE, JSON.stringify(serverData));
+        return serverData;
       }
+    } catch (err) {
+      console.warn('સર્વર સેવ એરર (સ્થાનિક સેવ સફળ):', err);
     }
     return merged;
   }
 
-  // ---- SERVICES CRUD ----
+  // ---- પૂજા સેવાઓ મેનેજમેન્ટ (SERVICES CRUD) ----
   async getServices() {
-    if (this.cachedServices && this.cachedServices.length > 0) {
-      return this.cachedServices;
-    }
-
-    if (this.useFirebase && this.firestore) {
-      try {
-        const { collection, getDocs, query } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js');
-        const q = query(collection(this.firestore, 'services'));
-        const querySnapshot = await getDocs(q);
-        if (!querySnapshot.empty) {
-          const list = [];
-          querySnapshot.forEach(docSnap => {
-            list.push({ id: docSnap.id, ...docSnap.data() });
-          });
-          this.cachedServices = list;
-          return list;
+    // 1. Check Server API
+    try {
+      const res = await fetch('/api/services');
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          this.cachedServices = data;
+          localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(data));
+          return data;
         }
-      } catch (e) {
-        console.warn('Firebase services fetch error, using local data:', e);
       }
+    } catch (err) {
+      // Server API unreachable, proceed to fallback
     }
 
+    // 2. Check LocalStorage
     const local = localStorage.getItem(STORAGE_KEYS.SERVICES);
-    this.cachedServices = local ? JSON.parse(local) : INITIAL_SERVICES;
-    return this.cachedServices;
+    if (local) {
+      try {
+        const parsed = JSON.parse(local);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          this.cachedServices = parsed;
+          return parsed;
+        }
+      } catch (e) {}
+    }
+
+    // 3. Check data/services.json file directly
+    try {
+      const res = await fetch('data/services.json');
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          this.cachedServices = data;
+          localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(data));
+          return data;
+        }
+      }
+    } catch (e) {}
+
+    return this.cachedServices || [];
   }
 
   async getServiceById(id) {
-    const services = await this.getServices();
-    return services.find(s => s.id === id) || null;
+    const list = await this.getServices();
+    return list.find(s => s.id === id) || null;
   }
 
+  // ADD POOJA (નવી પૂજા ઉમેરો)
   async addService(serviceData) {
-    const services = await this.getServices();
-    const newId = 'service_' + Date.now();
+    const newId = serviceData.id || `service_${Date.now()}`;
     const newService = {
-      id: newId,
       ...serviceData,
+      id: newId,
       createdAt: new Date().toISOString()
     };
 
-    services.unshift(newService);
-    this.cachedServices = services;
-    localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(services));
-    this.notifyServicesSubscribers(services);
+    // Update local cache
+    const current = await this.getServices();
+    current.unshift(newService);
+    this.cachedServices = current;
+    localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(current));
+    this.notifyServicesSubscribers(current);
 
-    if (this.useFirebase && this.firestore) {
-      try {
-        const { doc, setDoc } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js');
-        await setDoc(doc(this.firestore, 'services', newId), newService);
-      } catch (e) {
-        console.error('Firebase addService error:', e);
+    // Save to Server JSON
+    try {
+      const res = await fetch('/api/services', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newService)
+      });
+      if (res.ok) {
+        const saved = await res.json();
+        return saved;
       }
+    } catch (err) {
+      console.warn('સર્વર સેવ એરર (સ્થાનિક સેવ સફળ):', err);
     }
     return newService;
   }
 
+  // UPDATE POOJA (પૂજા સુધારો)
   async updateService(id, updatedData) {
-    const services = await this.getServices();
-    const index = services.findIndex(s => s.id === id);
+    const current = await this.getServices();
+    const index = current.findIndex(s => s.id === id);
     if (index === -1) throw new Error('પૂજા મળી નથી');
 
-    const updated = { ...services[index], ...updatedData, updatedAt: new Date().toISOString() };
-    services[index] = updated;
-    this.cachedServices = services;
-    localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(services));
-    this.notifyServicesSubscribers(services);
+    const updated = {
+      ...current[index],
+      ...updatedData,
+      id,
+      updatedAt: new Date().toISOString()
+    };
+    current[index] = updated;
+    this.cachedServices = current;
+    localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(current));
+    this.notifyServicesSubscribers(current);
 
-    if (this.useFirebase && this.firestore) {
-      try {
-        const { doc, updateDoc } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js');
-        await updateDoc(doc(this.firestore, 'services', id), updated);
-      } catch (e) {
-        console.error('Firebase updateService error:', e);
+    // Save to Server JSON
+    try {
+      const res = await fetch(`/api/services/${encodeURIComponent(id)}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updated)
+      });
+      if (res.ok) {
+        const saved = await res.json();
+        return saved;
       }
+    } catch (err) {
+      console.warn('સર્વર સેવ એરર (સ્થાનિક સેવ સફળ):', err);
     }
     return updated;
   }
 
+  // DELETE POOJA (પૂજા કાઢી નાખો)
   async deleteService(id) {
-    let services = await this.getServices();
-    services = services.filter(s => s.id !== id);
-    this.cachedServices = services;
-    localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(services));
-    this.notifyServicesSubscribers(services);
+    let current = await this.getServices();
+    current = current.filter(s => s.id !== id);
+    this.cachedServices = current;
+    localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(current));
+    this.notifyServicesSubscribers(current);
 
-    if (this.useFirebase && this.firestore) {
-      try {
-        const { doc, deleteDoc } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js');
-        await deleteDoc(doc(this.firestore, 'services', id));
-      } catch (e) {
-        console.error('Firebase deleteService error:', e);
-      }
+    // Delete on Server JSON
+    try {
+      await fetch(`/api/services/${encodeURIComponent(id)}`, {
+        method: 'DELETE'
+      });
+    } catch (err) {
+      console.warn('સર્વર ડિલીટ એરર:', err);
     }
     return true;
   }
 
-  // Upload image to Firebase Storage or compress to base64 DataURL
+  // UPLOAD IMAGE (ઈમેજ અપલોડ)
   async uploadImage(file) {
-    if (this.useFirebase && this.storage) {
-      try {
-        const { ref, uploadBytes, getDownloadURL } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js');
-        const filename = `uploads/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
-        const storageRef = ref(this.storage, filename);
-        const snapshot = await uploadBytes(storageRef, file);
-        return await getDownloadURL(snapshot.ref);
-      } catch (e) {
-        console.warn('Firebase Storage upload failed, falling back to Base64:', e);
-      }
-    }
-
-    // Fallback: convert file to compressed Base64 DataURL
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      reader.onload = (e) => {
-        const img = new Image();
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          const maxDim = 1200;
-          let width = img.width;
-          let height = img.height;
+      reader.onload = async (e) => {
+        const base64Data = e.target.result;
 
-          if (width > maxDim || height > maxDim) {
-            if (width > height) {
-              height = Math.round((height * maxDim) / width);
-              width = maxDim;
-            } else {
-              width = Math.round((width * maxDim) / height);
-              height = maxDim;
-            }
+        // Try server upload endpoint
+        try {
+          const res = await fetch('/api/upload', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              image: base64Data,
+              filename: file.name
+            })
+          });
+          if (res.ok) {
+            const result = await res.json();
+            if (result.url) return resolve(result.url);
           }
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, width, height);
-          resolve(canvas.toDataURL('image/jpeg', 0.85));
-        };
-        img.onerror = () => resolve(e.target.result);
-        img.src = e.target.result;
+        } catch (err) {
+          // If server upload fails, fallback to base64 DataURL
+        }
+        resolve(base64Data);
       };
       reader.onerror = reject;
       reader.readAsDataURL(file);
     });
-  }
-
-  resetToDefaults() {
-    localStorage.setItem(STORAGE_KEYS.PROFILE, JSON.stringify(INITIAL_PROFILE));
-    localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(INITIAL_SERVICES));
-    this.cachedProfile = INITIAL_PROFILE;
-    this.cachedServices = INITIAL_SERVICES;
-    return true;
   }
 }
 

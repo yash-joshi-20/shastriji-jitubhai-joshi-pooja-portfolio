@@ -147,13 +147,20 @@ class AdminPanel {
         <div class="admin-header">
           <h2>શાસ્ત્રીજી કંટ્રોલ પેનલ (CMS)</h2>
           <p style="font-size: 0.9rem; color: var(--color-text-sub);">પૂજા સામગ્રી, પેમ્ફ્લેટ અને સંપર્ક વિગતનું સરળ સંચાલન</p>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+          <div>
+            <h2 style="font-size: 1.35rem; color: var(--color-maroon); margin-bottom: 0.25rem;">શાસ્ત્રીજી કંટ્રોલ પેનલ (CMS)</h2>
+            <p style="font-size: 0.85rem; color: var(--color-text-sub);">પૂજા સામગ્રી, પેમ્ફ્લેટ અને સંપર્ક વિગતનું લાઈવ સંચાલન</p>
+          </div>
+          <div style="font-size: 0.8rem; background: #ECFDF5; color: #047857; border: 1px solid #10B981; padding: 0.25rem 0.6rem; border-radius: 999px; font-weight: 700;">
+            🟢 લાઈવ સર્વર ડેટા
+          </div>
         </div>
 
         <div class="admin-nav-tabs">
           <button class="admin-tab-btn ${activeTab === 'services' ? 'active' : ''}" id="tabBtnServices">📋 બધી પૂજાઓ</button>
           <button class="admin-tab-btn ${activeTab === 'add' ? 'active' : ''}" id="tabBtnAdd">➕ નવી પૂજા ઉમેરો</button>
           <button class="admin-tab-btn ${activeTab === 'profile' ? 'active' : ''}" id="tabBtnProfile">👤 પ્રોફાઈલ વિગત</button>
-          <button class="admin-tab-btn ${activeTab === 'sync' ? 'active' : ''}" id="tabBtnSync">☁️ Firebase સિન્ક</button>
           <button class="admin-tab-btn ${activeTab === 'pin' ? 'active' : ''}" id="tabBtnPin">🔑 પિન બદલો</button>
           <button class="admin-tab-btn" id="tabBtnLogout" style="color: var(--color-danger); margin-left: auto;">🚪 બહાર નીકળો</button>
         </div>
@@ -169,7 +176,6 @@ class AdminPanel {
     document.getElementById('tabBtnServices').addEventListener('click', () => this.renderDashboard('services'));
     document.getElementById('tabBtnAdd').addEventListener('click', () => this.renderAddEditForm(null));
     document.getElementById('tabBtnProfile').addEventListener('click', () => this.renderProfileForm());
-    document.getElementById('tabBtnSync').addEventListener('click', () => this.renderSyncView());
     document.getElementById('tabBtnPin').addEventListener('click', () => this.renderPinChangeForm());
     document.getElementById('tabBtnLogout').addEventListener('click', () => {
       this.isAuthenticated = false;
@@ -180,66 +186,6 @@ class AdminPanel {
     if (activeTab === 'services') {
       await this.renderServicesList();
     }
-  }
-
-  async renderSyncView() {
-    const container = document.getElementById('adminTabContent');
-    if (!container) return;
-
-    document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById('tabBtnSync')?.classList.add('active');
-
-    container.innerHTML = `
-      <div style="background: var(--color-amber-soft); border: 2px dashed var(--color-border-ornate); border-radius: 12px; padding: 1.5rem; text-align: center;">
-        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">☁️</div>
-        <h3 style="color: var(--color-maroon); font-size: 1.35rem; margin-bottom: 0.5rem;">Firebase Cloud Firestore સાથે ડેટા સિન્ક કરો</h3>
-        <p style="color: var(--color-text-sub); font-size: 0.95rem; margin-bottom: 1.25rem;">
-          આ બટન દબાવવાથી તમામ પૂજાઓ અને શાસ્ત્રીજી પ્રોફાઈલ સીધા તમારા Firebase કલેક્શન (services અને settings) માં અપલોડ થઈ જશે.
-        </p>
-        <button class="btn btn-primary" id="modalBtnSyncFirestore" style="min-width: 260px; margin: 0 auto 1.25rem;">
-          🔄 Firebase માં ડેટા અપલોડ / સિન્ક કરો
-        </button>
-        <div id="modalSyncResultMsg" style="margin-bottom: 1rem; font-weight: 700; min-height: 24px;"></div>
-        
-        <div style="text-align: left; background: #FFFFFF; border: 1px solid var(--color-border-light); border-radius: 8px; padding: 1rem; margin-top: 1rem; font-size: 0.9rem;">
-          <h4 style="color: var(--color-maroon); margin-bottom: 0.5rem;">⚠️ અગત્યની સૂચના (Firestore Security Rules):</h4>
-          <p style="color: var(--color-text-sub); margin-bottom: 0.5rem;">
-            જો અપલોડ કરતી વખતે 'permission-denied' ની એરર આવે, તો તમારા Firebase Console > Cloud Firestore > <strong>Rules</strong> ટેબમાં જઈને આ લાઇન મૂકીને 'Publish' કરો:
-          </p>
-          <pre style="background: #2D3748; color: #F7FAFC; padding: 0.75rem; border-radius: 6px; overflow-x: auto; font-family: monospace; font-size: 0.85rem;">rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if true;
-    }
-  }
-}</pre>
-        </div>
-      </div>
-    `;
-
-    document.getElementById('modalBtnSyncFirestore').addEventListener('click', async () => {
-      const btn = document.getElementById('modalBtnSyncFirestore');
-      const resMsg = document.getElementById('modalSyncResultMsg');
-      btn.disabled = true;
-      btn.textContent = 'અપલોડ થઈ રહ્યું છે...';
-      resMsg.textContent = 'Firebase Cloud Firestore સાથે કનેક્ટ થઈ રહ્યું છે...';
-      resMsg.style.color = 'var(--color-maroon)';
-
-      try {
-        await db.autoSeedFirestore();
-        resMsg.textContent = '✅ તમામ ડેટા Firebase Firestore માં સફળતાપૂર્વક અપલોડ થઈ ગયો છે! હવે Firebase Console Refresh કરો.';
-        resMsg.style.color = 'var(--color-success)';
-        this.showToast('Cloud Firestore સાથે ડેટા સફળતાપૂર્વક સિન્ક થયો!');
-        btn.textContent = '✅ ડેટા સિન્ક પૂર્ણ થયો';
-      } catch (err) {
-        console.error('Sync error:', err);
-        resMsg.textContent = '❌ અપલોડ નિષ્ફળ: ' + (err.message || 'Firestore Rules માં write પરમિશન ચકાસો.');
-        resMsg.style.color = 'var(--color-danger)';
-        btn.disabled = false;
-        btn.textContent = 'ફરી પ્રયાસ કરો';
-      }
-    });
   }
 
   async renderServicesList() {

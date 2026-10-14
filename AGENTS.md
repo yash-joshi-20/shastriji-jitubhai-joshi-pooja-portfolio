@@ -12,5 +12,5 @@ This repository contains the dynamic, mobile-first portfolio, service catalogue,
    - `docs/ai/WORKFLOW.md`
 3. **Language Rule**: 100% pure Gujarati (ગુજરાતી ભાષા) across the entire user-facing interface, pamphlet export, and Admin CMS panel. No technical English jargon.
 4. **Theme**: Traditional Dharmik Light Theme (Maroon `#8B1E0F`, Saffron `#D97706`, Turmeric Gold `#FEF3C7`, Cream `#FFFDF7`).
-5. **Data Architecture**: Dual-Mode (Firebase Cloud Firestore & Storage with seamless zero-crash fallback to LocalStorage & IndexedDB).
+5. **Data Architecture**: Soft-Coded Dynamic Server JSON Database (`data/services.json` & `data/profile.json`) with Express REST API & seamless LocalStorage fallback. 100% Firebase-free, zero cloud permission friction.
 6. **Mobile First**: Optimized for smartphones with touch-friendly 48px+ targets, quick action buttons (WhatsApp, Call, PDF/PNG pamphlet export).

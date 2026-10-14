@@ -39,9 +39,10 @@ class App {
       this.renderFooter();
     });
 
-    // Real-time Dynamic Services Subscription from Firestore
+    // Real-time Dynamic Services Subscription
     db.subscribeServices((services) => {
       this.services = services;
+      this.renderCategoryPills();
       this.filterAndRenderServices();
     });
 
@@ -121,7 +122,16 @@ class App {
     const container = document.getElementById('categoryPills');
     if (!container) return;
 
-    container.innerHTML = CATEGORIES.map(cat => `
+    const dynamicCats = ['બધી વિધિઓ'];
+    if (Array.isArray(this.services)) {
+      this.services.forEach(s => {
+        if (s.category && !dynamicCats.includes(s.category)) {
+          dynamicCats.push(s.category);
+        }
+      });
+    }
+
+    container.innerHTML = dynamicCats.map(cat => `
       <button class="cat-pill ${cat === this.activeCategory ? 'active' : ''}" data-cat="${cat}">
         ${cat}
       </button>
