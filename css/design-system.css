@@ -1,0 +1,252 @@
+/* ==========================================================================
+   શાસ્ત્રીજી જીતેન્દ્ર જોષી - વૈદિક ડિઝાઇન સિસ્ટમ (Dharmik Design System)
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Gujarati:wght@300;400;500;600;700;800&family=Rozha+One&display=swap');
+
+:root {
+  /* પવિત્ર ધાર્મિક કલર પેલેટ (Sacred Dharmik Colors) */
+  --color-maroon: #8B1E0F;          /* કંકુ લાલ / Deep Maroon */
+  --color-maroon-dark: #651206;     /* ઘેરો કંકુ લાલ */
+  --color-maroon-light: #A82917;
+  --color-saffron: #D97706;         /* કેસરી / Sacred Saffron */
+  --color-saffron-dark: #B45309;
+  --color-saffron-light: #F59E0B;
+  --color-gold: #CA8A04;            /* સુવર્ણ / Sacred Gold */
+  --color-turmeric: #FEF3C7;        /* હળદર પીળો / Turmeric Yellow */
+  --color-cream: #FFFDF7;           /* ચંદન પૃષ્ઠભૂમિ / Warm Cream */
+  --color-card-bg: #FFFFFF;         /* શુદ્ધ સફેદ */
+  --color-amber-soft: #FFFBEB;
+  
+  /* લખાણ અને બોર્ડર રંગો (Text & Border Colors) */
+  --color-text-main: #3B1209;       /* મુખ્ય લખાણ */
+  --color-text-sub: #78350F;        /* ગૌણ લખાણ */
+  --color-text-muted: #92400E;      /* ઝાંખું લખાણ */
+  --color-border-light: #FDE68A;    /* સોનેરી બોર્ડર */
+  --color-border-ornate: #D97706;   /* કેસરી બોર્ડર */
+  --color-border-maroon: #8B1E0F;   /* કંકુ બોર્ડર */
+
+  /* સ્ટેટસ અને એક્શન રંગો (Status & Actions) */
+  --color-whatsapp: #25D366;
+  --color-whatsapp-dark: #128C7E;
+  --color-call: #DC2626;
+  --color-call-dark: #B91C1C;
+  --color-success: #15803D;
+  --color-danger: #DC2626;
+
+  /* ફોન્ટ્સ (Typography) */
+  --font-gujarati: 'Noto Sans Gujarati', system-ui, -apple-system, sans-serif;
+  --font-ornate: 'Rozha One', 'Noto Sans Gujarati', serif;
+
+  /* શેડોઝ (Shadows & Halos) */
+  --shadow-subtle: 0 4px 12px rgba(139, 30, 15, 0.05);
+  --shadow-card: 0 10px 25px -5px rgba(217, 119, 6, 0.12), 0 8px 10px -6px rgba(139, 30, 15, 0.08);
+  --shadow-glow: 0 0 25px rgba(245, 158, 11, 0.35);
+  --shadow-portrait: 0 15px 35px -5px rgba(139, 30, 15, 0.25), 0 0 30px rgba(254, 243, 199, 0.6);
+
+  /* રેડિયસ (Radius) */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+
+  /* સંક્રમણ (Transitions) */
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-smooth: 350ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* રીસેટ અને મૂળ નિયમો */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-gujarati);
+  background-color: var(--color-cream);
+  color: var(--color-text-main);
+  line-height: 1.65;
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+  background-image: 
+    radial-gradient(var(--color-turmeric) 0.75px, transparent 0.75px),
+    radial-gradient(var(--color-turmeric) 0.75px, var(--color-cream) 0.75px);
+  background-size: 30px 30px;
+  background-position: 0 0, 15px 15px;
+}
+
+/* કન્ટેનર યુટિલિટીઝ */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+/* ટાઈપોગ્રાફી સ્કેલ */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-gujarati);
+  font-weight: 700;
+  color: var(--color-maroon);
+  line-height: 1.35;
+}
+
+p {
+  color: var(--color-text-main);
+  margin-bottom: 0.75rem;
+}
+
+/* પવિત્ર ઓર્નામેન્ટ બોર્ડર યુટિલિટીઝ */
+.dharmik-border {
+  border: 3px double var(--color-maroon);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  background: var(--color-card-bg);
+}
+
+.dharmik-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--radius-full);
+  font-size: 0.875rem;
+  font-weight: 600;
+  background-color: var(--color-turmeric);
+  color: var(--color-maroon);
+  border: 1px solid var(--color-border-light);
+}
+
+/* બટન સ્ટાઈલ્સ (Touch-Friendly min 48px) */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 48px;
+  padding: 0.65rem 1.4rem;
+  font-family: var(--font-gujarati);
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all var(--transition-normal);
+  border: none;
+  outline: none;
+  text-align: center;
+  user-select: none;
+}
+
+.btn:focus-visible {
+  outline: 3px solid var(--color-saffron);
+  outline-offset: 2px;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--color-maroon) 0%, var(--color-maroon-dark) 100%);
+  color: #FFFFFF;
+  box-shadow: 0 4px 14px rgba(139, 30, 15, 0.3);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, var(--color-maroon-light) 0%, var(--color-maroon) 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(139, 30, 15, 0.4);
+  color: #FFFFFF;
+}
+
+.btn-whatsapp {
+  background: linear-gradient(135deg, var(--color-whatsapp) 0%, var(--color-whatsapp-dark) 100%);
+  color: #FFFFFF;
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.3);
+}
+
+.btn-whatsapp:hover {
+  filter: brightness(1.08);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.45);
+  color: #FFFFFF;
+}
+
+.btn-call {
+  background: linear-gradient(135deg, #DC2626 0%, #991B1B 100%);
+  color: #FFFFFF;
+  box-shadow: 0 4px 14px rgba(220, 38, 38, 0.3);
+}
+
+.btn-call:hover {
+  filter: brightness(1.08);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(220, 38, 38, 0.45);
+  color: #FFFFFF;
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--color-maroon);
+  border: 2px solid var(--color-maroon);
+}
+
+.btn-outline:hover {
+  background: var(--color-turmeric);
+  color: var(--color-maroon-dark);
+}
+
+.btn-gold {
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+  color: #FFFFFF;
+  box-shadow: 0 4px 14px rgba(217, 119, 6, 0.3);
+}
+
+.btn-gold:hover {
+  filter: brightness(1.08);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(217, 119, 6, 0.45);
+}
+
+/* કાર્ડ્સ */
+.card {
+  background: var(--color-card-bg);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-light);
+  box-shadow: var(--shadow-card);
+  transition: all var(--transition-normal);
+  overflow: hidden;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 32px -8px rgba(139, 30, 15, 0.16), 0 0 16px rgba(245, 158, 11, 0.2);
+  border-color: var(--color-saffron-light);
+}
+
+/* એનિમેશન કીફ્રેમ્સ */
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(245, 158, 11, 0.7);
+  }
+}
+
+@keyframes floatGentle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}

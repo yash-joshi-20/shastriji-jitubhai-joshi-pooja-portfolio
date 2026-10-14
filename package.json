@@ -1,0 +1,27 @@
+{
+  "name": "shastriji-jitubhai-joshi-pooja-portfolio",
+  "version": "1.0.0",
+  "description": "Dynamic Mobile-First Pooja Samagri CMS & Portfolio in Gujarati for Shastriji Jitendra Joshi",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "node --check server.js"
+  },
+  "keywords": [
+    "pooja",
+    "portfolio",
+    "gujarati",
+    "firebase",
+    "firestore",
+    "render"
+  ],
+  "author": "Yash Joshi",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
