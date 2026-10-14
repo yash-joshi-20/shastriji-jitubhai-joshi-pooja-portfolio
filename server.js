@@ -10,8 +10,8 @@ app.use(express.static(path.join(__dirname), {
 }));
 
 // Direct route for /admin
-app.get('/admin', (req, res) => {
-  res.sendFile(path.join(__dirname, 'admin', 'index.html'));
+app.get(['/admin', '/admin/'], (req, res) => {
+  res.sendFile(path.join(__dirname, 'admin.html'));
 });
 
 // Fallback all other GET requests to index.html
