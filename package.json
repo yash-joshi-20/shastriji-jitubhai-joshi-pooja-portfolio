@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
+    "seed": "node scripts/seed-firestore.mjs",
     "test": "node --check server.js"
   },
   "keywords": [
@@ -19,7 +20,8 @@
   "author": "Yash Joshi",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "firebase": "^13.0.0"
   },
   "engines": {
     "node": ">=18.0.0"
