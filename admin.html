@@ -28,7 +28,9 @@
       flex: 1;
       max-width: 800px;
       margin: 2rem auto;
-      width: 92%;
+      width: 100%;
+      padding-left: 15px;
+      padding-right: 15px;
     }
     .admin-standalone-card {
       background: #FFFFFF;
@@ -40,10 +42,11 @@
     @media (max-width: 600px) {
       .admin-standalone-container {
         margin: 1rem auto;
-        width: 96%;
+        padding-left: 15px;
+        padding-right: 15px;
       }
       .admin-standalone-card {
-        padding: 1.25rem;
+        padding: 1.25rem 0.85rem;
       }
     }
   </style>
@@ -62,12 +65,6 @@
           <span class="brand-name">શાસ્ત્રીજી જીતેન્દ્ર જોષી (એડમિન પેનલ)</span>
         </div>
       </a>
-
-      <div class="header-actions">
-        <a href="index.html" class="btn btn-outline" style="min-height: 40px; padding: 0.35rem 0.9rem; font-size: 0.9rem;">
-          ← મુખ્ય વેબસાઇટ પર જાઓ
-        </a>
-      </div>
     </div>
   </header>
 
@@ -82,7 +79,7 @@
   <div class="toast-container" id="toastContainer"></div>
 
   <!-- ફૂટર -->
-  <footer class="site-footer" style="padding: 1.5rem 0 1rem; margin-top: auto;">
+  <footer class="site-footer" style="padding: 1.5rem 15px 1rem; margin-top: auto;">
     <div class="container text-center">
       <div style="font-weight: 700; color: var(--color-maroon); font-size: 0.95rem;">
         શાસ્ત્રીજી જીતેન્દ્ર જોષી પૂજા પોર્ટફોલિયો CMS
@@ -249,30 +246,39 @@
           content.innerHTML = `
             <div style="text-align: center; padding: 2rem; color: var(--color-text-sub);">
               <p>હજી કોઈ પૂજા ઉમેરેલ નથી.</p>
-              <button class="btn btn-primary" id="emptyAddBtn" style="margin-top: 1rem;">➕ નવી પૂજા ઉમેરો</button>
+              <button class="btn btn-primary" id="emptyAddBtn" style="margin-top: 1rem; display: inline-flex; align-items: center; gap: 0.5rem;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                <span>નવી પૂજા ઉમેરો</span>
+              </button>
             </div>
           `;
           document.getElementById('emptyAddBtn')?.addEventListener('click', () => this.renderAddEditForm(null));
           return;
         }
 
-        let listHtml = `<div style="margin-bottom: 1.25rem; display: flex; justify-content: space-between; align-items: center;">
+        let listHtml = `<div style="margin-bottom: 1.25rem; display: flex; justify-content: space-between; align-items: center; gap: 0.75rem;">
           <h3 style="font-size: 1.2rem; color: var(--color-maroon);">કુલ પૂજાઓ (${services.length})</h3>
-          <button class="btn btn-primary btn-sm" id="addNewServiceTopBtn">➕ નવી પૂજા ઉમેરો</button>
+          <button class="btn btn-primary btn-icon-action" id="addNewServiceTopBtn" title="નવી પૂજા ઉમેરો" aria-label="નવી પૂજા ઉમેરો">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          </button>
         </div>`;
 
         services.forEach(item => {
           listHtml += `
             <div class="admin-service-item">
-              <div>
+              <div style="flex: 1; min-width: 0;">
                 <div class="admin-item-title">${item.title}</div>
                 <div style="font-size: 0.85rem; color: var(--color-text-sub);">
                   વિભાગ: <strong>${item.category}</strong> | કિંમત: ${item.price || 'સંપર્ક કરો'}
                 </div>
               </div>
               <div class="admin-item-actions">
-                <button class="btn btn-outline btn-sm edit-srv-btn" data-id="${item.id}">✏️ સુધારો</button>
-                <button class="btn btn-call btn-sm del-srv-btn" data-id="${item.id}">🗑️ કાઢી નાખો</button>
+                <button class="btn btn-outline btn-icon-action edit-srv-btn" data-id="${item.id}" title="સુધારો" aria-label="સુધારો">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                </button>
+                <button class="btn btn-call btn-icon-action del-srv-btn" data-id="${item.id}" title="કાઢી નાખો" aria-label="કાઢી નાખો">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                </button>
               </div>
             </div>
           `;

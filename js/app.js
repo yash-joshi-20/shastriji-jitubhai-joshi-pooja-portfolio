@@ -140,12 +140,10 @@ class App {
       waLink.href = `https://wa.me/91${cleanWa}?text=${waMsg}`;
     }
 
-    // Reveal number in header button
+    // Highlight header button
     const headerBtn = document.getElementById('headerContactTrigger');
     if (headerBtn) {
       headerBtn.classList.add('revealed');
-      const textEl = document.getElementById('headerContactBtnText');
-      if (textEl) textEl.textContent = phone;
     }
 
     overlay.classList.add('active');

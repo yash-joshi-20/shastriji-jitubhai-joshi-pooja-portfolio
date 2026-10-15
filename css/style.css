@@ -12,13 +12,15 @@
   -webkit-backdrop-filter: blur(10px);
   border-bottom: 2px solid var(--color-border-light);
   box-shadow: 0 4px 20px rgba(139, 30, 15, 0.06);
+  padding-left: 15px;
+  padding-right: 15px;
 }
 
 .header-inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.75rem 0;
+  padding: 0.85rem 0;
   gap: 1rem;
 }
 
@@ -80,20 +82,29 @@
 }
 
 .btn-header-contact {
-  min-height: 42px;
-  padding: 0.45rem 1.1rem;
-  font-size: 0.95rem;
+  width: 44px;
+  height: 44px;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0;
   background: linear-gradient(135deg, var(--color-maroon), var(--color-maroon-dark));
   color: #FFFFFF;
-  border: 1px solid var(--color-border-ornate);
+  border: 1.5px solid var(--color-border-ornate);
   border-radius: var(--radius-full);
-  font-weight: 700;
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  justify-content: center;
   cursor: pointer;
   box-shadow: 0 4px 12px rgba(139, 30, 15, 0.25);
   transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.btn-header-contact svg {
+  width: 20px;
+  height: 20px;
+  stroke: #FFFFFF;
+  color: #FFFFFF;
 }
 
 .btn-header-contact:hover {
@@ -105,9 +116,12 @@
 
 .btn-header-contact.revealed {
   background: var(--color-turmeric);
-  color: var(--color-maroon);
   border: 2px solid var(--color-maroon);
-  letter-spacing: 0.5px;
+}
+
+.btn-header-contact.revealed svg {
+  stroke: var(--color-maroon);
+  color: var(--color-maroon);
 }
 
 /* Contact Details Modal */
@@ -181,7 +195,7 @@
 
 /* હીરો સેક્શન (Hero Section) */
 .hero-section {
-  padding: 2.5rem 0 3.5rem;
+  padding: 2.5rem 15px 3.5rem;
   position: relative;
 }
 
@@ -424,7 +438,7 @@
 
 /* સર્ચ & ફિલ્ટર વિભાગ (Search & Filter Section) */
 .filter-section {
-  padding: 1.5rem 0 2rem;
+  padding: 1.5rem 15px 2rem;
   background: rgba(254, 243, 199, 0.4);
   border-top: 1px solid var(--color-border-light);
   border-bottom: 1px solid var(--color-border-light);
@@ -504,7 +518,7 @@
 
 /* પૂજા સર્વિસીસ ગ્રીડ (Services Grid) */
 .services-section {
-  padding-bottom: 4rem;
+  padding: 0 15px 4rem;
 }
 
 .section-header {
@@ -993,7 +1007,72 @@ textarea.form-control {
 
 .admin-item-actions {
   display: flex;
+  align-items: center;
   gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.btn-icon-action {
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  min-height: 38px;
+  padding: 0;
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+  border: 1.5px solid transparent;
+}
+
+.btn-icon-action svg {
+  display: block;
+}
+
+#addNewServiceTopBtn.btn-icon-action {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  min-height: 40px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, var(--color-maroon), var(--color-maroon-dark));
+  color: #FFFFFF;
+  border: 1px solid var(--color-border-ornate);
+  box-shadow: 0 4px 12px rgba(139, 30, 15, 0.25);
+}
+
+#addNewServiceTopBtn.btn-icon-action:hover {
+  background: linear-gradient(135deg, var(--color-saffron), var(--color-saffron-dark));
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(217, 119, 6, 0.35);
+}
+
+.edit-srv-btn.btn-icon-action {
+  background: #FFFFFF;
+  border-color: var(--color-border-ornate);
+  color: var(--color-maroon);
+}
+
+.edit-srv-btn.btn-icon-action:hover {
+  background: var(--color-turmeric);
+  border-color: var(--color-maroon);
+  transform: translateY(-1px);
+}
+
+.del-srv-btn.btn-icon-action {
+  background: #FFF5F5;
+  border-color: rgba(220, 38, 38, 0.4);
+  color: var(--color-danger);
+}
+
+.del-srv-btn.btn-icon-action:hover {
+  background: var(--color-danger);
+  color: #FFFFFF;
+  border-color: var(--color-danger);
+  transform: translateY(-1px);
 }
 
 .btn-sm {
@@ -1039,7 +1118,7 @@ textarea.form-control {
 .site-footer {
   background: linear-gradient(180deg, var(--color-turmeric) 0%, #FDE68A 100%);
   border-top: 3px double var(--color-maroon);
-  padding: 3rem 0 2rem;
+  padding: 3.5rem 15px 2.5rem;
   text-align: center;
   color: var(--color-text-main);
 }
@@ -1047,7 +1126,7 @@ textarea.form-control {
 .footer-om-logo {
   width: 68px;
   height: 68px;
-  margin: 0 auto 1.5rem;
+  margin: 0 auto 2.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1058,8 +1137,8 @@ textarea.form-control {
   font-weight: 800;
   color: var(--color-maroon);
   line-height: 1.5;
-  margin-top: 0.5rem;
-  margin-bottom: 0.65rem;
+  margin-top: 0;
+  margin-bottom: 0.85rem;
   clear: both;
 }
 
@@ -1068,7 +1147,7 @@ textarea.form-control {
   font-weight: 600;
   color: var(--color-text-sub);
   margin-top: 0.25rem;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.5rem;
   line-height: 1.6;
 }
 
@@ -1122,22 +1201,39 @@ textarea.form-control {
 }
 
 @media (max-width: 600px) {
+  .header-inner {
+    padding: 0.65rem 0;
+    gap: 0.5rem;
+  }
+  .brand-wrapper {
+    gap: 0.5rem;
+  }
   .brand-shree-ganesh {
-    font-size: 0.75rem;
+    font-size: 0.72rem;
   }
   .brand-name {
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
   .sacred-logo-ring {
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
+  }
+  .btn-header-contact {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+  }
+  .btn-header-contact svg {
+    width: 18px;
+    height: 18px;
   }
   .profile-title {
-    font-size: 1.4rem;
+    font-size: 1.35rem;
   }
   .portrait-frame {
-    width: 145px;
-    height: 145px;
+    width: 140px;
+    height: 140px;
   }
   .book-pages-grid {
     grid-template-columns: 1fr;
@@ -1157,5 +1253,25 @@ textarea.form-control {
   }
   .pamphlet-title {
     font-size: 1.45rem;
+  }
+  .admin-service-item {
+    padding: 0.65rem 0.75rem;
+  }
+  .admin-item-title {
+    font-size: 0.95rem;
+  }
+  .btn-icon-action {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
+  }
+  .footer-om-logo {
+    width: 58px;
+    height: 58px;
+    margin: 0 auto 2rem;
+  }
+  .footer-shastriji-name {
+    font-size: 1.25rem;
   }
 }
