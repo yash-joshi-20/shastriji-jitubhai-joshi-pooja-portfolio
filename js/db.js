@@ -270,8 +270,32 @@ class DatabaseManager {
     return true;
   }
 
-  // UPLOAD IMAGE (ઈમેજ અપલોડ)
-  async uploadImage(file) {
+  // UPLOAD IMAGE (ઈમેજ અપલોડ - File, Blob અથવા Base64 DataURL)
+  async uploadImage(file, customFilename = null) {
+    // 1. If already a string (DataURL or existing URL)
+    if (typeof file === 'string') {
+      if (file.startsWith('data:image')) {
+        try {
+          const res = await fetch('/api/upload', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              image: file,
+              filename: customFilename || `pooja_${Date.now()}.jpg`
+            })
+          });
+          if (res.ok) {
+            const result = await res.json();
+            if (result.url) return result.url;
+          }
+        } catch (err) {
+          console.warn('ડેટાયુઆરએલ સર્વર અપલોડ એરર:', err);
+        }
+      }
+      return file;
+    }
+
+    // 2. If File or Blob
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = async (e) => {
@@ -284,7 +308,7 @@ class DatabaseManager {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               image: base64Data,
-              filename: file.name
+              filename: file.name || customFilename || `upload_${Date.now()}.jpg`
             })
           });
           if (res.ok) {

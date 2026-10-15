@@ -18,6 +18,9 @@
   <link rel="stylesheet" href="css/design-system.css">
   <link rel="stylesheet" href="css/style.css">
 
+  <!-- Client-Side OCR Engine (Zero AI / Zero LLM) -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js" defer></script>
+
   <style>
     .admin-page-wrapper {
       min-height: 100vh;
@@ -93,6 +96,8 @@
   <script type="module">
     import { db } from './js/db.js';
     import { CATEGORIES } from './js/data.js';
+    import { mountCardGenerator } from './js/card-generator.js';
+    import { openScannerModal } from './js/image-scanner.js';
 
     class StandaloneAdmin {
       constructor() {
@@ -326,9 +331,26 @@
 
         content.innerHTML = `
           <form id="serviceForm" style="display: flex; flex-direction: column; gap: 1rem;">
-            <h3 style="font-size: 1.25rem; color: var(--color-maroon); margin-bottom: 0.5rem;">
-              ${isEdit ? '✏️ પૂજામાં ફેરફાર કરો' : '➕ નવી પૂજા ઉમેરો'}
-            </h3>
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.25rem;">
+              <h3 style="font-size: 1.25rem; color: var(--color-maroon); margin: 0;">
+                ${isEdit ? '✏️ પૂજામાં ફેરફાર કરો' : '➕ નવી પૂજા ઉમેરો'}
+              </h3>
+              <span style="font-size: 0.85rem; color: var(--color-text-sub);">સંપૂર્ણ ગુજરાતી CMS</span>
+            </div>
+
+            <!-- ૧. કેમેરા / ગેલેરી સ્કેનર ટૂલબાર (Camera & Gallery Scanner) -->
+            <div class="scanner-trigger-banner" style="background: linear-gradient(135deg, #FFFDF7, #FEF3C7); border: 2px dashed var(--color-border-ornate); border-radius: var(--radius-md); padding: 0.85rem 1rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem;">
+              <div style="display: flex; align-items: center; gap: 0.65rem;">
+                <span style="font-size: 1.6rem;">📸</span>
+                <div>
+                  <div style="font-weight: 800; color: var(--color-maroon); font-size: 0.95rem;">કેમેરા અથવા ગેલેરીમાંથી સ્કેન કરો</div>
+                  <div style="font-size: 0.82rem; color: var(--color-text-sub);">પેમ્ફ્લેટ અથવા સામગ્રી લિસ્ટનો ફોટો પાડી આપમેળે વિગત ભરો (AI વગર)</div>
+                </div>
+              </div>
+              <button type="button" class="btn btn-outline" id="fOpenScannerBtn" style="font-size: 0.9rem; font-weight: 700; border-color: var(--color-maroon); color: var(--color-maroon); min-height: 40px; padding: 0.4rem 1rem;">
+                📷 સ્કેન શરૂ કરો ➔
+              </button>
+            </div>
 
             <div class="form-group">
               <label class="form-label">પૂજાનું નામ *</label>
@@ -353,15 +375,23 @@
               <input type="text" class="form-control" id="fBadge" value="${service?.badge || 'ધાર્મિક વિધિ'}" placeholder="ઉદાહરણ: લોકપ્રિય પૂજા">
             </div>
 
-            <div class="form-group">
-              <label class="form-label">ભગવાનનો ફોટો અથવા તૈયાર પેમ્ફ્લેટ (Image Upload)</label>
+            <!-- ૨. મુખ્ય ઈમેજ અને કેનવાસ કાર્ડ જનરેટર સેક્શન -->
+            <div class="form-group" style="background: #FFFDF7; border: 1.5px solid var(--color-border); border-radius: var(--radius-md); padding: 1rem;">
+              <label class="form-label" style="margin-bottom: 0.25rem;">પૂજાનો મુખ્ય ફોટો (Main Card Image)</label>
+              <p style="font-size: 0.82rem; color: var(--color-text-sub); margin-bottom: 0.75rem;">આપ નવો ફોટો અપલોડ કરી શકો છો અથવા નીચે આપેલ કેનવાસ ટૂલથી ૧-ક્લિકમાં દિવ્ય કાર્ડ બનાવી શકો છો.</p>
+
               <input type="file" accept="image/*" class="form-control" id="fImageFile" style="padding: 0.4rem;">
-              ${service?.thumbnailUrl ? `
-                <div style="margin-top: 0.5rem; display: flex; align-items: center; gap: 0.75rem;">
-                  <img src="${service.thumbnailUrl}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px; border: 1px solid var(--color-border-ornate);">
-                  <span style="font-size: 0.85rem; color: var(--color-text-sub);">હાલનો ફોટો સેવ થયેલ છે</span>
+
+              <div id="imagePreviewBox" style="margin-top: 0.75rem; display: ${service?.thumbnailUrl ? 'flex' : 'none'}; align-items: center; gap: 0.75rem; background: #FFFFFF; padding: 0.5rem; border-radius: 6px; border: 1px solid var(--color-border);">
+                <img id="imgPreviewThumb" src="${service?.thumbnailUrl || ''}" style="width: 70px; height: 50px; object-fit: cover; border-radius: 6px; border: 1.5px solid var(--color-border-ornate);">
+                <div>
+                  <span id="imgPreviewStatus" style="font-size: 0.85rem; font-weight: 700; color: var(--color-maroon);">મુખ્ય ફોટો સેટ થયેલ છે</span>
+                  <div id="imgPreviewMeta" style="font-size: 0.75rem; color: var(--color-text-sub);">સાચવવા પર આ ફોટો વેબસાઈટ પર દેખાશે</div>
                 </div>
-              ` : ''}
+              </div>
+
+              <!-- કેનવાસ કાર્ડ જનરેટર માઉન્ટ પોઈન્ટ -->
+              <div id="cardGenMountPoint" style="margin-top: 1rem;"></div>
             </div>
 
             <div class="form-group">
@@ -399,6 +429,65 @@
           this.renderDashboard('services');
         });
 
+        // Track user-generated canvas image
+        let selectedGeneratedImage = null;
+
+        // Mount the Auspicious Canvas Card Generator
+        const cardGenHandle = mountCardGenerator(
+          document.getElementById('cardGenMountPoint'),
+          {
+            initialTitle: service?.title || document.getElementById('fTitle')?.value || 'પવિત્ર પૂજા વિધાન',
+            initialCategory: service?.category || document.getElementById('fCategory')?.value || 'ધાર્મિક પૂજા',
+            onSetImage: async (dataUrl) => {
+              selectedGeneratedImage = dataUrl;
+              const previewBox = document.getElementById('imagePreviewBox');
+              const previewThumb = document.getElementById('imgPreviewThumb');
+              const previewStatus = document.getElementById('imgPreviewStatus');
+              const previewMeta = document.getElementById('imgPreviewMeta');
+              if (previewBox && previewThumb) {
+                previewThumb.src = dataUrl;
+                previewBox.style.display = 'flex';
+                if (previewStatus) previewStatus.textContent = '✨ દિવ્ય જનરેટ કરેલ ફોટો પસંદ થયો!';
+                if (previewMeta) previewMeta.textContent = 'સાચવવા પર આ નવું કાર્ડ મુખ્ય ફોટો બનશે';
+              }
+              this.showToast('✨ દિવ્ય કાર્ડ મુખ્ય ફોટો તરીકે સેટ થઈ ગયું!');
+            }
+          }
+        );
+
+        // Sync Title input with live card generator
+        const fTitleEl = document.getElementById('fTitle');
+        const fCategoryEl = document.getElementById('fCategory');
+        if (fTitleEl && cardGenHandle) {
+          fTitleEl.addEventListener('input', (e) => cardGenHandle.setTitle(e.target.value));
+        }
+        if (fCategoryEl && cardGenHandle) {
+          fCategoryEl.addEventListener('change', (e) => cardGenHandle.setCategory(e.target.value));
+        }
+
+        // Wire Scanner Button
+        document.getElementById('fOpenScannerBtn')?.addEventListener('click', () => {
+          openScannerModal({
+            onApply: (scanned) => {
+              if (scanned.title) {
+                fTitleEl.value = scanned.title;
+                if (cardGenHandle) cardGenHandle.setTitle(scanned.title);
+              }
+              if (scanned.category) {
+                fCategoryEl.value = scanned.category;
+                if (cardGenHandle) cardGenHandle.setCategory(scanned.category);
+              }
+              if (scanned.price) document.getElementById('fPrice').value = scanned.price;
+              if (scanned.pujapo) document.getElementById('fPujapo').value = scanned.pujapo;
+              if (scanned.anajNaivedya) document.getElementById('fAnaj').value = scanned.anajNaivedya;
+              if (scanned.taiyari) document.getElementById('fTaiyari').value = scanned.taiyari;
+              if (scanned.notes) document.getElementById('fNotes').value = scanned.notes;
+
+              this.showToast('🙏 સ્કેન કરેલી બધી વિગતો આપમેળે ફોર્મમાં ભરાઈ ગઈ છે!');
+            }
+          });
+        });
+
         const form = document.getElementById('serviceForm');
         form.addEventListener('submit', async (e) => {
           e.preventDefault();
@@ -411,6 +500,9 @@
             const fileInput = document.getElementById('fImageFile');
             if (fileInput.files && fileInput.files[0]) {
               imageUrl = await db.uploadImage(fileInput.files[0]);
+            } else if (selectedGeneratedImage) {
+              const safeTitle = (document.getElementById('fTitle').value.trim() || 'pooja').replace(/[^a-zA-Z0-9\u0A80-\u0AFF]/g, '_');
+              imageUrl = await db.uploadImage(selectedGeneratedImage, `card_${safeTitle}_${Date.now()}.jpg`);
             }
 
             const data = {
