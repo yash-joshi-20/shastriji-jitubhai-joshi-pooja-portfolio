@@ -367,9 +367,15 @@ body.admin-page-body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.8rem;
   color: #8B1E0F;
   flex-shrink: 0;
+  box-shadow: inset 0 1px 3px rgba(217, 119, 6, 0.1);
+}
+
+.admin-metric-icon svg {
+  width: 28px;
+  height: 28px;
+  display: block;
 }
 
 .admin-metric-value {
@@ -421,6 +427,14 @@ body.admin-page-body {
   box-shadow: 0 2px 6px rgba(0,0,0,0.03);
 }
 
+.admin-tab-nav-btn svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  stroke: currentColor;
+  transition: transform 0.2s ease, stroke 0.2s ease;
+}
+
 .admin-tab-nav-btn:hover {
   background: #FFFDF7;
   border-color: #D97706;
@@ -428,11 +442,19 @@ body.admin-page-body {
   transform: translateY(-1px);
 }
 
+.admin-tab-nav-btn:hover svg {
+  transform: scale(1.1);
+}
+
 .admin-tab-nav-btn.active {
   background: linear-gradient(135deg, #8B1E0F 0%, #631006 100%);
   color: #FFFFFF;
   border-color: #8B1E0F;
   box-shadow: 0 6px 18px rgba(139, 30, 15, 0.28);
+}
+
+.admin-tab-nav-btn.active svg {
+  stroke: #FFFFFF;
 }
 
 /* ૭. સર્વિસીસ લિસ્ટ વ્યુ (All Services View - Full Grid) */
@@ -523,6 +545,13 @@ body.admin-page-body {
   white-space: nowrap;
 }
 
+.admin-btn-primary svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  stroke: currentColor;
+}
+
 .admin-btn-primary:hover {
   background: linear-gradient(135deg, #D97706 0%, #B45309 100%);
   transform: translateY(-1px);
@@ -544,6 +573,13 @@ body.admin-page-body {
   align-items: center;
   gap: 0.5rem;
   transition: all 0.2s ease;
+}
+
+.admin-btn-secondary svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  stroke: currentColor;
 }
 
 .admin-btn-secondary:hover {
@@ -666,6 +702,13 @@ body.admin-page-body {
   gap: 0.35rem;
 }
 
+.admin-srv-price-text svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  stroke: currentColor;
+}
+
 .admin-srv-card-middle {
   padding: 0.75rem 0.9rem;
   background: #FFFDF9;
@@ -683,6 +726,13 @@ body.admin-page-body {
   font-weight: 700;
   color: #8B1E0F;
   margin-bottom: 0.25rem;
+}
+
+.admin-srv-samagri-count svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  stroke: currentColor;
 }
 
 .admin-srv-card-actions {
@@ -711,6 +761,13 @@ body.admin-page-body {
   transition: all 0.2s ease;
 }
 
+.admin-action-btn-edit svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  stroke: currentColor;
+}
+
 .admin-action-btn-edit:hover {
   background: #FEF3C7;
   border-color: #F59E0B;
@@ -732,6 +789,13 @@ body.admin-page-body {
   justify-content: center;
   gap: 0.4rem;
   transition: all 0.2s ease;
+}
+
+.admin-action-btn-del svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  stroke: currentColor;
 }
 
 .admin-action-btn-del:hover {
@@ -800,6 +864,13 @@ body.admin-page-body {
   border: 1px solid #FDE68A;
   border-radius: 9999px;
   box-shadow: 0 2px 6px rgba(245, 158, 11, 0.15);
+}
+
+.admin-fieldset-legend svg {
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+  stroke: currentColor;
 }
 
 .admin-form-group {

@@ -149,6 +149,12 @@ p {
   user-select: none;
 }
 
+.btn svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
 .btn:focus-visible {
   outline: 3px solid var(--color-saffron);
   outline-offset: 2px;
