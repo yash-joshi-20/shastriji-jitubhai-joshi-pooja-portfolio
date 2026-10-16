@@ -208,30 +208,62 @@
 
     </section>
 
-    <!-- ૨. સર્ચ અને કેટેગરી ફિલ્ટર સેક્શન -->
-    <section class="filter-section">
-      <div class="container">
-        <div class="search-box-wrapper">
-          <span class="search-icon">🔍</span>
-          <input type="text" id="searchInput" class="search-input" placeholder="પૂજાનું નામ અથવા સામગ્રી અહીં શોધો (દા.ત. સત્યનારાયણ, સોપારી, કંકુ)..." autocomplete="off">
+    <!-- ૨. સર્ચ બેનર સેક્શન (Search Banner Section) -->
+    <section class="search-banner-section" id="filterSection">
+      <div class="search-banner-container">
+        <div class="search-banner-card">
+          <div class="search-banner-left">
+            <h2 class="search-banner-title">પૂજા સામગ્રી શોધો</h2>
+            <p class="search-banner-desc">તમને જરૂરી પૂજા સામગ્રી વિશે માહિતી સરળતાથી શોધો.</p>
+            <form class="search-form" id="searchBannerForm" onsubmit="return false;">
+              <div class="search-input-wrap">
+                <span class="search-input-icon" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                  </svg>
+                </span>
+                <input type="text" id="searchInput" class="search-input-field" placeholder="પૂજા સામગ્રીનું નામ લખો..." autocomplete="off">
+              </div>
+              <button type="button" id="searchSubmitBtn" class="search-submit-btn" aria-label="શોધો">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <span>શોધો</span>
+              </button>
+            </form>
+          </div>
+          <div class="search-banner-right">
+            <img src="assets/images/search-samagri-thali.png" alt="પૂજા સામગ્રી થાળી અને પવિત્ર દીવા" class="search-banner-img" loading="lazy">
+          </div>
         </div>
-
-        <div class="category-pills" id="categoryPills">
-          <!-- Dynamically populated categories -->
-        </div>
+        <div class="category-pills" id="categoryPills" style="display: none;"></div>
       </div>
     </section>
 
-    <!-- ૩. પૂજા સર્વિસીસ ગ્રીડ સેક્શન -->
-    <section class="services-section">
-      <div class="container">
-        <div class="section-header">
-          <span class="section-subtitle">પવિત્ર વિધિઓ અને પૂજાપો</span>
-          <h2 class="section-title">શાસ્ત્રીજી દ્વારા સંપન્ન થતી પૂજા સેવાઓ</h2>
+    <!-- ૩. અમારી પૂજા સેવાઓ સેક્શન (Our Pooja Services Section) -->
+    <section class="services-section" id="servicesSection">
+      <div class="services-container">
+        <div class="services-header-wrapper">
+          <div class="sacred-flourish-heading">
+            <span class="flourish-line-ornament" aria-hidden="true">
+              <span class="flourish-line"></span>
+              <span class="flourish-symbol">❖</span>
+              <span class="flourish-line"></span>
+            </span>
+            <h2 class="services-heading-text">અમારી પૂજા સેવાઓ</h2>
+            <span class="flourish-line-ornament" aria-hidden="true">
+              <span class="flourish-line"></span>
+              <span class="flourish-symbol">❖</span>
+              <span class="flourish-line"></span>
+            </span>
+          </div>
+          <p class="services-heading-subtitle">વિવિધ ધાર્મિક પૂજા વિધિઓ માટે માર્ગદર્શન અને સેવા</p>
         </div>
 
         <div class="services-grid" id="servicesGrid">
-          <!-- Dynamically populated pooja cards -->
+          <!-- Dynamically populated 8 pooja cards matching reference image -->
         </div>
       </div>
     </section>

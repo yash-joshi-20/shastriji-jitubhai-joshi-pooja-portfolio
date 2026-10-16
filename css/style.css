@@ -707,214 +707,429 @@ button.hero-feature-card {
 }
 
 /* સર્ચ & ફિલ્ટર વિભાગ (Search & Filter Section) */
-.filter-section {
-  padding: 1.5rem 15px 2rem;
-  background: rgba(254, 243, 199, 0.4);
-  border-top: 1px solid var(--color-border-light);
-  border-bottom: 1px solid var(--color-border-light);
-  margin-bottom: 2.5rem;
-}
-
-.search-box-wrapper {
-  max-width: 650px;
-  margin: 0 auto 1.25rem;
-  position: relative;
-}
-
-.search-input {
+/* =====================================================================
+   ૨. સર્ચ બેનર સેક્શન (Search Banner Section - Full Width Responsive)
+   ===================================================================== */
+.search-banner-section {
   width: 100%;
-  min-height: 52px;
-  padding: 0.75rem 1.25rem 0.75rem 3.25rem;
+  padding: 2.5rem 1.5rem;
+  background: transparent;
+}
+
+.search-banner-container {
+  width: 100%;
+  max-width: 1360px;
+  margin: 0 auto;
+}
+
+.search-banner-card {
+  background: linear-gradient(110deg, #FAF2E4 0%, #F6E6D0 50%, #EED9BD 100%);
+  border: 1px solid #EAD8C1;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(139, 30, 15, 0.05);
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  overflow: hidden;
+  position: relative;
+  min-height: 190px;
+}
+
+.search-banner-left {
+  flex: 1 1 58%;
+  padding: 2.25rem 2.75rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  z-index: 2;
+}
+
+.search-banner-title {
   font-family: var(--font-gujarati);
-  font-size: 1.05rem;
-  color: var(--color-text-main);
-  background: #FFFFFF;
-  border: 2px solid var(--color-border-ornate);
-  border-radius: var(--radius-full);
-  box-shadow: 0 4px 14px rgba(139, 30, 15, 0.08);
-  outline: none;
-  transition: all var(--transition-fast);
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: #8B1E0F;
+  margin: 0 0 0.35rem 0;
+  line-height: 1.25;
 }
 
-.search-input:focus {
-  border-color: var(--color-maroon);
-  box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.25);
+.search-banner-desc {
+  font-family: var(--font-gujarati);
+  font-size: 1rem;
+  color: #5D4336;
+  margin: 0 0 1.25rem 0;
+  font-weight: 500;
 }
 
-.search-icon {
+.search-form {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 580px;
+}
+
+.search-input-wrap {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.search-input-icon {
   position: absolute;
-  left: 1.25rem;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 1.25rem;
-  color: var(--color-saffron-dark);
+  left: 1rem;
+  color: #8C786E;
+  display: flex;
+  align-items: center;
   pointer-events: none;
 }
 
-.category-pills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.65rem;
-  justify-content: center;
-}
-
-.cat-pill {
-  min-height: 42px;
-  padding: 0.45rem 1.15rem;
-  border-radius: var(--radius-full);
+.search-input-field {
+  width: 100%;
+  height: 48px;
+  border-radius: 10px;
+  border: 1.5px solid #E2D2BD;
+  background: #FFFFFF;
+  padding: 0.5rem 1rem 0.5rem 2.75rem;
   font-family: var(--font-gujarati);
   font-size: 0.95rem;
-  font-weight: 600;
-  background: #FFFFFF;
-  color: var(--color-text-sub);
-  border: 1px solid var(--color-border-light);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  user-select: none;
+  color: #2C1810;
+  outline: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
 }
 
-.cat-pill:hover {
-  background: var(--color-turmeric);
-  border-color: var(--color-saffron);
-  color: var(--color-maroon);
+.search-input-field:focus {
+  border-color: #8B1E0F;
+  box-shadow: 0 0 0 3px rgba(139, 30, 15, 0.15);
 }
 
-.cat-pill.active {
-  background: linear-gradient(135deg, var(--color-maroon), var(--color-maroon-dark));
+.search-input-field::placeholder {
+  color: #9C8A7F;
+  font-family: var(--font-gujarati);
+}
+
+.search-submit-btn {
+  height: 48px;
+  padding: 0 1.6rem;
+  background: #8B1E0F;
   color: #FFFFFF;
-  border-color: var(--color-maroon-dark);
-  box-shadow: 0 4px 12px rgba(139, 30, 15, 0.25);
-}
-
-/* પૂજા સર્વિસીસ ગ્રીડ (Services Grid) */
-.services-section {
-  padding: 0 15px 4rem;
-}
-
-.section-header {
-  text-align: center;
-  margin-bottom: 2.25rem;
-}
-
-.section-subtitle {
-  font-size: 0.95rem;
+  border: none;
+  border-radius: 10px;
+  font-family: var(--font-gujarati);
+  font-size: 1rem;
   font-weight: 700;
-  color: var(--color-saffron-dark);
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 3px 10px rgba(139, 30, 15, 0.25);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
-.section-title {
-  font-size: 2rem;
-  color: var(--color-maroon);
-  margin-top: 0.25rem;
+.search-submit-btn:hover {
+  background: #6D1408;
+  transform: translateY(-1px);
+  box-shadow: 0 5px 14px rgba(139, 30, 15, 0.35);
+}
+
+.search-submit-btn:active {
+  transform: translateY(0);
+}
+
+.search-banner-right {
+  flex: 1 1 42%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+  min-height: 190px;
+}
+
+.search-banner-img {
+  width: auto;
+  height: 100%;
+  max-height: 220px;
+  object-fit: cover;
+  object-position: right center;
+  display: block;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.8) 18%, black 100%);
+  mask-image: linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.8) 18%, black 100%);
+}
+
+/* =====================================================================
+   ૩. અમારી પૂજા સેવાઓ સેક્શન (Services Grid - Reference Matched)
+   ===================================================================== */
+.services-section {
+  width: 100%;
+  padding: 2.5rem 1.5rem 5rem;
+}
+
+.services-container {
+  width: 100%;
+  max-width: 1360px;
+  margin: 0 auto;
+}
+
+.services-header-wrapper {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.sacred-flourish-heading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  margin-bottom: 0.35rem;
+}
+
+.flourish-line-ornament {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: #D97706;
+}
+
+.flourish-line {
+  display: inline-block;
+  width: 48px;
+  height: 1.5px;
+  background: #D97706;
+}
+
+.flourish-symbol {
+  font-size: 1.05rem;
+  color: #D97706;
+  line-height: 1;
+}
+
+.services-heading-text {
+  font-family: var(--font-gujarati);
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: #8B1E0F;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.services-heading-subtitle {
+  font-family: var(--font-gujarati);
+  font-size: 0.95rem;
+  color: #6B5B53;
+  margin: 0;
+  font-weight: 500;
 }
 
 .services-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  width: 100%;
 }
 
-.service-card {
+/* Reference Card Design */
+.service-ref-card {
+  background: #FFFFFF;
+  border: 1px solid #EFE6D9;
+  border-radius: 14px;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  height: 100%;
-}
-
-.service-thumb-box {
+  cursor: pointer;
+  transition: transform 0.25s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+  box-shadow: 0 2px 8px rgba(44, 24, 16, 0.04);
   position: relative;
-  width: 100%;
-  height: 220px;
-  overflow: hidden;
-  background: var(--color-turmeric);
+  text-align: left;
 }
 
-.service-thumb-img {
+.service-ref-card:hover {
+  border-color: #E2CBB0;
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px rgba(139, 30, 15, 0.09);
+}
+
+.service-ref-card:focus-visible {
+  outline: none;
+  border-color: #8B1E0F;
+  box-shadow: 0 0 0 3px rgba(139, 30, 15, 0.2);
+}
+
+.service-ref-thumb-wrap {
+  width: 100%;
+  height: 165px;
+  overflow: hidden;
+  background: #FFF9F0;
+  position: relative;
+}
+
+.service-ref-thumb-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform var(--transition-smooth);
+  object-position: center;
+  transition: transform 0.35s ease;
+  display: block;
 }
 
-.service-card:hover .service-thumb-img {
+.service-ref-card:hover .service-ref-thumb-img {
   transform: scale(1.05);
 }
 
-.service-cat-tag {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  background: rgba(139, 30, 15, 0.9);
-  color: #FFFFFF;
-  padding: 0.3rem 0.75rem;
-  border-radius: var(--radius-full);
-  font-size: 0.8rem;
-  font-weight: 700;
-  backdrop-filter: blur(4px);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-}
-
-.service-badge-tag {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  background: rgba(245, 158, 11, 0.95);
-  color: #3B1209;
-  padding: 0.3rem 0.75rem;
-  border-radius: var(--radius-full);
-  font-size: 0.8rem;
-  font-weight: 800;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-}
-
-.service-body {
-  padding: 1.5rem;
+.service-ref-body {
+  padding: 1.15rem 1.25rem 1.25rem;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
 }
 
-.service-title {
-  font-size: 1.35rem;
+.service-ref-title {
+  font-family: var(--font-gujarati);
+  font-size: 1.22rem;
   font-weight: 800;
-  color: var(--color-maroon);
-  margin-bottom: 0.5rem;
-  line-height: 1.35;
+  color: #8B1E0F;
+  margin: 0 0 0.3rem 0;
+  line-height: 1.3;
 }
 
-.service-dakshina {
+.service-ref-subtitle {
+  font-family: var(--font-gujarati);
+  font-size: 0.85rem;
+  color: #78716C;
+  margin: 0 0 1rem 0;
+  font-weight: 500;
+}
+
+.service-ref-action {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+}
+
+.service-ref-link {
+  font-family: var(--font-gujarati);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #8B1E0F;
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  font-size: 0.9rem;
+  gap: 0.45rem;
+  transition: color 0.2s ease;
+}
+
+.service-ref-arrow {
+  display: inline-block;
+  transition: transform 0.25s ease;
+  font-size: 1.05rem;
+}
+
+.service-ref-card:hover .service-ref-arrow {
+  transform: translateX(5px);
+}
+
+/* Empty search state */
+.services-empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 3.5rem 1.5rem;
+  background: #FFFFFF;
+  border-radius: 14px;
+  border: 2px dashed #E2D2BD;
+}
+
+.services-empty-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.services-empty-title {
+  font-size: 1.35rem;
+  color: #8B1E0F;
+  margin-bottom: 0.35rem;
+  font-family: var(--font-gujarati);
   font-weight: 700;
-  color: var(--color-saffron-dark);
-  background: var(--color-turmeric);
-  padding: 0.25rem 0.65rem;
-  border-radius: 6px;
-  margin-bottom: 1rem;
-  width: fit-content;
 }
 
-.service-snippet {
+.services-empty-desc {
+  color: #6B5B53;
   font-size: 0.95rem;
-  color: var(--color-text-sub);
-  line-height: 1.6;
-  margin-bottom: 1.5rem;
-  flex-grow: 1;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  font-family: var(--font-gujarati);
 }
 
-.service-footer {
-  margin-top: auto;
+/* =====================================================================
+   મીડિયા ક્વેરીઝ (Responsive Breakpoints for Search & Services)
+   ===================================================================== */
+@media (max-width: 1180px) {
+  .services-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+  .search-banner-left {
+    padding: 2rem 2.25rem;
+  }
 }
 
-.service-footer .btn {
-  width: 100%;
+@media (max-width: 860px) {
+  .services-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.15rem;
+  }
+  .search-banner-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .search-banner-left {
+    padding: 1.75rem 1.5rem 1.25rem;
+  }
+  .search-banner-right {
+    min-height: 150px;
+    height: 160px;
+    justify-content: center;
+  }
+  .search-banner-img {
+    max-height: 160px;
+    width: 100%;
+    object-fit: cover;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.8) 20%, black 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.8) 20%, black 100%);
+  }
+}
+
+@media (max-width: 580px) {
+  .services-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .search-banner-section {
+    padding: 1.5rem 1rem;
+  }
+  .services-section {
+    padding: 1.5rem 1rem 3.5rem;
+  }
+  .search-banner-title {
+    font-size: 1.5rem;
+  }
+  .search-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .search-submit-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .sacred-flourish-heading {
+    gap: 0.5rem;
+  }
+  .flourish-line {
+    width: 28px;
+  }
+  .services-heading-text {
+    font-size: 1.55rem;
+  }
 }
 
 /* પેમ્ફ્લેટ અને ડિટેલ મોડલ (Service Detail & Pamphlet Generator Modal) */

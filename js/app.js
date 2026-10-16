@@ -177,12 +177,43 @@ class App {
   }
 
   bindEvents() {
-    // Search input
+    // Search input & button
     const searchInput = document.getElementById('searchInput');
-    if (searchInput) {
-      searchInput.addEventListener('input', (e) => {
-        this.searchQuery = e.target.value.toLowerCase().trim();
+    const searchSubmitBtn = document.getElementById('searchSubmitBtn');
+    const searchBannerForm = document.getElementById('searchBannerForm');
+
+    const executeSearch = () => {
+      if (searchInput) {
+        this.searchQuery = searchInput.value.toLowerCase().trim();
         this.filterAndRenderServices();
+      }
+    };
+
+    if (searchInput) {
+      searchInput.addEventListener('input', () => {
+        executeSearch();
+      });
+    }
+
+    const scrollToServicesAndSearch = () => {
+      executeSearch();
+      const servicesSec = document.getElementById('servicesSection');
+      if (servicesSec) {
+        servicesSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    };
+
+    if (searchSubmitBtn) {
+      searchSubmitBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        scrollToServicesAndSearch();
+      });
+    }
+
+    if (searchBannerForm) {
+      searchBannerForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        scrollToServicesAndSearch();
       });
     }
 
@@ -336,45 +367,56 @@ class App {
 
     if (filtered.length === 0) {
       grid.innerHTML = `
-        <div style="grid-column: 1 / -1; text-align: center; padding: 3rem 1rem; background: #FFFFFF; border-radius: 12px; border: 2px dashed var(--color-border-ornate);">
-          <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🔍</div>
-          <h3 style="color: var(--color-maroon); font-size: 1.35rem;">કોઈ પૂજા કે સામગ્રી મળી નથી</h3>
-          <p style="color: var(--color-text-sub); margin-top: 0.5rem;">કૃપા કરીને અન્ય નામ અથવા વિભાગ શોધો.</p>
+        <div class="services-empty-state">
+          <div class="services-empty-icon">🔍</div>
+          <h3 class="services-empty-title">કોઈ પૂજા કે સામગ્રી મળી નથી</h3>
+          <p class="services-empty-desc">કૃપા કરીને અન્ય નામ અથવા સામગ્રી શોધો.</p>
+          <button type="button" class="btn btn-primary" id="resetServicesSearchBtn" style="margin-top: 1rem;">
+            બધી પૂજા સેવાઓ દર્શાવો
+          </button>
         </div>
       `;
+      document.getElementById('resetServicesSearchBtn')?.addEventListener('click', () => {
+        const input = document.getElementById('searchInput');
+        if (input) input.value = '';
+        this.searchQuery = '';
+        this.filterAndRenderServices();
+      });
       return;
     }
 
     grid.innerHTML = filtered.map(service => `
-      <article class="card service-card">
-        <div class="service-thumb-box">
-          <img src="${service.thumbnailUrl || 'assets/images/satyanarayan-card.jpg'}" alt="${service.title}" class="service-thumb-img" loading="lazy">
-          <span class="service-cat-tag">${service.category}</span>
-          ${service.badge ? `<span class="service-badge-tag">${service.badge}</span>` : ''}
+      <article class="service-ref-card" data-id="${service.id}" tabindex="0" role="button" aria-label="${service.title} - વધુ માહિતી મેળવો">
+        <div class="service-ref-thumb-wrap">
+          <img src="${service.thumbnailUrl || 'assets/images/card-ganesh.png'}" alt="${service.title}" class="service-ref-thumb-img" loading="lazy">
         </div>
-        <div class="service-body">
-          <h3 class="service-title">${service.title}</h3>
-          <div class="service-dakshina">
-            <span>🪙</span> <span>${service.price || 'દક્ષિણા માટે સંપર્ક કરો'}</span>
-          </div>
-          <div class="service-snippet">
-            <strong>મુખ્ય પૂજાપો:</strong> ${service.pujapo || 'સંપૂર્ણ સામગ્રી માટે પેમ્ફ્લેટ જુઓ.'}
-          </div>
-          <div class="service-footer">
-            <button class="btn btn-primary open-pamphlet-btn" data-id="${service.id}">
-              📜 પૂજાપો અને સંપૂર્ણ વિગત જુઓ ➔
-            </button>
+        <div class="service-ref-body">
+          <h3 class="service-ref-title">${service.title}</h3>
+          <p class="service-ref-subtitle">${service.subtitle || 'વિધિવત પૂજા માર્ગદર્શિકા'}</p>
+          <div class="service-ref-action">
+            <span class="service-ref-link">
+              <span>વધુ માહિતી</span>
+              <span class="service-ref-arrow" aria-hidden="true">➔</span>
+            </span>
           </div>
         </div>
       </article>
     `).join('');
 
-    grid.querySelectorAll('.open-pamphlet-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const id = e.currentTarget.dataset.id;
+    grid.querySelectorAll('.service-ref-card').forEach(card => {
+      const openModalForCard = () => {
+        const id = card.dataset.id;
         const service = this.services.find(s => s.id === id);
         if (service) {
           this.openPamphletModal(service);
+        }
+      };
+
+      card.addEventListener('click', openModalForCard);
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openModalForCard();
         }
       });
     });
