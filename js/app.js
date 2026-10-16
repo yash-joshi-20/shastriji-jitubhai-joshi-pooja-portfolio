@@ -3,7 +3,7 @@
  * Gujarati UI Logic, Search, Filters & Pamphlet Modal Rendering
  */
 
-import { db } from './db.js';
+import { db, resolveDeityImage } from './db.js';
 import { CATEGORIES, toGujaratiNumber } from './data.js';
 import { ICONS } from './icons.js';
 import { adminPanel } from './admin.js';
@@ -17,7 +17,7 @@ class App {
     this.searchQuery = "";
     this.activePamphletService = null;
     this.currentPage = 1;
-    this.itemsPerPage = 10;
+    this.itemsPerPage = 'all'; // બધી પૂજાઓ એકસાથે દર્શાવો જેથી કોઈપણ પૂજા છૂટી ન જાય
   }
 
   async init() {
@@ -529,10 +529,12 @@ class App {
     const endIndex = Math.min(startIndex + effectivePerPage, totalFiltered);
     const paginatedList = filtered.slice(startIndex, endIndex);
 
-    grid.innerHTML = paginatedList.map(service => `
+    grid.innerHTML = paginatedList.map(service => {
+      const thumb = service.thumbnailUrl || resolveDeityImage(service.title, service.category);
+      return `
       <article class="service-ref-card" data-id="${service.id}" tabindex="0" role="button" aria-label="${service.title} - વધુ માહિતી મેળવો">
         <div class="service-ref-thumb-wrap">
-          <img src="${service.thumbnailUrl || 'assets/images/card-ganesh.png'}" alt="${service.title}" class="service-ref-thumb-img" loading="lazy">
+          <img src="${thumb}" alt="${service.title}" class="service-ref-thumb-img" loading="lazy" onerror="this.src='assets/icons/gemini-svg.svg'">
         </div>
         <div class="service-ref-body">
           <h3 class="service-ref-title">${service.title}</h3>
@@ -545,7 +547,8 @@ class App {
           </div>
         </div>
       </article>
-    `).join('');
+    `;
+    }).join('');
 
     grid.querySelectorAll('.service-ref-card').forEach(card => {
       const openModalForCard = () => {

@@ -47,6 +47,25 @@ function writeJson(filePath, data) {
   }
 }
 
+// Disable caching on all API endpoints so updates reflect immediately
+app.use('/api', (req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  next();
+});
+
+// 0. Server Status Endpoint
+app.get('/api/status', (req, res) => {
+  const services = readJson(SERVICES_FILE, []);
+  const profile = readJson(PROFILE_FILE, {});
+  res.json({
+    status: 'ok',
+    servicesCount: services.length,
+    profileName: profile.name || 'શાસ્ત્રીજી જીતેન્દ્ર જોષી'
+  });
+});
+
 // ================= API ENDPOINTS ================= //
 
 // 1. Get all Pooja services

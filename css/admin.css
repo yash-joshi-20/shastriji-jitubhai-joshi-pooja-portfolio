@@ -1709,3 +1709,75 @@ textarea.admin-form-input {
     padding: 0.4rem 0.55rem;
   }
 }
+
+/* પવિત્ર દેવ ફોટો પસંદગી ગેલેરી (Sacred Deity Photo Selector) */
+.deity-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.65rem;
+  margin-bottom: 1.25rem;
+}
+
+.deity-gallery-card {
+  background: #FFFDF9;
+  border: 2px solid #EAD8C2;
+  border-radius: 12px;
+  padding: 0.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.deity-gallery-card:hover {
+  transform: translateY(-2px);
+  border-color: #D97706;
+  background: #FEF3C7;
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.18);
+}
+
+.deity-gallery-card.active {
+  border-color: #8B1E0F;
+  background: #FEF3C7;
+  box-shadow: 0 0 0 3px rgba(139, 30, 15, 0.25);
+}
+
+.deity-gallery-card.active::before {
+  content: "✓ પસંદ થયેલ";
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  background: #8B1E0F;
+  color: #FFFFFF;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 0;
+  text-align: center;
+  z-index: 2;
+}
+
+.deity-gallery-thumb {
+  width: 100%;
+  aspect-ratio: 3/2;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #E2D0BA;
+  background: #FFF;
+}
+
+.deity-gallery-name {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #8B1E0F;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}

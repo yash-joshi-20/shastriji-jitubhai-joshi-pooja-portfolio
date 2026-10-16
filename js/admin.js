@@ -3,7 +3,7 @@
  * દિવ્ય ધાર્મિક થીમ, 100% શુદ્ધ ગુજરાતી ભાષામાં સંપૂર્ણ લાઈવ સંચાલન
  */
 
-import { db } from './db.js';
+import { db, DEITY_GALLERY, resolveDeityImage } from './db.js';
 import { CATEGORIES, DEFAULT_COMMON_SAMAGRI, toGujaratiNumber } from './data.js';
 import { ICONS } from './icons.js';
 import { mountCardGenerator } from './card-generator.js';
@@ -417,7 +417,7 @@ class AdminPanel {
         ` : paginatedServices.map(item => `
           <div class="admin-service-card" data-id="${item.id}">
             <div class="admin-srv-thumb-wrap">
-              <img src="${item.thumbnailUrl || 'assets/images/card-ganesh.png'}" alt="${item.title}" class="admin-srv-thumb" loading="lazy">
+              <img src="${item.thumbnailUrl || resolveDeityImage(item.title, item.category)}" alt="${item.title}" class="admin-srv-thumb" loading="lazy" onerror="this.src='assets/icons/gemini-svg.svg'">
             </div>
             <div class="admin-srv-info">
               <div class="admin-srv-title-row">
@@ -620,19 +620,39 @@ class AdminPanel {
             </button>
           </div>
 
+          <!-- પવિત્ર દેવ ફોટો પસંદ કરો (૧-ક્લિક ઓટો-મેચ ગેલેરી) -->
+          <div class="form-group" style="margin-top: 1rem;">
+            <label class="form-label" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.25rem;">
+              <span>પવિત્ર દેવ ફોટો પસંદ કરો (૧-ક્લિક)</span>
+              <span style="font-size: 0.8rem; color: #15803D; font-weight: 700;">✓ પૂજાના નામ મુજબ આપમેળે સેટ થાય છે</span>
+            </label>
+            <div class="deity-gallery-grid" id="modalDeityGalleryGrid">
+              ${DEITY_GALLERY.map(d => {
+                const currentThumb = service?.thumbnailUrl || '';
+                const isMatch = (currentThumb === d.url) || (!currentThumb && (service?.title ? resolveDeityImage(service.title, service.category) === d.url : d.id === 'ganesh'));
+                return `
+                  <div class="deity-gallery-card ${isMatch ? 'active' : ''}" data-url="${d.url}" data-id="${d.id}" role="button" tabindex="0" title="${d.name} પસંદ કરો">
+                    <img src="${d.url}" alt="${d.name}" class="deity-gallery-thumb" onerror="this.src='assets/icons/gemini-svg.svg'">
+                    <div class="deity-gallery-name">${d.icon} ${d.name}</div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+
           <!-- ફોટો અપલોડ અને પ્રીવ્યૂ -->
           <div class="form-group" style="margin-top: 1rem;">
-            <label class="form-label">પૂજાનો મુખ્ય ફોટો (Thumbnail Image)</label>
+            <label class="form-label">અથવા નવો ફોટો અપલોડ કરો (Thumbnail Image)</label>
             <input type="file" accept="image/*" class="form-control" id="fImageFile" style="padding: 0.5rem;">
 
-            <div id="imagePreviewBox" class="admin-photo-preview-box" style="display: ${service?.thumbnailUrl ? 'flex' : 'none'};">
-              <img id="imgPreviewThumb" src="${service?.thumbnailUrl || ''}" alt="પ્રીવ્યૂ" class="admin-photo-thumb">
+            <div id="imagePreviewBox" class="admin-photo-preview-box" style="display: flex; align-items: center; gap: 0.85rem; margin-top: 0.75rem;">
+              <img id="imgPreviewThumb" src="${service?.thumbnailUrl || resolveDeityImage(service?.title || 'ગણેશ પૂજા', service?.category || 'ધાર્મિક પૂજા')}" alt="પ્રીવ્યૂ" class="admin-photo-thumb" style="width: 80px; height: 55px; object-fit: cover; border-radius: 8px; border: 2px solid #F59E0B;" onerror="this.src='assets/icons/gemini-svg.svg'">
               <div>
                 <div id="imgPreviewStatus" class="photo-preview-status" style="display:inline-flex;align-items:center;gap:0.35rem;">
                   ${ICONS.check}
                   <span>મુખ્ય ફોટો સેટ થયેલ છે</span>
                 </div>
-                <div id="imgPreviewMeta" class="photo-preview-meta">સાચવવા પર આ ફોટો વેબસાઈટ પર દર્શાવાશે</div>
+                <div id="imgPreviewMeta" class="photo-preview-meta">સાચવવા પર આ ફોટો વેબસાઈટ પર લાઈવ દર્શાવાશે</div>
               </div>
             </div>
           </div>
@@ -709,8 +729,43 @@ class AdminPanel {
       this.renderDashboard('services');
     });
 
-    // Track user-generated canvas image
+    // Track user-selected deity image or generated canvas image
+    let selectedDeityUrl = service?.thumbnailUrl || (isEdit ? '' : resolveDeityImage(initialTitle, initialCategory));
     let selectedGeneratedImage = null;
+
+    // Helper to auto-match deity card on title input
+    const updateAutoDeityMatch = (titleText) => {
+      if (!titleText) return;
+      const autoUrl = resolveDeityImage(titleText, fCategoryEl?.value || '');
+      if (autoUrl) {
+        selectedDeityUrl = autoUrl;
+        document.querySelectorAll('#modalDeityGalleryGrid .deity-gallery-card').forEach(c => {
+          if (c.dataset.url === autoUrl) {
+            c.classList.add('active');
+          } else {
+            c.classList.remove('active');
+          }
+        });
+        const previewThumb = document.getElementById('imgPreviewThumb');
+        if (previewThumb && !selectedGeneratedImage) {
+          previewThumb.src = autoUrl;
+        }
+      }
+    };
+
+    // Wire Deity Gallery Cards
+    document.querySelectorAll('#modalDeityGalleryGrid .deity-gallery-card').forEach(card => {
+      card.addEventListener('click', () => {
+        document.querySelectorAll('#modalDeityGalleryGrid .deity-gallery-card').forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+        selectedDeityUrl = card.dataset.url;
+        selectedGeneratedImage = null;
+        const previewThumb = document.getElementById('imgPreviewThumb');
+        if (previewThumb) {
+          previewThumb.src = selectedDeityUrl;
+        }
+      });
+    });
 
     // Mount Auspicious Canvas Card Generator
     const cardGenHandle = mountCardGenerator(
@@ -735,14 +790,24 @@ class AdminPanel {
       }
     );
 
-    // Sync Title input with live card generator
+    // Sync Title input with live card generator & deity auto-match
     const fTitleEl = document.getElementById('fTitle');
     const fCategoryEl = document.getElementById('fCategory');
-    if (fTitleEl && cardGenHandle) {
-      fTitleEl.addEventListener('input', (e) => cardGenHandle.setTitle(e.target.value));
+    if (fTitleEl) {
+      fTitleEl.addEventListener('input', (e) => {
+        if (cardGenHandle) cardGenHandle.setTitle(e.target.value);
+        if (!isEdit || !service?.thumbnailUrl) {
+          updateAutoDeityMatch(e.target.value);
+        }
+      });
     }
-    if (fCategoryEl && cardGenHandle) {
-      fCategoryEl.addEventListener('change', (e) => cardGenHandle.setCategory(e.target.value));
+    if (fCategoryEl) {
+      fCategoryEl.addEventListener('change', (e) => {
+        if (cardGenHandle) cardGenHandle.setCategory(e.target.value);
+        if (fTitleEl && (!isEdit || !service?.thumbnailUrl)) {
+          updateAutoDeityMatch(fTitleEl.value);
+        }
+      });
     }
 
     // Wire Scanner Button
@@ -752,6 +817,7 @@ class AdminPanel {
           if (scanned.title) {
             fTitleEl.value = scanned.title;
             if (cardGenHandle) cardGenHandle.setTitle(scanned.title);
+            updateAutoDeityMatch(scanned.title);
           }
           if (scanned.category) {
             fCategoryEl.value = scanned.category;
@@ -778,12 +844,15 @@ class AdminPanel {
       }
 
       try {
-        let imageUrl = service?.thumbnailUrl || 'assets/images/card-ganesh.png';
+        const titleVal = document.getElementById('fTitle').value.trim();
+        const catVal = document.getElementById('fCategory').value;
+        let imageUrl = selectedDeityUrl || service?.thumbnailUrl || resolveDeityImage(titleVal, catVal);
+
         const fileInput = document.getElementById('fImageFile');
         if (fileInput.files && fileInput.files[0]) {
           imageUrl = await db.uploadImage(fileInput.files[0]);
         } else if (selectedGeneratedImage) {
-          const safeTitle = (document.getElementById('fTitle').value.trim() || 'pooja').replace(/[^a-zA-Z0-9\u0A80-\u0AFF]/g, '_');
+          const safeTitle = (titleVal || 'pooja').replace(/[^a-zA-Z0-9\u0A80-\u0AFF]/g, '_');
           imageUrl = await db.uploadImage(selectedGeneratedImage, `card_${safeTitle}_${Date.now()}.jpg`);
         }
 
@@ -794,9 +863,9 @@ class AdminPanel {
           : (service?.keywords || []);
 
         const data = {
-          title: document.getElementById('fTitle').value.trim(),
+          title: titleVal,
           englishTitle: document.getElementById('fEnglishTitle').value.trim(),
-          category: document.getElementById('fCategory').value,
+          category: catVal,
           price: document.getElementById('fPrice').value.trim() || 'દક્ષિણા માટે સંપર્ક કરો',
           badge: document.getElementById('fBadge').value.trim() || 'સાત્વિક સંસ્કાર',
           thumbnailUrl: imageUrl,
@@ -814,6 +883,17 @@ class AdminPanel {
         } else {
           await db.addService(data);
           this.showToast('નવી પૂજા સફળતાપૂર્વક ઉમેરવામાં આવી!');
+        }
+
+        // Broadcast instant live synchronization across open tabs/windows
+        if (window.BroadcastChannel) {
+          try {
+            const channel = new BroadcastChannel('shastriji_pooja_sync');
+            channel.postMessage({ type: 'services_updated', timestamp: Date.now() });
+            channel.close();
+          } catch (e) {
+            console.log('BroadcastChannel sync:', e);
+          }
         }
 
         if (this.onDataChangeCallback) this.onDataChangeCallback();
