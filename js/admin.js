@@ -4,7 +4,7 @@
  */
 
 import { db } from './db.js';
-import { CATEGORIES, DEFAULT_COMMON_SAMAGRI } from './data.js';
+import { CATEGORIES, DEFAULT_COMMON_SAMAGRI, toGujaratiNumber } from './data.js';
 import { ICONS } from './icons.js';
 import { mountCardGenerator } from './card-generator.js';
 import { openScannerModal } from './image-scanner.js';
@@ -15,6 +15,8 @@ class AdminPanel {
     this.editingServiceId = null;
     this.onDataChangeCallback = null;
     this.adminSearchFilter = '';
+    this.currentPage = 1;
+    this.itemsPerPage = 10;
   }
 
   init(onDataChange) {
@@ -289,6 +291,106 @@ class AdminPanel {
       return;
     }
 
+    // Pagination calculations
+    const totalFiltered = services.length;
+    const effectivePerPage = this.itemsPerPage === 'all' ? totalFiltered : parseInt(this.itemsPerPage, 10);
+    const totalPages = Math.max(1, Math.ceil(totalFiltered / effectivePerPage));
+
+    if (this.currentPage > totalPages) this.currentPage = totalPages;
+    if (this.currentPage < 1) this.currentPage = 1;
+
+    const startIndex = (this.currentPage - 1) * effectivePerPage;
+    const endIndex = Math.min(startIndex + effectivePerPage, totalFiltered);
+    const paginatedServices = services.slice(startIndex, endIndex);
+
+    // Build pagination HTML
+    let paginationHtml = '';
+    if (totalFiltered > 0) {
+      const startNum = toGujaratiNumber(startIndex + 1);
+      const endNum = toGujaratiNumber(endIndex);
+      const totalNum = toGujaratiNumber(totalFiltered);
+      const currentPageNum = toGujaratiNumber(this.currentPage);
+      const totalPagesNum = toGujaratiNumber(totalPages);
+
+      let pages = [];
+      if (totalPages <= 6) {
+        for (let i = 1; i <= totalPages; i++) pages.push(i);
+      } else {
+        if (this.currentPage <= 3) {
+          pages = [1, 2, 3, 4, '...', totalPages];
+        } else if (this.currentPage >= totalPages - 2) {
+          pages = [1, '...', totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
+        } else {
+          pages = [1, '...', this.currentPage - 1, this.currentPage, this.currentPage + 1, '...', totalPages];
+        }
+      }
+
+      const numbersHtml = pages.map(p => {
+        if (p === '...') {
+          return `<span class="pagination-ellipsis" aria-hidden="true">…</span>`;
+        }
+        const isActive = p === this.currentPage;
+        return `
+          <button type="button" class="pagination-btn ${isActive ? 'active' : ''}" data-page="${p}" aria-label="પેજ ${toGujaratiNumber(p)}" ${isActive ? 'aria-current="page"' : ''}>
+            ${toGujaratiNumber(p)}
+          </button>
+        `;
+      }).join('');
+
+      const isFirstPage = this.currentPage <= 1;
+      const isLastPage = this.currentPage >= totalPages;
+
+      paginationHtml = `
+        <div class="admin-pagination-container" style="margin-top: 1rem;">
+          <nav class="sacred-pagination-bar" aria-label="એડમિન પૂજા યાદી પેજીનેશન નેવિગેશન">
+            <div class="pagination-meta-info">
+              <span>કુલ <strong>${totalNum}</strong> પૂજાઓમાંથી <strong>${startNum}</strong> થી <strong>${endNum}</strong></span>
+              <span class="pagination-page-badge">પેજ ${currentPageNum} / ${totalPagesNum}</span>
+            </div>
+
+            ${totalPages > 1 ? `
+              <div class="pagination-controls-row">
+                <button type="button" class="pagination-btn pagination-btn-nav" data-page="1" title="પ્રથમ પેજ" aria-label="પ્રથમ પેજ" ${isFirstPage ? 'disabled' : ''}>
+                  ${ICONS.chevronsLeft}
+                  <span class="pagination-btn-label">પ્રથમ</span>
+                </button>
+
+                <button type="button" class="pagination-btn pagination-btn-nav" data-page="${this.currentPage - 1}" title="અગાઉનું પેજ" aria-label="અગાઉનું પેજ" ${isFirstPage ? 'disabled' : ''}>
+                  ${ICONS.arrowLeft}
+                  <span class="pagination-btn-label">અગાઉ</span>
+                </button>
+
+                <div class="pagination-numbers-wrap">
+                  ${numbersHtml}
+                </div>
+
+                <button type="button" class="pagination-btn pagination-btn-nav" data-page="${this.currentPage + 1}" title="આગળનું પેજ" aria-label="આગળનું પેજ" ${isLastPage ? 'disabled' : ''}>
+                  <span class="pagination-btn-label">આગળ</span>
+                  ${ICONS.arrowRight}
+                </button>
+
+                <button type="button" class="pagination-btn pagination-btn-nav" data-page="${totalPages}" title="છેલ્લું પેજ" aria-label="છેલ્લું પેજ" ${isLastPage ? 'disabled' : ''}>
+                  <span class="pagination-btn-label">છેલ્લું</span>
+                  ${ICONS.chevronsRight}
+                </button>
+              </div>
+            ` : ''}
+
+            <div class="pagination-per-page-wrap">
+              <label for="adminModalPerPageSelect" class="pagination-per-page-label">પ્રતિ પેજ:</label>
+              <select id="adminModalPerPageSelect" class="pagination-per-page-select" aria-label="પ્રતિ પેજ પૂજાઓની સંખ્યા પસંદ કરો">
+                <option value="6" ${this.itemsPerPage === 6 || this.itemsPerPage === '6' ? 'selected' : ''}>૬ પૂજાઓ (ટેસ્ટ)</option>
+                <option value="10" ${this.itemsPerPage === 10 || this.itemsPerPage === '10' ? 'selected' : ''}>૧૦ પૂજાઓ</option>
+                <option value="15" ${this.itemsPerPage === 15 || this.itemsPerPage === '15' ? 'selected' : ''}>૧૫ પૂજાઓ</option>
+                <option value="25" ${this.itemsPerPage === 25 || this.itemsPerPage === '25' ? 'selected' : ''}>૨૫ પૂજાઓ</option>
+                <option value="all" ${this.itemsPerPage === 'all' ? 'selected' : ''}>બધી પૂજાઓ</option>
+              </select>
+            </div>
+          </nav>
+        </div>
+      `;
+    }
+
     container.innerHTML = `
       <div class="admin-services-top-bar">
         <div class="admin-search-wrap">
@@ -312,7 +414,7 @@ class AdminPanel {
             <p>‘${query}’ નામે કોઈ પૂજા મળી નથી.</p>
             <button class="btn btn-outline" id="clearAdminFilterBtn" style="margin-top: 0.5rem;">બધી પૂજાઓ દર્શાવો</button>
           </div>
-        ` : services.map(item => `
+        ` : paginatedServices.map(item => `
           <div class="admin-service-card" data-id="${item.id}">
             <div class="admin-srv-thumb-wrap">
               <img src="${item.thumbnailUrl || 'assets/images/card-ganesh.png'}" alt="${item.title}" class="admin-srv-thumb" loading="lazy">
@@ -322,7 +424,7 @@ class AdminPanel {
                 <h4 class="admin-srv-title">${item.title}</h4>
                 <span class="admin-srv-category-pill">${item.category}</span>
               </div>
-              <div class="admin-srv-subtitle">${item.subtitle || 'વિધિવત પૂજા માર્ગદર્શિકા'} • ${item.price || 'દક્ષિણા માટે સંપર્ક કરો'}</div>
+              <div class="admin-srv-subtitle">${item.subtitle || 'વિધિવત પૂજા માગર્દર્શિકા'} • ${item.price || 'દક્ષિણા માટે સંપર્ક કરો'}</div>
               <div class="admin-srv-badge-tag">
                 <span style="color:#D97706; display:inline-flex; align-items:center;">${ICONS.star}</span> <span>${item.badge || 'સાત્વિક વિધાન'}</span>
                 ${item.englishTitle ? `<span class="admin-srv-en-tag">En: ${item.englishTitle}</span>` : ''}
@@ -341,6 +443,8 @@ class AdminPanel {
           </div>
         `).join('')}
       </div>
+
+      ${paginationHtml}
     `;
 
     // Live search input handling
@@ -348,16 +452,41 @@ class AdminPanel {
     if (searchInput) {
       searchInput.addEventListener('input', (e) => {
         this.adminSearchFilter = e.target.value;
+        this.currentPage = 1;
         this.renderServicesList();
       });
     }
 
     document.getElementById('clearAdminFilterBtn')?.addEventListener('click', () => {
       this.adminSearchFilter = '';
+      this.currentPage = 1;
       this.renderServicesList();
     });
 
     document.getElementById('addNewServiceTopBtn')?.addEventListener('click', () => this.renderAddEditForm(null));
+
+    // Wire pagination buttons
+    container.querySelectorAll('button[data-page]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const targetPage = parseInt(e.currentTarget.dataset.page, 10);
+        if (!isNaN(targetPage) && targetPage >= 1 && targetPage <= totalPages && targetPage !== this.currentPage) {
+          this.currentPage = targetPage;
+          this.renderServicesList();
+          container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+
+    // Wire per page select
+    const perPageSelect = document.getElementById('adminModalPerPageSelect');
+    if (perPageSelect) {
+      perPageSelect.addEventListener('change', (e) => {
+        const val = e.target.value;
+        this.itemsPerPage = val === 'all' ? 'all' : parseInt(val, 10);
+        this.currentPage = 1;
+        this.renderServicesList();
+      });
+    }
 
     container.querySelectorAll('.edit-srv-btn').forEach(btn => {
       btn.addEventListener('click', async (e) => {

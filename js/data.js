@@ -212,3 +212,13 @@ export const DEFAULT_COMMON_SAMAGRI = {
   price: "દક્ષિણા માટે સંપર્ક કરો",
   badge: "ધાર્મિક પૂજા વિધાન"
 };
+
+/**
+ * અંગ્રેજી અંકોને શુદ્ધ ગુજરાતી અંકોમાં રૂપાંતરિત કરવાનું હેલ્પર ફંક્શન
+ * દા.ત. 15 -> '૧૫'
+ */
+export function toGujaratiNumber(num) {
+  if (num === null || num === undefined) return '';
+  const gujaratiDigits = ['૦', '૧', '૨', '૩', '૪', '૫', '૬', '૭', '૮', '૯'];
+  return String(num).replace(/[0-9]/g, (d) => gujaratiDigits[d]);
+}

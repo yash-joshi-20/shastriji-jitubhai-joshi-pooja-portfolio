@@ -4,7 +4,8 @@
  */
 
 import { db } from './db.js';
-import { CATEGORIES } from './data.js';
+import { CATEGORIES, toGujaratiNumber } from './data.js';
+import { ICONS } from './icons.js';
 import { adminPanel } from './admin.js';
 import { downloadPamphletAsImage, downloadPamphletAsPDF, shareOnWhatsApp } from './pamphlet-export.js';
 
@@ -15,6 +16,8 @@ class App {
     this.activeCategory = "બધી વિધિઓ";
     this.searchQuery = "";
     this.activePamphletService = null;
+    this.currentPage = 1;
+    this.itemsPerPage = 10;
   }
 
   async init() {
@@ -170,6 +173,7 @@ class App {
         container.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
         e.currentTarget.classList.add('active');
         this.activeCategory = e.currentTarget.dataset.cat;
+        this.currentPage = 1;
         this.filterAndRenderServices();
       });
     });
@@ -184,6 +188,7 @@ class App {
     const executeSearch = () => {
       if (searchInput) {
         this.searchQuery = searchInput.value.toLowerCase().trim();
+        this.currentPage = 1;
         this.filterAndRenderServices();
       }
     };
@@ -489,6 +494,9 @@ class App {
     });
 
     if (filtered.length === 0) {
+      const paginationContainer = document.getElementById('servicesPaginationContainer');
+      if (paginationContainer) paginationContainer.innerHTML = '';
+
       grid.innerHTML = `
         <div class="services-empty-state">
           <div class="services-empty-icon">🔍</div>
@@ -503,12 +511,25 @@ class App {
         const input = document.getElementById('searchInput');
         if (input) input.value = '';
         this.searchQuery = '';
+        this.currentPage = 1;
         this.filterAndRenderServices();
       });
       return;
     }
 
-    grid.innerHTML = filtered.map(service => `
+    // Pagination calculations
+    const totalFiltered = filtered.length;
+    const effectivePerPage = this.itemsPerPage === 'all' ? totalFiltered : parseInt(this.itemsPerPage, 10);
+    const totalPages = Math.max(1, Math.ceil(totalFiltered / effectivePerPage));
+
+    if (this.currentPage > totalPages) this.currentPage = totalPages;
+    if (this.currentPage < 1) this.currentPage = 1;
+
+    const startIndex = (this.currentPage - 1) * effectivePerPage;
+    const endIndex = Math.min(startIndex + effectivePerPage, totalFiltered);
+    const paginatedList = filtered.slice(startIndex, endIndex);
+
+    grid.innerHTML = paginatedList.map(service => `
       <article class="service-ref-card" data-id="${service.id}" tabindex="0" role="button" aria-label="${service.title} - વધુ માહિતી મેળવો">
         <div class="service-ref-thumb-wrap">
           <img src="${service.thumbnailUrl || 'assets/images/card-ganesh.png'}" alt="${service.title}" class="service-ref-thumb-img" loading="lazy">
@@ -543,6 +564,125 @@ class App {
         }
       });
     });
+
+    // Render pagination controls
+    this.renderPagination(totalFiltered, totalPages, startIndex, endIndex, effectivePerPage);
+  }
+
+  renderPagination(totalItems, totalPages, startIndex, endIndex, effectivePerPage) {
+    const container = document.getElementById('servicesPaginationContainer');
+    if (!container) return;
+
+    const startNum = toGujaratiNumber(startIndex + 1);
+    const endNum = toGujaratiNumber(endIndex);
+    const totalNum = toGujaratiNumber(totalItems);
+    const currentPageNum = toGujaratiNumber(this.currentPage);
+    const totalPagesNum = toGujaratiNumber(totalPages);
+
+    // Build page number sequence
+    let pages = [];
+    if (totalPages <= 6) {
+      for (let i = 1; i <= totalPages; i++) pages.push(i);
+    } else {
+      if (this.currentPage <= 3) {
+        pages = [1, 2, 3, 4, '...', totalPages];
+      } else if (this.currentPage >= totalPages - 2) {
+        pages = [1, '...', totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
+      } else {
+        pages = [1, '...', this.currentPage - 1, this.currentPage, this.currentPage + 1, '...', totalPages];
+      }
+    }
+
+    const numbersHtml = pages.map(p => {
+      if (p === '...') {
+        return `<span class="pagination-ellipsis" aria-hidden="true">…</span>`;
+      }
+      const isActive = p === this.currentPage;
+      return `
+        <button type="button" class="pagination-btn ${isActive ? 'active' : ''}" data-page="${p}" aria-label="પેજ ${toGujaratiNumber(p)}" ${isActive ? 'aria-current="page"' : ''}>
+          ${toGujaratiNumber(p)}
+        </button>
+      `;
+    }).join('');
+
+    const isFirstPage = this.currentPage <= 1;
+    const isLastPage = this.currentPage >= totalPages;
+
+    container.innerHTML = `
+      <nav class="sacred-pagination-bar" aria-label="પૂજા સેવાઓ પેજીનેશન નેવિગેશન">
+        <div class="pagination-meta-info">
+          <span>કુલ <strong>${totalNum}</strong> પૂજાઓમાંથી <strong>${startNum}</strong> થી <strong>${endNum}</strong></span>
+          <span class="pagination-page-badge">પેજ ${currentPageNum} / ${totalPagesNum}</span>
+        </div>
+
+        ${totalPages > 1 ? `
+          <div class="pagination-controls-row">
+            <button type="button" class="pagination-btn pagination-btn-nav" data-page="1" title="પ્રથમ પેજ" aria-label="પ્રથમ પેજ" ${isFirstPage ? 'disabled' : ''}>
+              ${ICONS.chevronsLeft}
+              <span class="pagination-btn-label">પ્રથમ</span>
+            </button>
+
+            <button type="button" class="pagination-btn pagination-btn-nav" data-page="${this.currentPage - 1}" title="અગાઉનું પેજ" aria-label="અગાઉનું પેજ" ${isFirstPage ? 'disabled' : ''}>
+              ${ICONS.arrowLeft}
+              <span class="pagination-btn-label">અગાઉ</span>
+            </button>
+
+            <div class="pagination-numbers-wrap">
+              ${numbersHtml}
+            </div>
+
+            <button type="button" class="pagination-btn pagination-btn-nav" data-page="${this.currentPage + 1}" title="આગળનું પેજ" aria-label="આગળનું પેજ" ${isLastPage ? 'disabled' : ''}>
+              <span class="pagination-btn-label">આગળ</span>
+              ${ICONS.arrowRight}
+            </button>
+
+            <button type="button" class="pagination-btn pagination-btn-nav" data-page="${totalPages}" title="છેલ્લું પેજ" aria-label="છેલ્લું પેજ" ${isLastPage ? 'disabled' : ''}>
+              <span class="pagination-btn-label">છેલ્લું</span>
+              ${ICONS.chevronsRight}
+            </button>
+          </div>
+        ` : ''}
+
+        <div class="pagination-per-page-wrap">
+          <label for="servicesPerPageSelect" class="pagination-per-page-label">પ્રતિ પેજ:</label>
+          <select id="servicesPerPageSelect" class="pagination-per-page-select" aria-label="પ્રતિ પેજ પૂજાઓની સંખ્યા પસંદ કરો">
+            <option value="6" ${this.itemsPerPage === 6 || this.itemsPerPage === '6' ? 'selected' : ''}>૬ પૂજાઓ (ટેસ્ટ)</option>
+            <option value="10" ${this.itemsPerPage === 10 || this.itemsPerPage === '10' ? 'selected' : ''}>૧૦ પૂજાઓ</option>
+            <option value="12" ${this.itemsPerPage === 12 || this.itemsPerPage === '12' ? 'selected' : ''}>૧૨ પૂજાઓ</option>
+            <option value="15" ${this.itemsPerPage === 15 || this.itemsPerPage === '15' ? 'selected' : ''}>૧૫ પૂજાઓ</option>
+            <option value="25" ${this.itemsPerPage === 25 || this.itemsPerPage === '25' ? 'selected' : ''}>૨૫ પૂજાઓ</option>
+            <option value="all" ${this.itemsPerPage === 'all' ? 'selected' : ''}>બધી પૂજાઓ</option>
+          </select>
+        </div>
+      </nav>
+    `;
+
+    // Wire page buttons
+    container.querySelectorAll('button[data-page]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const targetPage = parseInt(e.currentTarget.dataset.page, 10);
+        if (!isNaN(targetPage) && targetPage >= 1 && targetPage <= totalPages && targetPage !== this.currentPage) {
+          this.currentPage = targetPage;
+          this.filterAndRenderServices();
+          const targetSection = document.getElementById('services') || document.getElementById('servicesSection');
+          if (targetSection) {
+            targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }
+      });
+    });
+
+    // Wire per-page select
+    const perPageSelect = document.getElementById('servicesPerPageSelect');
+    if (perPageSelect) {
+      perPageSelect.addEventListener('change', (e) => {
+        const val = e.target.value;
+        this.itemsPerPage = val === 'all' ? 'all' : parseInt(val, 10);
+        this.currentPage = 1;
+        this.filterAndRenderServices();
+      });
+    }
+  }
   }
 
   openPamphletModal(service) {
