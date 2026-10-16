@@ -4,6 +4,8 @@
  * ઉચ્ચ-રિઝોલ્યુશન (1200x800) પવિત્ર ધાર્મિક કાર્ડ બનાવે છે
  */
 
+import { ICONS } from './icons.js';
+
 export class SacredCardGenerator {
   constructor(canvas) {
     this.canvas = canvas;
@@ -257,7 +259,8 @@ export class SacredCardGenerator {
     // Draw symbol inside medallion
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.font = 'bold 74px "Noto Sans Gujarati", serif';
+    const symFontSize = symbol.length > 2 ? 42 : (symbol.length > 1 ? 52 : 74);
+    ctx.font = `bold ${symFontSize}px "Noto Sans Gujarati", serif`;
     ctx.fillStyle = isLight ? '#8B1E0F' : '#671207';
     ctx.shadowColor = 'rgba(255, 255, 255, 0.4)';
     ctx.shadowBlur = 4;
@@ -438,7 +441,7 @@ export function mountCardGenerator(containerEl, { initialTitle = '', initialCate
     <div class="card-generator-box" style="background: #FFFDF7; border: 2px solid var(--color-border-ornate); border-radius: var(--radius-md); padding: 1.25rem; margin-top: 0.75rem;">
       <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem;">
         <div style="display: flex; align-items: center; gap: 0.5rem;">
-          <span style="font-size: 1.4rem;">🎨</span>
+          <span style="display: inline-flex; align-items: center; color: var(--color-maroon);">${ICONS.palette}</span>
           <div>
             <div style="font-weight: 800; color: var(--color-maroon); font-size: 1.05rem;">દિવ્ય પૂજા કાર્ડ ઈમેજ જનરેટર (AI વગર)</div>
             <div style="font-size: 0.85rem; color: var(--color-text-sub);">પૂજા માટે પવિત્ર હાઈ-રિઝોલ્યુશન બેનર કાર્ડ ૧-ક્લિકમાં બનાવો</div>
@@ -450,29 +453,29 @@ export function mountCardGenerator(containerEl, { initialTitle = '', initialCate
       </div>
 
       <!-- Controls Grid -->
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem; margin-bottom: 1rem;">
+      <div class="card-gen-controls-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem; margin-bottom: 1rem;">
         <div>
           <label style="display: block; font-size: 0.85rem; font-weight: 700; color: var(--color-maroon); margin-bottom: 0.25rem;">૧. શૈલી (થીમ)</label>
-          <select id="genThemeSelect" class="form-control" style="min-height: 40px; font-size: 0.9rem;">
-            <option value="maroon" selected>👑 કંકુ-કેસરી સુવર્ણ દરબાર</option>
-            <option value="saffron">🌅 સૂર્યોદય કેસરિયું તેજ</option>
-            <option value="sandalwood">🪔 પવિત્ર ચંદન-સુવર્ણ આભા</option>
+          <select id="genThemeSelect" class="form-control" style="min-height: 40px; font-size: 0.9rem; width: 100%;">
+            <option value="maroon" selected>કંકુ-કેસરી સુવર્ણ દરબાર</option>
+            <option value="saffron">સૂર્યોદય કેસરિયું તેજ</option>
+            <option value="sandalwood">પવિત્ર ચંદન-સુવર્ણ આભા</option>
           </select>
         </div>
 
         <div>
           <label style="display: block; font-size: 0.85rem; font-weight: 700; color: var(--color-maroon); margin-bottom: 0.25rem;">૨. પવિત્ર પ્રતીક</label>
-          <select id="genSymbolSelect" class="form-control" style="min-height: 40px; font-size: 0.9rem;">
+          <select id="genSymbolSelect" class="form-control" style="min-height: 40px; font-size: 0.9rem; width: 100%;">
             <option value="ॐ" selected>ॐ (પવિત્ર ૐ પ્રતીક)</option>
             <option value="卐">卐 (મંગળ સ્વસ્તિક)</option>
-            <option value="🪔">🪔 (દિવ્ય દીપક / દીવો)</option>
-            <option value="🛕">🛕 (પવિત્ર મંદિર / કળશ)</option>
+            <option value="શ્રી">શ્રી (દિવ્ય શ્રીજી)</option>
+            <option value="લાભ">લાભ (શુભ લાભ)</option>
           </select>
         </div>
 
         <div>
           <label style="display: block; font-size: 0.85rem; font-weight: 700; color: var(--color-maroon); margin-bottom: 0.25rem;">૩. કાર્ડ શીર્ષક</label>
-          <input type="text" id="genTitleInput" class="form-control" style="min-height: 40px; font-size: 0.9rem;" value="${initialTitle || 'જય શ્રી સત્યનારાયણ દેવ પૂજા'}" placeholder="પૂજાનું નામ">
+          <input type="text" id="genTitleInput" class="form-control" style="min-height: 40px; font-size: 0.9rem; width: 100%;" value="${initialTitle || 'જય શ્રી સત્યનારાયણ દેવ પૂજા'}" placeholder="પૂજાનું નામ">
         </div>
       </div>
 
@@ -481,13 +484,15 @@ export function mountCardGenerator(containerEl, { initialTitle = '', initialCate
         <canvas id="sacredCardCanvas" style="width: 100%; height: auto; display: block; aspect-ratio: 3/2;"></canvas>
       </div>
 
-      <!-- Action Buttons -->
-      <div style="display: flex; gap: 0.65rem; flex-wrap: wrap;">
-        <button type="button" class="btn btn-primary" id="genApplyToFormBtn" style="flex: 2; min-height: 46px; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
-          <span>✅</span> <span>આ ઈમેજને પૂજાનો મુખ્ય ફોટો બનાવો</span>
+      <!-- Action Buttons (Responsive Row / Column) -->
+      <div class="card-gen-actions-row">
+        <button type="button" class="card-gen-btn card-gen-btn-apply" id="genApplyToFormBtn">
+          ${ICONS.check}
+          <span>આ ઈમેજને પૂજાનો મુખ્ય ફોટો બનાવો</span>
         </button>
-        <button type="button" class="btn btn-outline" id="genDownloadBtn" style="flex: 1; min-height: 46px; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; gap: 0.4rem;">
-          <span>📥</span> <span>ડાઉનલોડ કરો</span>
+        <button type="button" class="card-gen-btn card-gen-btn-download" id="genDownloadBtn">
+          ${ICONS.download}
+          <span>ડાઉનલોડ કરો</span>
         </button>
       </div>
     </div>
@@ -522,14 +527,14 @@ export function mountCardGenerator(containerEl, { initialTitle = '', initialCate
   applyBtn.addEventListener('click', async () => {
     applyBtn.disabled = true;
     const oldText = applyBtn.innerHTML;
-    applyBtn.innerHTML = '<span>⏳</span> <span>ફોટો જોડી રહ્યા છીએ...</span>';
+    applyBtn.innerHTML = `<span>ફોટો જોડી રહ્યા છીએ...</span>`;
 
     try {
       const dataUrl = generator.toDataURL('image/jpeg', 0.92);
       if (typeof onSetImage === 'function') {
         await onSetImage(dataUrl);
       }
-      applyBtn.innerHTML = '<span>✨</span> <span>મુખ્ય ફોટો સફળતાપૂર્વક જોડાયો!</span>';
+      applyBtn.innerHTML = `${ICONS.check} <span>મુખ્ય ફોટો સફળતાપૂર્વક જોડાયો!</span>`;
       setTimeout(() => {
         applyBtn.disabled = false;
         applyBtn.innerHTML = oldText;

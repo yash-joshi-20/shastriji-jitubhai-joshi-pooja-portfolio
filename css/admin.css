@@ -1054,7 +1054,79 @@ textarea.admin-form-input {
   color: #6B5446;
 }
 
-/* ૧૧. રિસ્પોન્સિવ મીડિયા ક્વેરીઝ (Responsive Breakpoints) */
+/* ૧૧. કેનવાસ કાર્ડ જનરેટર રિસ્પોન્સિવ સ્ટાઇલ */
+.card-generator-box {
+  background: #FFFDF7;
+  border: 2px solid #EAD8C2;
+  border-radius: 14px;
+  padding: 1.25rem;
+  margin-top: 0.75rem;
+}
+
+.card-gen-controls-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.card-gen-actions-row {
+  display: flex;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.card-gen-btn {
+  min-height: 48px;
+  font-family: var(--font-gujarati);
+  font-weight: 700;
+  border-radius: 12px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.15rem;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.card-gen-btn svg {
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+}
+
+.card-gen-btn-apply {
+  flex: 2;
+  background: linear-gradient(135deg, #8B1E0F 0%, #631006 100%);
+  color: #FFFFFF;
+  border: 1px solid #D97706;
+  font-size: 0.95rem;
+  box-shadow: 0 4px 14px rgba(139, 30, 15, 0.25);
+}
+
+.card-gen-btn-apply:hover {
+  background: linear-gradient(135deg, #D97706 0%, #B45309 100%);
+  transform: translateY(-1px);
+}
+
+.card-gen-btn-download {
+  flex: 1;
+  background: #FFFFFF;
+  color: #8B1E0F;
+  border: 1.5px solid #E2D0BA;
+  font-size: 0.92rem;
+}
+
+.card-gen-btn-download:hover {
+  background: #FEF3C7;
+  border-color: #D97706;
+  color: #8B1E0F;
+}
+
+/* ૧૨. રિસ્પોન્સિવ મીડિયા ક્વેરીઝ (Mobile-First Comprehensive Responsive Breakpoints) */
+
 @media (max-width: 1024px) {
   .admin-metrics-ribbon {
     grid-template-columns: repeat(2, 1fr);
@@ -1067,41 +1139,377 @@ textarea.admin-form-input {
   }
 }
 
-@media (max-width: 640px) {
-  .admin-full-topbar-inner {
-    padding: 0.75rem 1rem;
-  }
-  .admin-brand-title {
-    font-size: 1.05rem;
-  }
+@media (max-width: 768px) {
   .admin-full-main {
-    padding: 1rem 1rem 3rem;
+    padding: 1rem 0.85rem 3rem;
   }
-  .admin-metrics-ribbon {
-    grid-template-columns: 1fr;
-    gap: 0.75rem;
+  .admin-view-header-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.85rem;
+    padding: 1rem;
+  }
+  .admin-search-wrap,
+  .admin-search-input,
+  .admin-filter-select,
+  .admin-view-header-bar .admin-btn-primary {
+    width: 100%;
   }
   .admin-services-grid {
     grid-template-columns: 1fr;
+    gap: 1rem;
   }
+}
+
+@media (max-width: 640px) {
+  /* ૧. હેડર રિસ્પોન્સિવ લેઆઉટ (Zero Overflow Header) */
+  .admin-full-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .admin-full-topbar-inner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.65rem;
+    padding: 0.65rem 0.85rem;
+  }
+
+  .admin-brand-group {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+  }
+
+  .admin-logo-ring {
+    width: 42px;
+    height: 42px;
+    padding: 2px;
+  }
+
+  .admin-brand-mantra {
+    font-size: 0.7rem;
+    letter-spacing: 0.3px;
+  }
+
+  .admin-brand-title {
+    font-size: 1.05rem;
+    line-height: 1.25;
+  }
+
+  .admin-brand-tag {
+    font-size: 0.68rem;
+    padding: 0.1rem 0.45rem;
+    margin-top: 0.1rem;
+  }
+
+  .admin-header-actions {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.4rem;
+    flex-wrap: nowrap;
+  }
+
+  .admin-server-status-pill {
+    font-size: 0.74rem;
+    padding: 0.35rem 0.55rem;
+    white-space: nowrap;
+    flex: 1;
+    justify-content: center;
+  }
+
+  .admin-view-site-link {
+    font-size: 0.78rem;
+    padding: 0.35rem 0.65rem;
+    white-space: nowrap;
+    flex: 1;
+    justify-content: center;
+  }
+
+  .admin-top-logout-btn {
+    font-size: 0.78rem;
+    padding: 0.35rem 0.65rem;
+    white-space: nowrap;
+  }
+
+  /* ૨. ટોપ મેટ્રિક્સ કાર્ડ્સ (Compact 2x2 Grid) */
+  .admin-metrics-ribbon {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.65rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .admin-metric-card {
+    padding: 0.75rem 0.65rem;
+    gap: 0.55rem;
+    border-radius: 12px;
+  }
+
+  .admin-metric-icon {
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+    border-radius: 10px;
+  }
+
+  .admin-metric-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .admin-metric-value {
+    font-size: 1.15rem;
+    line-height: 1.15;
+  }
+
+  .admin-metric-label {
+    font-size: 0.75rem;
+    margin-top: 0.15rem;
+  }
+
+  /* ૩. નેવિગેશન ટેબ્સ બાર (Smooth Touch Scrolling) */
+  .admin-tabs-nav-bar {
+    gap: 0.45rem;
+    padding: 0.2rem 0.15rem 0.45rem;
+    margin-bottom: 1.25rem;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .admin-tab-nav-btn {
+    min-height: 42px;
+    padding: 0.45rem 0.85rem;
+    font-size: 0.88rem;
+    flex-shrink: 0;
+    border-radius: 10px;
+  }
+
+  .admin-tab-nav-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* ૪. પૂજા સર્વિસ કાર્ડ્સ */
   .admin-srv-card-new {
-    padding: 1rem;
+    padding: 1rem 0.85rem;
+    border-radius: 14px;
   }
+
+  .admin-srv-thumb-box {
+    width: 68px;
+    height: 68px;
+    min-width: 68px;
+    border-radius: 10px;
+  }
+
+  .admin-srv-title-text {
+    font-size: 1.05rem;
+  }
+
+  .admin-srv-card-actions {
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .admin-action-btn-edit {
+    flex: 1 1 calc(50% - 0.45rem);
+    min-height: 42px;
+    font-size: 0.85rem;
+  }
+
+  .admin-action-btn-del {
+    flex: 1 1 calc(50% - 0.45rem);
+    min-height: 42px;
+    font-size: 0.85rem;
+  }
+
+  /* ૫. ફોર્મ અને ફીલ્ડસેટ્સ */
   .admin-form-full-wrap {
+    padding: 1rem 0.75rem !important;
+    border-radius: 14px;
+  }
+
+  .admin-form-title-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.65rem;
+    padding-bottom: 0.85rem;
+    margin-bottom: 1.15rem;
+  }
+
+  .admin-form-title-bar button {
+    width: 100%;
+    justify-content: center;
+    min-height: 44px;
+  }
+
+  .admin-form-main-heading {
+    font-size: 1.25rem;
+  }
+
+  .admin-form-sub-heading {
+    font-size: 0.85rem;
+  }
+
+  .admin-fieldset-card {
+    padding: 0.95rem 0.75rem !important;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+  }
+
+  .admin-fieldset-legend {
+    font-size: 0.88rem;
+    padding: 0.3rem 0.75rem;
+  }
+
+  .admin-form-input {
+    min-height: 44px;
+    padding: 0.55rem 0.75rem;
+    font-size: 0.95rem;
+  }
+
+  .admin-form-row-2col,
+  .admin-form-row-3col {
+    grid-template-columns: 1fr !important;
+    gap: 0.75rem;
+  }
+
+  .admin-custom-file-dropzone {
+    padding: 1.15rem 0.75rem;
+    border-radius: 12px;
+  }
+
+  .admin-dropzone-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .admin-dropzone-title {
+    font-size: 0.9rem;
+  }
+
+  /* ૬. કેનવાસ કાર્ડ જનરેટર રિસ્પોન્સિવ */
+  .card-generator-box {
+    padding: 0.85rem 0.65rem !important;
+    border-radius: 12px;
+  }
+
+  .card-gen-controls-grid {
+    grid-template-columns: 1fr !important;
+    gap: 0.65rem;
+  }
+
+  .card-gen-actions-row {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .card-gen-btn {
+    width: 100% !important;
+    flex: 1 1 100% !important;
+    min-height: 48px;
+    justify-content: center;
+    white-space: normal;
+    text-align: center;
+    padding: 0.6rem 0.85rem;
+    font-size: 0.92rem;
+  }
+
+  #sacredCardCanvas {
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 3/2;
+  }
+
+  /* ૭. ફોર્મ બોટમ એક્શન બાર (Mobile Sticky & Touch-Friendly) */
+  .admin-form-actions-bottom-bar {
+    position: sticky;
+    bottom: 0;
+    background: #FFFFFF;
+    padding: 0.85rem 0.85rem;
+    margin: 1.25rem -0.75rem -0.75rem;
+    border-top: 2px solid #EAD8C2;
+    box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.08);
+    z-index: 40;
+    flex-direction: row;
+    gap: 0.65rem;
+    justify-content: space-between;
+  }
+
+  .admin-form-actions-bottom-bar button {
+    flex: 1;
+    min-height: 48px;
+    justify-content: center;
+    padding: 0.55rem 0.85rem;
+    font-size: 0.95rem;
+    white-space: nowrap;
+  }
+
+  /* ૮. પિન સ્ક્રીન */
+  .admin-pin-card {
+    padding: 2rem 1.15rem;
+    border-radius: 18px;
+  }
+
+  .admin-pin-title {
+    font-size: 1.35rem;
+  }
+
+  .admin-pin-boxes-row {
+    gap: 0.5rem;
+  }
+
+  .admin-pin-digit-input {
+    width: 52px;
+    height: 60px;
+    font-size: 1.6rem;
+  }
+
+  /* ૯. પ્રોફાઈલ અને પિન ચેન્જ */
+  .admin-profile-preview-card {
     padding: 1.25rem 1rem;
   }
-  .admin-fieldset-card {
-    padding: 1.15rem 0.85rem;
+
+  .admin-profile-avatar-circle {
+    width: 100px;
+    height: 100px;
   }
-  .admin-form-row-2col {
-    grid-template-columns: 1fr;
+
+  /* ૧૦. ફૂટર */
+  .admin-full-footer {
+    padding: 1.25rem 1rem;
+    font-size: 0.82rem;
   }
-  .admin-pin-card {
-    padding: 2rem 1.25rem;
+}
+
+@media (max-width: 380px) {
+  .admin-metrics-ribbon {
+    grid-template-columns: 1fr !important;
   }
+
   .admin-pin-digit-input {
-    width: 50px;
-    height: 58px;
-    font-size: 1.6rem;
+    width: 44px;
+    height: 52px;
+    font-size: 1.35rem;
+  }
+
+  .admin-header-actions {
+    flex-wrap: wrap;
+  }
+
+  .admin-server-status-pill,
+  .admin-view-site-link,
+  .admin-top-logout-btn {
+    flex: 1 1 100%;
+  }
+
+  .admin-form-actions-bottom-bar {
+    flex-direction: column-reverse;
+  }
+
+  .admin-form-actions-bottom-bar button {
+    width: 100%;
   }
 }
