@@ -223,7 +223,7 @@
                     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                   </svg>
                 </span>
-                <input type="text" id="searchInput" class="search-input-field" placeholder="પૂજા સામગ્રીનું નામ લખો..." autocomplete="off">
+                <input type="text" id="searchInput" class="search-input-field" placeholder="પૂજા અથવા સામગ્રી શોધો (દા.ત. સત્યનારાયણ, ગણેશ, Vastu, Havan)..." autocomplete="off">
               </div>
               <button type="button" id="searchSubmitBtn" class="search-submit-btn" aria-label="શોધો">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -270,9 +270,25 @@
   </main>
 
   <!-- ૪. સર્વિસ ડિટેલ અને પેમ્ફ્લેટ જનરેટર મોડલ -->
-  <div class="modal-overlay" id="pamphletModalOverlay" role="dialog" aria-modal="true" aria-labelledby="pamphletModalTitle">
+  <div class="modal-overlay" id="pamphletModalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTopTitle">
     <div class="modal-container">
-      <button class="modal-close-btn" id="pamphletCloseBtn" title="બંધ કરો">✕</button>
+      
+      <!-- મોડલ ટોપ બાર (Sticky Ornate Header) -->
+      <div class="modal-top-bar">
+        <div class="modal-top-title-group">
+          <span class="modal-top-om" aria-hidden="true">🕉️</span>
+          <div>
+            <div class="modal-top-badge" id="modalTopBadge">પૂજા વિગત અને સામગ્રી માર્ગદર્શિકા</div>
+            <h3 class="modal-top-title" id="modalTopTitle">સંપૂર્ણ પૂજા વિધાન</h3>
+          </div>
+        </div>
+        <button class="modal-close-btn" id="pamphletCloseBtn" title="બંધ કરો" aria-label="બંધ કરો">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
 
       <!-- ટ્રેડિશનલ ધાર્મિક પેમ્ફ્લેટ કેનવાસ (For display, PNG & PDF) -->
       <div id="pamphletCanvas" class="pamphlet-canvas-wrapper">
@@ -284,14 +300,17 @@
 
       <!-- ડાઉનલોડ & શેર એક્શન્સ બાર -->
       <div class="modal-actions-bar">
+        <a href="tel:+919925264929" class="btn btn-call" id="modalCallBtn">
+          <span>📞</span> <span>શાસ્ત્રીજીને કૉલ કરો</span>
+        </a>
+        <a href="#" target="_blank" class="btn btn-whatsapp" id="shareWhatsappBtn">
+          <span>📲</span> <span>WhatsApp પર પૂછપરછ</span>
+        </a>
         <button class="btn btn-primary" id="downloadImgBtn">
-          <span>🖼️</span> <span>ફોટો ડાઉનલોડ કરો (PNG)</span>
+          <span>🖼️</span> <span>ફોટો ડાઉનલોડ (PNG)</span>
         </button>
         <button class="btn btn-gold" id="downloadPdfBtn">
-          <span>📄</span> <span>PDF ડાઉનલોડ કરો (A4)</span>
-        </button>
-        <button class="btn btn-whatsapp" id="shareWhatsappBtn">
-          <span>📲</span> <span>WhatsApp પર શેર કરો</span>
+          <span>📄</span> <span>PDF ડાઉનલોડ (A4)</span>
         </button>
       </div>
     </div>

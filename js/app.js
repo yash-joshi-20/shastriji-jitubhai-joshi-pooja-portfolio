@@ -219,16 +219,26 @@ class App {
     // Modal close
     const modalOverlay = document.getElementById('pamphletModalOverlay');
     const modalCloseBtn = document.getElementById('pamphletCloseBtn');
-    if (modalCloseBtn && modalOverlay) {
-      modalCloseBtn.addEventListener('click', () => {
-        modalOverlay.classList.remove('active');
-      });
+    const closeModal = () => {
+      if (modalOverlay) modalOverlay.classList.remove('active');
+      document.body.style.overflow = '';
+    };
+
+    if (modalCloseBtn) {
+      modalCloseBtn.addEventListener('click', closeModal);
+    }
+    if (modalOverlay) {
       modalOverlay.addEventListener('click', (e) => {
-        if (e.target === modalOverlay) {
-          modalOverlay.classList.remove('active');
-        }
+        if (e.target === modalOverlay) closeModal();
       });
     }
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modalOverlay && modalOverlay.classList.contains('active')) {
+        closeModal();
+      }
+    });
 
     // Modal action buttons
     document.getElementById('downloadImgBtn')?.addEventListener('click', () => {
@@ -243,8 +253,9 @@ class App {
       }
     });
 
-    document.getElementById('shareWhatsappBtn')?.addEventListener('click', () => {
-      if (this.activePamphletService && this.profile) {
+    document.getElementById('shareWhatsappBtn')?.addEventListener('click', (e) => {
+      if (this.activePamphletService && this.profile && (!e.currentTarget.href || e.currentTarget.href.endsWith('#'))) {
+        e.preventDefault();
         shareOnWhatsApp(this.activePamphletService, this.profile);
       }
     });
@@ -352,15 +363,128 @@ class App {
     const grid = document.getElementById('servicesGrid');
     if (!grid) return;
 
+    // Bilingual search helper: Matches Gujarati and English phonetics, synonyms, and transliterations
+    const matchesBilingualSearch = (service, rawQuery) => {
+      if (!rawQuery) return true;
+      const q = rawQuery.toLowerCase().trim();
+      if (!q) return true;
+
+      // 1. All Gujarati text fields in service
+      const gujaratiCorpus = [
+        service.title || '',
+        service.subtitle || '',
+        service.category || '',
+        service.badge || '',
+        service.pujapo || '',
+        service.anajNaivedya || '',
+        service.taiyari || '',
+        service.notes || ''
+      ].join(' ').toLowerCase();
+
+      if (gujaratiCorpus.includes(q)) return true;
+
+      // 2. English title and keywords
+      const englishTitle = (service.englishTitle || '').toLowerCase();
+      if (englishTitle.includes(q)) return true;
+
+      const keywords = (service.keywords || []).map(k => k.toLowerCase());
+      if (keywords.some(k => k.includes(q) || q.includes(k))) return true;
+
+      // 3. Service ID and Predefined Service-Level Aliases
+      const SERVICE_ALIASES = {
+        'ganesh-puja': ['ganesh', 'ganesha', 'ganpati', 'ganapathi', 'ganeshji', 'vinayak', 'vighnaharta', 'pratham pujya', 'bappa', 'modak', 'ladu', 'laddu', 'durva', 'dharo', 'ગણેશ', 'ગણપતિ', 'વિનાયક', 'મોદક'],
+        'lakshmi-puja': ['lakshmi', 'laxmi', 'mahalakshmi', 'mahalaxmi', 'laxmi puja', 'lakshmi puja', 'laxmi pooja', 'dhan', 'samriddhi', 'diwali', 'dhanteras', 'kamal', 'lotus', 'shikka', 'chandi', 'લક્ષ્મી', 'ધનતેરસ', 'દિવાળી'],
+        'navgrah-puja': ['navgrah', 'navgraha', 'navagraha', 'graha', 'grah', 'grah shanti', 'graha dosh', 'grah dosh', 'shanti', 'havan', 'samidha', 'surya', 'chandra', 'mangal', 'budh', 'guru', 'shukra', 'shani', 'rahu', 'ketu', 'નવગ્રહ', 'ગ્રહ શાંતિ'],
+        'satyanarayan-puja': ['satyanarayan', 'satyanarayana', 'satya narayan', 'satynarayan', 'satyanarayan dev', 'satyanarayan dev ni katha', 'satyanarayan katha', 'satyanarayan pooja', 'satyanarayan puja', 'katha', 'vrat', 'udyapan', 'sheera', 'shiro', 'prasad', 'kel na pan', 'tulsi', 'banana leaves', 'panchamrut', 'સત્યનારાયણ', 'કથા', 'સત્યનારાયણ દેવની કથા', 'સત્યનારાયણ કથા', 'વ્રત', 'ઉદ્યાપન', 'શીરો', 'પ્રસાદ'],
+        'gruhpravesh-puja': ['vastu', 'vaastu', 'vastu shanti', 'vastu puja', 'vastu pooja', 'gruhpravesh', 'gruh pravesh', 'griha pravesh', 'house warming', 'new home', 'home', 'ghar', 'makan', 'toran', 'asopalav', 'yantra', 'વાસ્તુ', 'વાસ્તુ શાંતિ', 'ગૃહપ્રવેશ', 'નવું ઘર', 'મકાન'],
+        'havan-yajna': ['havan', 'hawan', 'yajna', 'yagya', 'homa', 'agnihotra', 'havan kund', 'samidha', 'ghee', 'guggal', 'loban', 'pavitra agni', 'હવન', 'યજ્ઞ', 'હોમ', 'અગ્નિહોત્ર', 'હવન કુંડ'],
+        'vivah-sanskar': ['vivah', 'vivaha', 'lagna', 'lagn', 'marriage', 'wedding', 'saptapadi', 'hastmelap', 'hast melap', 'var mala', 'varmala', 'mangalsutra', 'chheda chhedi', 'kansar', 'chori', 'kanyadaan', 'વિવાહ', 'લગ્ન', 'હસ્તમેળાપ', 'સપ્તપદી'],
+        'anya-pooja': ['rudra', 'rudrabhishek', 'rudrabhisheka', 'shiva', 'shiv', 'mahadev', 'bholenath', 'bilipatra', 'bili', 'gangajal', 'dudh', 'milk', 'kaalsarp', 'kal sarp', 'pitru', 'tarpan', 'shraddh', 'janoi', 'upanayan', 'sacred thread', 'shrimant', 'godh bharai', 'dharmaraja', 'surya', 'surya dev', 'રુદ્રાભિષેક', 'મહાદેવ', 'શિવ', 'કાળસર્પ', 'પિતૃતર્પણ', 'શ્રાદ્ધ', 'જનોઈ', 'સીમંત', 'સૂર્યદેવ', 'ધર્મરાજા']
+      };
+
+      const aliases = SERVICE_ALIASES[service.id] || [];
+      if (aliases.some(a => a.includes(q) || q.includes(a))) return true;
+
+      // 4. Samagri English Synonyms
+      const SAMAGRI_SYNONYMS = {
+        'coconut': ['શ્રીફળ', 'નાળિયેર'],
+        'shrifal': ['શ્રીફળ'],
+        'nariyal': ['શ્રીફળ'],
+        'sopari': ['સોપારી'],
+        'supari': ['સોપારી'],
+        'kanku': ['કંકુ'],
+        'kumkum': ['કંકુ'],
+        'sindoor': ['સિંદૂર', 'સિંદુર'],
+        'chaval': ['ચોખા', 'અક્ષત'],
+        'chokha': ['ચોખા', 'અક્ષત'],
+        'rice': ['ચોખા', 'અક્ષત'],
+        'akshat': ['ચોખા', 'અક્ષત'],
+        'wheat': ['ઘઉં'],
+        'ghau': ['ઘઉં'],
+        'gehu': ['ઘઉં'],
+        'modak': ['મોદક', 'લાડુ'],
+        'ladu': ['લાડુ', 'મોદક'],
+        'laddu': ['લાડુ', 'મોદક'],
+        'panchamrut': ['પંચામૃત'],
+        'panchamrit': ['પંચામૃત'],
+        'tulsi': ['તુલસી'],
+        'kapoor': ['કપૂર'],
+        'camphor': ['કપૂર'],
+        'agarbatti': ['અગરબત્તી'],
+        'incense': ['અગરબત્તી', 'ધૂપ'],
+        'dhoop': ['ધૂપ'],
+        'ghee': ['ઘી'],
+        'janoi': ['જનોઈ'],
+        'janeu': ['જનોઈ'],
+        'durva': ['દૂર્વા', 'ધરો'],
+        'dharo': ['દૂર્વા', 'ધરો'],
+        'asopalav': ['આસોપાલવ'],
+        'gangajal': ['ગંગાજળ']
+      };
+
+      if (SAMAGRI_SYNONYMS[q] && SAMAGRI_SYNONYMS[q].some(term => gujaratiCorpus.includes(term))) {
+        return true;
+      }
+
+      // 5. Multi-word phrase token matching (e.g. "satyanarayan dev ni katha")
+      const stopWords = new Set(['ni', 'no', 'nu', 'na', 'ne', 'ma', 'thi', 'ane', 'and', 'the', 'of', 'for', 'in', 'ki', 'ka', 'ke']);
+      const tokens = q.split(/[\s,+-]+/).filter(t => t.length > 1 && !stopWords.has(t));
+      if (tokens.length > 0) {
+        const matchesAnyToken = tokens.some(token => {
+          if (aliases.some(a => a.includes(token))) return true;
+          if (keywords.some(k => k.includes(token))) return true;
+          if (englishTitle.includes(token)) return true;
+          if (gujaratiCorpus.includes(token)) return true;
+          if (SAMAGRI_SYNONYMS[token] && SAMAGRI_SYNONYMS[token].some(term => gujaratiCorpus.includes(term))) return true;
+          return false;
+        });
+        if (matchesAnyToken) return true;
+      }
+
+      // 6. Transliteration phonetic matching
+      const charMap = {
+        'અ': 'a', 'આ': 'aa', 'ઇ': 'i', 'ઈ': 'ee', 'ઉ': 'u', 'ઊ': 'oo', 'ઋ': 'ri',
+        'એ': 'e', 'ઐ': 'ai', 'ઓ': 'o', 'ઔ': 'au', 'અં': 'an', 'અઃ': 'ah',
+        'ક': 'k', 'ખ': 'kh', 'ગ': 'g', 'ઘ': 'gh',
+        'ચ': 'ch', 'છ': 'chh', 'જ': 'j', 'ઝ': 'jh',
+        'ટ': 't', 'ઠ': 'th', 'ડ': 'd', 'ઢ': 'dh', 'ણ': 'n',
+        'ત': 't', 'થ': 'th', 'દ': 'd', 'ધ': 'dh', 'ન': 'n',
+        'પ': 'p', 'ફ': 'f', 'બ': 'b', 'ભ': 'bh', 'મ': 'm',
+        'ય': 'y', 'ર': 'r', 'લ': 'l', 'વ': 'v',
+        'શ': 'sh', 'ષ': 'sh', 'સ': 's', 'હ': 'h', 'ળ': 'l',
+        'ક્ષ': 'ksh', 'જ્ઞ': 'gn',
+        'ા': 'a', 'િ': 'i', 'ી': 'ee', 'ુ': 'u', 'ૂ': 'oo', 'ૃ': 'ri', 'ે': 'e', 'ૈ': 'ai', 'ો': 'o', 'ૌ': 'au', 'ં': 'n', 'ઃ': 'h', '્': ''
+      };
+      const latinCorpus = gujaratiCorpus.split('').map(c => charMap[c] || c).join('');
+      if (latinCorpus.includes(q)) return true;
+      if (tokens.length > 0 && tokens.some(t => latinCorpus.includes(t))) return true;
+
+      return false;
+    };
+
     const filtered = this.services.filter(s => {
       const matchesCat = this.activeCategory === "બધી વિધિઓ" || s.category === this.activeCategory;
-      const matchesSearch = !this.searchQuery || 
-        (s.title && s.title.toLowerCase().includes(this.searchQuery)) ||
-        (s.pujapo && s.pujapo.toLowerCase().includes(this.searchQuery)) ||
-        (s.anajNaivedya && s.anajNaivedya.toLowerCase().includes(this.searchQuery)) ||
-        (s.taiyari && s.taiyari.toLowerCase().includes(this.searchQuery)) ||
-        (s.category && s.category.toLowerCase().includes(this.searchQuery));
-
+      const matchesSearch = matchesBilingualSearch(s, this.searchQuery);
       return matchesCat && matchesSearch;
     });
 
@@ -369,7 +493,7 @@ class App {
         <div class="services-empty-state">
           <div class="services-empty-icon">🔍</div>
           <h3 class="services-empty-title">કોઈ પૂજા કે સામગ્રી મળી નથી</h3>
-          <p class="services-empty-desc">કૃપા કરીને અન્ય નામ અથવા સામગ્રી શોધો.</p>
+          <p class="services-empty-desc">આપ ગુજરાતી અથવા અંગ્રેજી (દા.ત. Satyanarayan, Vastu, Havan) માં શોધી શકો છો.</p>
           <button type="button" class="btn btn-primary" id="resetServicesSearchBtn" style="margin-top: 1rem;">
             બધી પૂજા સેવાઓ દર્શાવો
           </button>
@@ -426,68 +550,146 @@ class App {
     const modalOverlay = document.getElementById('pamphletModalOverlay');
     const canvas = document.getElementById('pamphletCanvas');
     const originalPamphletsBox = document.getElementById('originalPamphletsContainer');
+    const modalTopTitle = document.getElementById('modalTopTitle');
+    const modalTopBadge = document.getElementById('modalTopBadge');
+    const modalCallBtn = document.getElementById('modalCallBtn');
+    const shareWhatsappBtn = document.getElementById('shareWhatsappBtn');
     if (!modalOverlay || !canvas) return;
+
+    if (modalTopTitle) modalTopTitle.textContent = service.title;
+    if (modalTopBadge) modalTopBadge.textContent = `${service.category} • ${service.badge || 'પવિત્ર વિધાન'}`;
+
+    const cleanPhone = (this.profile?.phone || '99252 64929').replace(/[^0-9]/g, '');
+    const cleanWa = (this.profile?.whatsapp || '9925264929').replace(/[^0-9]/g, '');
+
+    if (modalCallBtn) {
+      modalCallBtn.href = `tel:+91${cleanPhone}`;
+      modalCallBtn.innerHTML = `<span>📞</span> <span>શાસ્ત્રીજીને કૉલ કરો (${this.profile?.phone || '99252 64929'})</span>`;
+    }
+
+    if (shareWhatsappBtn) {
+      const waInquiryMsg = encodeURIComponent(`પ્રણામ શાસ્ત્રીજી, મારે "${service.title}" ની પૂજા વિધિ અને સામગ્રી બાબતે માર્ગદર્શન મેળવવું છે.`);
+      shareWhatsappBtn.href = `https://wa.me/91${cleanWa}?text=${waInquiryMsg}`;
+    }
+
+    // Split pujapo string into clean items for scannable pill layout
+    const pujapoItems = (service.pujapo || '')
+      .split(/[,،]+/)
+      .map(item => item.trim())
+      .filter(item => item.length > 0);
+
+    const anajItems = (service.anajNaivedya || '')
+      .split(/[,،]+/)
+      .map(item => item.trim())
+      .filter(item => item.length > 0);
+
+    const taiyariItems = (service.taiyari || '')
+      .split(/[,،]+/)
+      .map(item => item.trim())
+      .filter(item => item.length > 0);
 
     // Render Sacred Traditional Pamphlet Content
     canvas.innerHTML = `
       <div class="pamphlet-header">
         <div class="pamphlet-om-badge">
-          <img src="assets/icons/gemini-svg.svg" alt="ॐ">
+          <span>🕉️</span>
         </div>
         <div class="pamphlet-shree-ganesh">।। શ્રી ગણેશાય નમઃ ।।</div>
         <h2 class="pamphlet-title">${service.title}</h2>
-        <div class="pamphlet-price-badge">
-          વિભાગ: ${service.category} | ${service.price || 'દક્ષિણા માટે સંપર્ક કરો'}
+        <p class="pamphlet-subtitle">${service.subtitle || 'શાસ્ત્રોક્ત વિધિવત પૂજા માર્ગદર્શિકા'}</p>
+        
+        <div class="pamphlet-meta-chips">
+          <span class="pamphlet-chip">
+            <span>🏷️</span> <span>વિભાગ: ${service.category}</span>
+          </span>
+          <span class="pamphlet-chip">
+            <span>✨</span> <span>${service.badge || 'સાત્વિક સંસ્કાર'}</span>
+          </span>
+          <span class="pamphlet-chip">
+            <span>🪙</span> <span>${service.price || 'દક્ષિણા માટે સંપર્ક કરો'}</span>
+          </span>
+        </div>
+
+        <div class="pamphlet-hero-banner">
+          <img src="${service.thumbnailUrl || 'assets/images/card-ganesh.png'}" alt="${service.title}" class="pamphlet-hero-thumb">
+          <div class="pamphlet-hero-meta">
+            <div class="pamphlet-hero-heading">${service.title} - સંપૂર્ણ સામગ્રી સૂચિ</div>
+            <div class="pamphlet-hero-sub">શાસ્ત્રીજી જીતેન્દ્ર જોષી (જીતુભાઈ જોષી) દ્વારા પ્રમાણિત યાદી</div>
+          </div>
         </div>
       </div>
 
       <!-- સેક્શન ૧: પૂજાપો / મુખ્ય સામગ્રી -->
-      <div class="pamphlet-section">
+      <div class="pamphlet-section highlight-pujapo">
         <div class="pamphlet-section-title">
-          <span>🌿</span> <span>પૂજાપો / મુખ્ય સામગ્રી :</span>
+          <span class="sec-icon">🌿</span> 
+          <span>પૂજાપો / મુખ્ય સામગ્રી (${pujapoItems.length} આવશ્યક વસ્તુઓ) :</span>
         </div>
-        <div class="pamphlet-section-content">
-          ${service.pujapo || 'કોઈ વિગત આપેલ નથી.'}
+        <div class="pamphlet-items-container">
+          ${pujapoItems.map(item => `
+            <span class="pamphlet-item-pill">
+              <span class="pill-bullet">✦</span>
+              <span>${item}</span>
+            </span>
+          `).join('')}
         </div>
       </div>
 
-      <!-- સેક્શન ૨: અનાજ અને નૈવેદ્ય -->
+      <!-- સેક્શન ૨: અનાજ અને પવિત્ર નૈવેદ્ય -->
       ${service.anajNaivedya ? `
-        <div class="pamphlet-section">
+        <div class="pamphlet-section highlight-grains">
           <div class="pamphlet-section-title">
-            <span>🌾</span> <span>અનાજ અને નૈવેદ્ય :</span>
+            <span class="sec-icon">🌾</span> 
+            <span>અનાજ અને પવિત્ર નૈવેદ્ય (પ્રસાદ) :</span>
           </div>
-          <div class="pamphlet-section-content">
-            ${service.anajNaivedya}
+          <div class="pamphlet-items-container">
+            ${anajItems.map(item => `
+              <span class="pamphlet-item-pill pill-amber">
+                <span class="pill-bullet">✦</span>
+                <span>${item}</span>
+              </span>
+            `).join('')}
           </div>
         </div>
       ` : ''}
 
       <!-- સેક્શન ૩: મૂર્તિ, વાસણ અને ઘરની તૈયારી -->
       ${service.taiyari ? `
-        <div class="pamphlet-section">
+        <div class="pamphlet-section highlight-prep">
           <div class="pamphlet-section-title">
-            <span>🪔</span> <span>મૂર્તિ, વાસણ અને ઘરની તૈયારી :</span>
+            <span class="sec-icon">🪔</span> 
+            <span>મૂર્તિ, વાસણ અને ઘરની તૈયારી :</span>
           </div>
-          <div class="pamphlet-section-content">
-            ${service.taiyari}
+          <div class="pamphlet-items-container">
+            ${taiyariItems.map(item => `
+              <span class="pamphlet-item-pill pill-saffron">
+                <span class="pill-bullet">✦</span>
+                <span>${item}</span>
+              </span>
+            `).join('')}
           </div>
         </div>
       ` : ''}
 
-      <!-- સેક્શન ૪: વિશેષ નોંધ -->
+      <!-- સેક્શન ૪: શાસ્ત્રોક્ત મહત્વ અને વિશેષ નોંધ -->
       ${service.notes ? `
-        <div style="font-size: 0.9rem; color: var(--color-text-sub); margin: 0.75rem 0; font-style: italic; text-align: center;">
-          * ${service.notes}
+        <div class="pamphlet-notes-box">
+          <span class="notes-quote-mark">“</span>
+          <span>${service.notes}</span>
+          <span class="notes-quote-mark">”</span>
         </div>
       ` : ''}
 
-      <!-- પેમ્ફ્લેટ ફૂટર -->
+      <!-- પેમ્ફ્લેટ પવિત્ર મહોર / ફૂટર -->
       <div class="pamphlet-footer">
-        <div class="pamphlet-shastriji-info">${this.profile?.name || 'શાસ્ત્રીજી જીતુભાઈ જોષી'}</div>
-        <div class="pamphlet-phone-info">સંપર્ક: 📞 ${this.profile?.phone || '99252 64929'}</div>
-        <div style="font-size: 0.85rem; color: var(--color-text-sub); margin-top: 0.25rem;">
+        <div class="pamphlet-seal-ornament">❖ ૐ ❖</div>
+        <div class="pamphlet-shastriji-info">${this.profile?.name || 'શાસ્ત્રીજી જીતેન્દ્ર જોષી (જીતુભાઈ જોષી)'}</div>
+        <div class="pamphlet-phone-info">પવિત્ર સંપર્ક: 📞 ${this.profile?.phone || '99252 64929'}</div>
+        <div class="pamphlet-tagline">
           કર્મકાંડ • ધાર્મિક • સામાજિક • વ્રત વિધાન સંબંધિત આવશ્યક માર્ગદર્શન
+        </div>
+        <div class="pamphlet-blessing">
+          "ધર્મ એ જીવનને સત્ય, શાંતિ અને સદકાર્ય તરફ દોરી જાય છે."
         </div>
       </div>
     `;
@@ -497,7 +699,9 @@ class App {
       if (service.originalPamphlets && service.originalPamphlets.length > 0) {
         originalPamphletsBox.style.display = 'block';
         originalPamphletsBox.innerHTML = `
-          <h4><span>📜</span> <span>અસલ તૈયાર પેમ્ફ્લેટ (Original Pamphlet Files) :</span></h4>
+          <div class="original-pamphlets-header">
+            <span>📜</span> <span>અસલ તૈયાર પેમ્ફ્લેટ (Original Pamphlet Files) :</span>
+          </div>
           <div class="original-pamphlets-list">
             ${service.originalPamphlets.map(p => `
               <a href="${p.url}" target="_blank" download class="pamphlet-img-thumb-link">
@@ -512,6 +716,7 @@ class App {
     }
 
     modalOverlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
   }
 }
 
