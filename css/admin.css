@@ -48,19 +48,29 @@ body.admin-page-body {
   color: #FFFFFF;
 }
 
-.admin-om-badge {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: radial-gradient(circle, #FEF3C7 0%, #FDE68A 100%);
-  border: 2px solid #F59E0B;
+.admin-logo-ring {
+  width: 50px;
+  height: 50px;
+  border-radius: var(--radius-full);
+  padding: 2.5px;
+  background: linear-gradient(135deg, #F59E0B, #8B1E0F);
+  box-shadow: 0 0 16px rgba(245, 158, 11, 0.45);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.75rem;
-  color: #8B1E0F;
-  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35);
   flex-shrink: 0;
+  transition: transform 0.25s ease;
+}
+
+.admin-brand-group:hover .admin-logo-ring {
+  transform: rotate(6deg) scale(1.06);
+}
+
+.sacred-logo-img {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-full);
+  display: block;
 }
 
 .admin-brand-text {
@@ -215,19 +225,22 @@ body.admin-page-body {
   background: linear-gradient(90deg, #8B1E0F 0%, #D97706 50%, #8B1E0F 100%);
 }
 
-.admin-pin-om-large {
-  width: 72px;
-  height: 72px;
-  margin: 0 auto 1.25rem;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
-  border: 2.5px solid #F59E0B;
+.admin-pin-logo-ring {
+  width: 82px;
+  height: 82px;
+  margin: 0 auto 1.35rem;
+  border-radius: var(--radius-full);
+  padding: 3px;
+  background: linear-gradient(135deg, #F59E0B, #8B1E0F);
+  box-shadow: 0 8px 26px rgba(245, 158, 11, 0.42);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2.5rem;
-  color: #8B1E0F;
-  box-shadow: 0 8px 24px rgba(245, 158, 11, 0.35);
+  transition: transform 0.3s ease;
+}
+
+.admin-pin-logo-ring:hover {
+  transform: scale(1.05) rotate(4deg);
 }
 
 .admin-pin-title {

@@ -1680,19 +1680,30 @@ button.hero-feature-card {
   width: 100%;
 }
 
-.pin-om-symbol {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
-  border: 2px solid #F59E0B;
+.pin-logo-ring {
+  width: 68px;
+  height: 68px;
+  border-radius: var(--radius-full);
+  padding: 2.5px;
+  background: linear-gradient(135deg, var(--color-saffron-light), var(--color-maroon));
+  box-shadow: 0 6px 18px rgba(245, 158, 11, 0.35);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2.2rem;
-  color: #8B1E0F;
-  margin-bottom: 1rem;
-  box-shadow: 0 6px 18px rgba(245, 158, 11, 0.25);
+  margin: 0 auto 1.25rem;
+}
+
+.admin-header-logo-ring {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  padding: 2px;
+  background: linear-gradient(135deg, var(--color-saffron-light), var(--color-maroon));
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 .pin-input-group {

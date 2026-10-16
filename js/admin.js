@@ -96,7 +96,9 @@ class AdminPanel {
         </button>
 
         <div class="pin-screen-box">
-          <div class="pin-om-symbol">🕉️</div>
+          <div class="sacred-logo-ring pin-logo-ring" style="width: 72px; height: 72px; margin: 0 auto 1.25rem;">
+            <img src="assets/icons/gemini-svg.svg" alt="શાસ્ત્રીજી ॐ લોગો" class="sacred-logo-img">
+          </div>
           <div class="pin-shree-ganesh">।। શ્રી ગણેશાય નમઃ ।।</div>
           <h2 class="pin-screen-title">શાસ્ત્રીજી સુરક્ષિત લૉગિન</h2>
           <p class="pin-screen-desc">પૂજા સામગ્રી, પેમ્ફ્લેટ અને સંપર્ક વિગતનું લાઈવ સંચાલન કરવા ૪-અંકનો સુરક્ષા પિન દાખલ કરો.</p>
@@ -189,7 +191,9 @@ class AdminPanel {
         <!-- સ્ટીકી હેડર બાર (Sticky Header Bar) -->
         <div class="admin-sticky-header">
           <div class="admin-header-brand">
-            <span class="admin-header-om">🕉️</span>
+            <div class="sacred-logo-ring admin-header-logo-ring" style="width: 44px; height: 44px; flex-shrink: 0; padding: 2px;">
+              <img src="assets/icons/gemini-svg.svg" alt="શાસ્ત્રીજી ॐ લોગો" class="sacred-logo-img">
+            </div>
             <div>
               <div class="admin-header-badge">
                 <span class="pulse-indicator">🟢</span> <span>લાઈવ સર્વર કનેક્ટેડ</span>
