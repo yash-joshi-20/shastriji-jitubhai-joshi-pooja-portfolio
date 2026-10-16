@@ -358,82 +358,117 @@
   flex-shrink: 0;
 }
 
-/* જમણો સ્તંભ: શાસ્ત્રીજી ઓરિજનલ ફોટો અને પવિત્ર અવતરણ */
+/* =====================================================================
+   જમણો સ્તંભ: શાસ્ત્રીજી ઓરિજનલ ફોટો (Soft Feathered Gradient Merge)
+   ===================================================================== */
 .hero-visual-col {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  padding: 1rem clamp(1rem, 3vw, 3rem) 1rem 0;
+  padding: 1.5rem clamp(1rem, 3.5vw, 4rem) 1.5rem 0;
+  overflow: visible;
 }
 
-.hero-quote-card {
+/* સોફ્ટ ડિવાઇન ક્વોટ (No hard boxes or borders - Sublime Typography) */
+.hero-soft-quote {
   position: absolute;
   left: 0;
-  top: 50%;
+  top: 48%;
   transform: translateY(-50%);
-  max-width: 240px;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1.5px solid #ECDCCB;
-  border-radius: 16px;
-  padding: 1.15rem 1.25rem;
-  box-shadow: 0 10px 28px rgba(139, 30, 15, 0.08);
-  z-index: 4;
+  max-width: 255px;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  z-index: 5;
+  text-align: left;
+  user-select: none;
 }
 
-.hero-quote-symbol {
-  font-size: 2.2rem;
-  line-height: 1;
+.hero-quote-mark {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 3.8rem;
+  line-height: 0.75;
   color: #D97706;
-  font-family: Georgia, serif;
+  opacity: 0.85;
   display: block;
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.35rem;
 }
 
-.hero-quote-quote {
+.hero-quote-text {
   font-family: var(--font-gujarati);
-  font-size: 0.96rem;
-  color: #3B2214;
-  line-height: 1.55;
+  font-size: 1.08rem;
   font-weight: 600;
-  margin: 0 0 0.5rem 0;
+  color: #382012;
+  line-height: 1.62;
+  margin: 0 0 0.65rem 0;
+  letter-spacing: -0.2px;
 }
 
-.hero-quote-shastriji {
+.hero-quote-author {
   font-family: var(--font-gujarati);
-  font-size: 0.85rem;
+  font-size: 0.88rem;
+  font-weight: 700;
   color: #8B1E0F;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.author-dash {
+  color: #D97706;
   font-weight: 700;
 }
 
+/* વિઝ્યુઅલ રેપર અને પવિત્ર આભા (Aura Light) */
 .hero-visual-wrapper {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  width: auto;
-  max-width: 440px;
+  width: 100%;
+  max-width: 500px;
+  min-height: 420px;
 }
 
+.hero-divine-aura {
+  position: absolute;
+  right: 6%;
+  top: 46%;
+  transform: translateY(-50%);
+  width: 420px;
+  height: 420px;
+  background: radial-gradient(circle at center, rgba(251, 191, 36, 0.32) 0%, rgba(245, 158, 11, 0.16) 42%, rgba(217, 119, 6, 0.05) 62%, transparent 75%);
+  filter: blur(40px);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* શાસ્ત્રીજી ઓરિજનલ પોર્ટ્રેટ - સોફ્ટ ગ્રેડિએન્ટ મર્જ (Feathered Radial Dissolve) */
 .hero-visual-img {
   width: 100%;
-  max-width: 420px;
+  max-width: 480px;
   height: auto;
-  max-height: 460px;
+  max-height: 500px;
   object-fit: cover;
   object-position: center top;
-  border-radius: 24px;
-  border: 2px solid #EAD8C1;
-  box-shadow: 0 16px 40px rgba(139, 30, 15, 0.14), 0 0 35px rgba(217, 119, 6, 0.12);
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
   display: block;
-  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  position: relative;
+  z-index: 2;
+  -webkit-mask-image: radial-gradient(ellipse 78% 74% at 60% 46%, #000000 34%, rgba(0, 0, 0, 0.85) 52%, rgba(0, 0, 0, 0.35) 70%, transparent 95%);
+  mask-image: radial-gradient(ellipse 78% 74% at 60% 46%, #000000 34%, rgba(0, 0, 0, 0.85) 52%, rgba(0, 0, 0, 0.35) 70%, transparent 95%);
+  filter: contrast(1.02) saturate(1.03);
+  transition: transform 0.4s ease, filter 0.4s ease;
 }
 
 .hero-visual-img:hover {
-  transform: scale(1.02);
-  box-shadow: 0 20px 48px rgba(139, 30, 15, 0.18), 0 0 45px rgba(217, 119, 6, 0.18);
+  transform: scale(1.015);
+  filter: contrast(1.04) saturate(1.05);
 }
 
 /* નીચે ૪ પવિત્ર ફીચર કાર્ડ્સ રેપર (Full-Width Strip with Inner Max-Width) */
@@ -1867,17 +1902,42 @@ textarea.form-control {
     justify-content: center;
   }
   .hero-visual-col {
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
-    min-height: 340px;
-    max-height: 400px;
+    padding: 1.5rem 1.5rem 2.5rem;
+    min-height: auto;
+    max-height: none;
+  }
+  .hero-soft-quote {
+    position: static;
+    transform: none;
+    max-width: 440px;
+    text-align: center;
+    margin: 0 auto 1.5rem;
+  }
+  .hero-quote-mark {
+    margin: 0 auto 0.25rem;
+  }
+  .hero-quote-author {
+    justify-content: center;
   }
   .hero-visual-wrapper {
-    min-height: 340px;
+    min-height: auto;
     justify-content: center;
+    max-width: 100%;
+  }
+  .hero-divine-aura {
+    right: auto;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 320px;
+    height: 320px;
   }
   .hero-visual-img {
-    object-position: center bottom;
-    max-height: 380px;
+    max-width: 320px;
+    max-height: 350px;
+    object-position: center top;
   }
   .hero-feature-cards-grid {
     grid-template-columns: repeat(2, 1fr);
