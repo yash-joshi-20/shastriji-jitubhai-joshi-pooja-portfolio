@@ -59,79 +59,153 @@
 
   <!-- મુખ્ય કન્ટેન્ટ એરિયા -->
   <main>
-    <!-- ૧. હીરો સેક્શન -->
-    <section class="hero-section">
-      <div class="container hero-grid">
+    <!-- ૧. હીરો સેક્શન (Divine Clean Hero Banner matching Reference) -->
+    <section class="hero-section" id="heroSection">
+      <div class="container hero-container">
         
-        <!-- ડાબી બાજુ: શાસ્ત્રીજી પ્રોફાઈલ કાર્ડ -->
-        <div class="profile-card">
-          <div class="portrait-wrapper">
-            <div class="portrait-frame">
-              <img src="assets/images/shastriji-profile.jpg" alt="શાસ્ત્રીજી જીતેન્દ્ર જોષી" class="portrait-img" id="heroPortraitImg">
-              <div class="portrait-badge-om" title="પવિત્ર ॐ">
-                <img src="assets/icons/gemini-svg.svg" alt="ॐ">
-              </div>
-            </div>
-            <h1 class="profile-title" id="heroTitle">શાસ્ત્રીજી જીતેન્દ્ર જોષી (જીતુભાઈ જોષી)</h1>
-            <p class="profile-subtitle" id="heroSubtitle">
-              કર્મકાંડ • ધાર્મિક • સામાજિક • વ્રત વિધાન સંબંધિત આવશ્યક માર્ગદર્શન
-            </p>
-          </div>
-
-          <div class="profile-cta-group">
-            <button class="btn btn-call" id="heroCallBtn">
-              <span>📞</span> <span id="heroCallBtnText">કોલ કરો (સંપર્ક)</span>
-            </button>
-            <a href="https://wa.me/919925264929" target="_blank" class="btn btn-whatsapp" id="heroWhatsappBtn">
-              <span>💬</span> <span>WhatsApp ચેટ</span>
-            </a>
-          </div>
-        </div>
-
-        <!-- જમણી બાજુ: જીવન અને પૂજાના નિયમો (Open Book Card) -->
-        <div class="book-card-container">
-          <div class="book-card">
-            <div class="book-ribbon">પવિત્ર જીવન સૂત્રો</div>
+        <!-- મુખ્ય હીરો કાર્ડ (Main Divine Card) -->
+        <div class="hero-main-card">
+          
+          <!-- બેનર કન્ટેન્ટ (હેડલાઇન, બટન્સ & શાસ્ત્રીજી ફોટો) -->
+          <div class="hero-banner-inner">
             
-            <div class="book-header">
-              <h3>જીવન અને પૂજાના નિયમો</h3>
-              <span>।। શાસ્ત્રીજી જીતેન્દ્ર જોષી દર્શિત માર્ગદર્શન ।।</span>
-            </div>
-
-            <div class="book-pages-grid">
-              <!-- ડાબો પેજ: જીવનના ૭ નિયમો -->
-              <div class="book-column">
-                <h4>જીવનના નિયમો</h4>
-                <ul class="book-list">
-                  <li><span class="book-num">૧</span> નિયમ</li>
-                  <li><span class="book-num">૨</span> સેવા</li>
-                  <li><span class="book-num">૩</span> પ્રાર્થના</li>
-                  <li><span class="book-num">૪</span> સત્ય</li>
-                  <li><span class="book-num">૫</span> દયા</li>
-                  <li><span class="book-num">૬</span> પ્રેમ</li>
-                  <li><span class="book-num">૭</span> સહનશીલતા</li>
-                </ul>
+            <!-- ડાબી બાજુ: આધ્યાત્મિક શીર્ષક અને કોલ-ટુ-એક્શન -->
+            <div class="hero-content-col">
+              
+              <!-- ॐ શ્રી ગણેશાય નમઃ -->
+              <div class="hero-sacred-badge">
+                <span class="hero-om-sign">ॐ</span>
+                <span class="hero-ganesh-text">શ્રી ગણેશાય નમઃ</span>
               </div>
 
-              <!-- જમણો પેજ: પૂજાના ૭ નિયમો -->
-              <div class="book-column">
-                <h4>પૂજાના નિયમો</h4>
-                <ul class="book-list">
-                  <li><span class="book-num">૧</span> પૂજા</li>
-                  <li><span class="book-num">૨</span> સંસ્કાર</li>
-                  <li><span class="book-num">૩</span> પ્રતિષ્ઠા</li>
-                  <li><span class="book-num">૪</span> ભાવના</li>
-                  <li><span class="book-num">૫</span> શાંતિ</li>
-                  <li><span class="book-num">૬</span> શ્રદ્ધા</li>
-                  <li><span class="book-num">૭</span> નીતિ</li>
-                </ul>
+              <!-- મુખ્ય હેડિંગ -->
+              <h1 class="hero-headline" id="heroHeadline">
+                ધર્મ, સંસ્કાર અને<br>
+                સાત્વિક જીવન તરફનો<br>
+                માર્ગદર્શન
+              </h1>
+
+              <!-- સબ-ટાઈટલ -->
+              <p class="hero-subtitle-text" id="heroSubtitleText">
+                <span id="heroShastrijiName">શાસ્ત્રીજી જીતેન્દ્ર જોષી</span> દ્વારા પૂજા વિધિ, ધાર્મિક નિયમો અને જીવન માટે ઉપયોગી માર્ગદર્શન.
+              </p>
+
+              <!-- એક્શન બટન્સ (કોલ કરો & WhatsApp) -->
+              <div class="hero-actions-row">
+                <button class="hero-btn-call" id="heroCallBtn" aria-label="કોલ કરો">
+                  <svg class="hero-btn-svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+                    <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.02-.24 11.47 11.47 0 003.58.57 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1 11.47 11.47 0 00.57 3.58 1 1 0 01-.25 1.02l-2.2 2.19z"/>
+                  </svg>
+                  <span id="heroCallBtnText">કોલ કરો</span>
+                </button>
+
+                <a href="https://wa.me/919925264929" target="_blank" rel="noopener" class="hero-btn-whatsapp" id="heroWhatsappBtn" aria-label="WhatsApp પર સંપર્ક">
+                  <svg class="hero-wa-svg" viewBox="0 0 24 24" width="20" height="20">
+                    <path fill="#25D366" d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0012.04 2z"/>
+                    <path fill="#FFF" d="M17.5 14.37c-.3-.15-1.77-.87-2.05-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.95 1.17-.17.2-.35.22-.65.07-.3-.15-1.27-.47-2.42-1.5-.9-.8-1.5-1.78-1.68-2.08-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.58c-.2 0-.52.07-.8.37-.27.3-1.05 1.02-1.05 2.5 0 1.47 1.07 2.9 1.22 3.1.15.2 2.11 3.22 5.11 4.52.71.31 1.27.5 1.7.64.72.23 1.37.2 1.89.12.58-.09 1.77-.72 2.02-1.42.25-.7.25-1.3.17-1.42-.07-.12-.27-.2-.57-.35z"/>
+                  </svg>
+                  <span>WhatsApp પર સંપર્ક</span>
+                </a>
+              </div>
+
+            </div>
+
+            <!-- જમણી બાજુ: શાસ્ત્રીજી અને મંદિર વાતાવરણ -->
+            <div class="hero-visual-col">
+              <div class="hero-visual-wrapper">
+                <img src="assets/images/hero-shastriji-temple.png" alt="શાસ્ત્રીજી જીતેન્દ્ર જોષી અને દિવ્ય મંદિર દીપક" class="hero-visual-img" id="heroVisualImg">
               </div>
             </div>
 
-            <div class="book-footer-note">
-              "ધર્મ અને શ્રદ્ધાથી કરેલી પૂજા જીવનમાં સુખ, શાંતિ અને સમૃદ્ધિ આપે છે."
-            </div>
           </div>
+
+          <!-- નીચે ૪ પવિત્ર ફીચર કાર્ડ્સ (4 Feature Cards) -->
+          <div class="hero-feature-cards-grid">
+            
+            <!-- કાર્ડ ૧: વિધિક માર્ગદર્શન -->
+            <a href="#servicesSection" class="hero-feature-card" id="heroCardServices">
+              <div class="hero-card-icon-box box-peach">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                  <path d="M8 7h8m-8 4h6"></path>
+                </svg>
+              </div>
+              <div class="hero-card-text">
+                <div class="hero-card-title">વિધિક માર્ગદર્શન</div>
+                <div class="hero-card-subtitle">વર્ષોના અનુભવથી</div>
+              </div>
+              <div class="hero-card-arrow" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </div>
+            </a>
+
+            <!-- કાર્ડ ૨: સરળ વિધિ માહિતી -->
+            <a href="#servicesSection" class="hero-feature-card" id="heroCardVidhi">
+              <div class="hero-card-icon-box box-gold">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2c.5 1.5 1.5 3 1.5 4.5 0 1.4-1.1 2.5-2.5 2.5s-2.5-1.1-2.5-2.5C8.5 5 9.5 3.5 12 2z"/>
+                  <path d="M4 14c0 3.3 3.6 6 8 6s8-2.7 8-6H4z"/>
+                  <path d="M3 13h18v1.5H3z" opacity="0.4"/>
+                </svg>
+              </div>
+              <div class="hero-card-text">
+                <div class="hero-card-title">સરળ વિધિ માહિતી</div>
+                <div class="hero-card-subtitle">દરેક માટે સમજવાયોગ્ય</div>
+              </div>
+              <div class="hero-card-arrow" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </div>
+            </a>
+
+            <!-- કાર્ડ ૩: ધાર્મિક અને સાહિત્ય -->
+            <a href="#searchInput" class="hero-feature-card" id="heroCardSamagri">
+              <div class="hero-card-icon-box box-amber">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="3"></circle>
+                  <path d="M12 2a4 4 0 0 0-4 4c0 2 2 4 4 6 2-2 4-4 4-6a4 4 0 0 0-4-4z"></path>
+                  <path d="M12 22a4 4 0 0 0 4-4c0-2-2-4-4-6-2 2-4 4-4 6a4 4 0 0 0 4 4z"></path>
+                  <path d="M2 12a4 4 0 0 0 4 4c2 0 4-2 6-4-2-2-4-4-6-4a4 4 0 0 0-4 4z"></path>
+                  <path d="M22 12a4 4 0 0 0-4-4c-2 0-4 2-6 4 2 2 4 4 6 4a4 4 0 0 0 4-4z"></path>
+                </svg>
+              </div>
+              <div class="hero-card-text">
+                <div class="hero-card-title">ધાર્મિક અને સાહિત્ય</div>
+                <div class="hero-card-subtitle">આવશ્યક સામગ્રીની યાદી</div>
+              </div>
+              <div class="hero-card-arrow" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </div>
+            </a>
+
+            <!-- કાર્ડ ૪: જીવનમાં સંસ્કાર -->
+            <button type="button" class="hero-feature-card btn-card-modal" id="heroCardSanskar" aria-label="જીવન અને પૂજાના નિયમો જુઓ">
+              <div class="hero-card-icon-box box-saffron">
+                <span class="hero-om-icon">ॐ</span>
+              </div>
+              <div class="hero-card-text">
+                <div class="hero-card-title">જીવનમાં સંસ્કાર</div>
+                <div class="hero-card-subtitle">સત્સંગ અને સહાયક વિચાર</div>
+              </div>
+              <div class="hero-card-arrow" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </div>
+            </button>
+
+          </div>
+
         </div>
 
       </div>
@@ -216,6 +290,72 @@
           <span>💬</span> <span>WhatsApp પર વાત કરો</span>
         </a>
       </div>
+    </div>
+  </div>
+
+  <!-- જીવન અને પૂજાના ૧૪ નિયમો મોડલ (Sanskar Rules Modal) -->
+  <div class="modal-overlay" id="sanskarModalOverlay" role="dialog" aria-modal="true" aria-labelledby="sanskarModalTitle">
+    <div class="sanskar-modal-card">
+      <button class="modal-close-btn" id="sanskarModalCloseBtn" title="બંધ કરો" aria-label="બંધ કરો">✕</button>
+      
+      <div class="sanskar-modal-header">
+        <div class="sanskar-om-badge">ॐ</div>
+        <div class="sanskar-subhead">।। શ્રી ગણેશાય નમઃ ।।</div>
+        <h2 class="sanskar-modal-title" id="sanskarModalTitle">જીવન અને પૂજાના પવિત્ર નિયમો</h2>
+        <p class="sanskar-modal-subtitle">શાસ્ત્રીજી જીતેન્દ્ર જોષી દર્શિત આધ્યાત્મિક માર્ગદર્શન</p>
+      </div>
+
+      <div class="sanskar-rules-grid">
+        <!-- ૧. જીવનના ૭ નિયમો -->
+        <div class="sanskar-rule-column">
+          <div class="rule-column-header">
+            <span class="rule-col-icon">🌿</span>
+            <h3>જીવનના ૭ પવિત્ર નિયમો</h3>
+          </div>
+          <ol class="sanskar-rules-list">
+            <li><span class="rule-badge">૧</span> <div><strong>નિયમ</strong><p>સદાચાર અને શિસ્તબદ્ધ દિનચર્યા</p></div></li>
+            <li><span class="rule-badge">૨</span> <div><strong>સેવા</strong><p>નિઃસ્વાર્થ ભાવે માનવ અને ઈશ્વર સેવા</p></div></li>
+            <li><span class="rule-badge">૩</span> <div><strong>પ્રાર્થના</strong><p>ઈશ્વર સાથે હૃદયપૂર્વક આત્મિક જોડાણ</p></div></li>
+            <li><span class="rule-badge">૪</span> <div><strong>સત્ય</strong><p>વિચાર, વાણી અને વર્તનમાં પવિત્ર સત્ય</p></div></li>
+            <li><span class="rule-badge">૫</span> <div><strong>દયા</strong><p>સર્વ જીવો પ્રત્યે અનુકંપા અને કરુણા</p></div></li>
+            <li><span class="rule-badge">૬</span> <div><strong>પ્રેમ</strong><p>સર્વ પ્રત્યે સ્નેહ અને પવિત્ર સમભાવ</p></div></li>
+            <li><span class="rule-badge">૭</span> <div><strong>સહનશીલતા</strong><p>ધૈર્ય, શાંતિ અને વિવેકપૂર્ણ સમતાભાવ</p></div></li>
+          </ol>
+        </div>
+
+        <!-- ૨. પૂજાના ૭ નિયમો -->
+        <div class="sanskar-rule-column">
+          <div class="rule-column-header">
+            <span class="rule-col-icon">🪔</span>
+            <h3>પૂજાના ૭ પવિત્ર નિયમો</h3>
+          </div>
+          <ol class="sanskar-rules-list">
+            <li><span class="rule-badge">૧</span> <div><strong>પૂજા</strong><p>પવિત્રતા અને શાસ્ત્રોક્ત વિધિપૂર્વક આરાધના</p></div></li>
+            <li><span class="rule-badge">૨</span> <div><strong>સંસ્કાર</strong><p>મન, વાણી અને કર્મની આધ્યાત્મિક શુદ્ધિ</p></div></li>
+            <li><span class="rule-badge">૩</span> <div><strong>પ્રતિષ્ઠા</strong><p>ઈશ્વરીય તત્વ અને ભાવની હૃદયમાં સ્થાપના</p></div></li>
+            <li><span class="rule-badge">૪</span> <div><strong>ભાવના</strong><p>સમર્પણ અને અનન્ય ભક્તિ ભાવ</p></div></li>
+            <li><span class="rule-badge">૫</span> <div><strong>શાંતિ</strong><p>શાંત ચિત્તે મંત્રોચ્ચાર અને ધ્યાનાવસ્થા</p></div></li>
+            <li><span class="rule-badge">૬</span> <div><strong>શ્રદ્ધા</strong><p>ગુરુ અને શાસ્ત્રોક્ત વચનોમાં અતૂટ વિશ્વાસ</p></div></li>
+            <li><span class="rule-badge">૭</span> <div><strong>નીતિ</strong><p>ધર્માનુસાર પવિત્ર આચરણ અને સત્કર્મ</p></div></li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="sanskar-quote-banner">
+        <div class="sanskar-quote-symbol">“</div>
+        <p class="sanskar-quote-text">ધર્મ એ જીવનને સત્ય, શાંતિ અને સદકાર્ય તરફ દોરી જાય છે.</p>
+        <div class="sanskar-quote-author">— શાસ્ત્રીજી જીતેન્દ્ર જોષી</div>
+      </div>
+
+      <div class="sanskar-modal-actions">
+        <button class="btn btn-whatsapp" id="shareSanskarWaBtn">
+          <span>💬</span> <span>WhatsApp પર નિયમો શેર કરો</span>
+        </button>
+        <button class="btn btn-secondary" id="closeSanskarModalBottomBtn">
+          <span>બંધ કરો</span>
+        </button>
+      </div>
+
     </div>
   </div>
 

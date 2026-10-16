@@ -66,20 +66,18 @@ class App {
     const headerTitle = document.getElementById('headerShastrijiName');
     if (headerTitle) headerTitle.textContent = this.profile.name;
 
-    // Hero portrait
-    const portraitImg = document.getElementById('heroPortraitImg');
-    if (portraitImg && this.profile.avatarUrl) {
-      portraitImg.src = this.profile.avatarUrl;
+    // Hero visual portrait (if custom photo uploaded in CMS)
+    const visualImg = document.getElementById('heroVisualImg');
+    if (visualImg && this.profile.avatarUrl && this.profile.avatarUrl !== 'assets/images/shastriji-profile.jpg') {
+      // If user uploaded a new photo via CMS, display it
+      visualImg.src = this.profile.avatarUrl;
     }
 
-    // Hero details
-    const heroTitle = document.getElementById('heroTitle');
-    if (heroTitle) heroTitle.textContent = this.profile.name;
+    // Hero Shastriji Name
+    const heroShastrijiName = document.getElementById('heroShastrijiName');
+    if (heroShastrijiName) heroShastrijiName.textContent = this.profile.name;
 
-    const heroSubtitle = document.getElementById('heroSubtitle');
-    if (heroSubtitle) heroSubtitle.textContent = this.profile.subtitle;
-
-    // Action CTA buttons: Phone number hidden until clicked
+    // Action CTA buttons
     const callBtn = document.getElementById('heroCallBtn');
     if (callBtn) {
       callBtn.onclick = () => this.openContactModal();
@@ -239,6 +237,85 @@ class App {
         }
       });
     }
+
+    // Hero Card 2: સરળ વિધિ માહિતી -> Smooth scroll to filters and highlight
+    document.getElementById('heroCardVidhi')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      const filterSec = document.getElementById('filterSection');
+      if (filterSec) {
+        filterSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        const pills = document.getElementById('categoryPills');
+        if (pills) {
+          pills.style.transition = 'box-shadow 0.3s ease';
+          pills.style.boxShadow = '0 0 0 4px var(--color-saffron-light)';
+          setTimeout(() => { pills.style.boxShadow = ''; }, 1500);
+        }
+      }
+    });
+
+    // Hero Card 3: ધાર્મિક અને સાહિત્ય / સામગ્રી -> Smooth scroll & focus search
+    document.getElementById('heroCardSamagri')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      const searchBox = document.getElementById('searchInput');
+      if (searchBox) {
+        searchBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setTimeout(() => searchBox.focus(), 600);
+      }
+    });
+
+    // Hero Card 4: જીવનમાં સંસ્કાર -> Open Sanskar Rules Modal
+    const sanskarOverlay = document.getElementById('sanskarModalOverlay');
+    const sanskarCloseBtn = document.getElementById('sanskarModalCloseBtn');
+    const sanskarBottomCloseBtn = document.getElementById('closeSanskarModalBottomBtn');
+    const sanskarTriggerBtn = document.getElementById('heroCardSanskar');
+
+    const openSanskarModal = () => {
+      if (sanskarOverlay) sanskarOverlay.classList.add('active');
+    };
+    const closeSanskarModal = () => {
+      if (sanskarOverlay) sanskarOverlay.classList.remove('active');
+    };
+
+    if (sanskarTriggerBtn) {
+      sanskarTriggerBtn.addEventListener('click', openSanskarModal);
+    }
+    if (sanskarCloseBtn) {
+      sanskarCloseBtn.addEventListener('click', closeSanskarModal);
+    }
+    if (sanskarBottomCloseBtn) {
+      sanskarBottomCloseBtn.addEventListener('click', closeSanskarModal);
+    }
+    if (sanskarOverlay) {
+      sanskarOverlay.addEventListener('click', (e) => {
+        if (e.target === sanskarOverlay) closeSanskarModal();
+      });
+    }
+
+    // Share Sanskar Rules on WhatsApp
+    document.getElementById('shareSanskarWaBtn')?.addEventListener('click', () => {
+      const waMsg = encodeURIComponent(
+        `🌿 *શાસ્ત્રીજી જીતેન્દ્ર જોષી દર્શિત પવિત્ર જીવન અને પૂજાના ૧૪ નિયમો* 🌿\n\n` +
+        `*જીવનના ૭ પવિત્ર નિયમો:*\n` +
+        `૧. નિયમ — સદાચાર અને શિસ્તબદ્ધ દિનચર્યા\n` +
+        `૨. સેવા — નિઃસ્વાર્થ ભાવે માનવ અને ઈશ્વર સેવા\n` +
+        `૩. પ્રાર્થના — ઈશ્વર સાથે હૃદયપૂર્વક આત્મિક જોડાણ\n` +
+        `૪. સત્ય — વિચાર, વાણી અને વર્તનમાં પવિત્ર સત્ય\n` +
+        `૫. દયા — સર્વ જીવો પ્રત્યે અનુકંપા અને કરુણા\n` +
+        `૬. પ્રેમ — સર્વ પ્રત્યે સ્નેહ અને પવિત્ર સમભાવ\n` +
+        `૭. સહનશીલતા — ધૈર્ય, શાંતિ અને વિવેકપૂર્ણ સમતાભાવ\n\n` +
+        `*પૂજાના ૭ પવિત્ર નિયમો:*\n` +
+        `૧. પૂજા — પવિત્રતા અને શાસ્ત્રોક્ત વિધિપૂર્વક આરાધના\n` +
+        `૨. સંસ્કાર — મન, વાણી અને કર્મની આધ્યાત્મિક શુદ્ધિ\n` +
+        `૩. પ્રતિષ્ઠા — ઈશ્વરીય તત્વ અને ભાવની હૃદયમાં સ્થાપના\n` +
+        `૪. ભાવના — સમર્પણ અને અનન્ય ભક્તિ ભાવ\n` +
+        `૫. શાંતિ — શાંત ચિત્તે મંત્રોચ્ચાર અને ધ્યાનાવસ્થા\n` +
+        `૬. શ્રદ્ધા — ગુરુ અને શાસ્ત્રોક્ત વચનોમાં અતૂટ વિશ્વાસ\n` +
+        `૭. નીતિ — ધર્માનુસાર પવિત્ર આચરણ અને સત્કર્મ\n\n` +
+        `"ધર્મ એ જીવનને સત્ય, શાંતિ અને સદકાર્ય તરફ દોરી જાય છે."\n\n` +
+        `સંપર્ક: શાસ્ત્રીજી જીતેન્દ્ર જોષી (૯૯૨૫૨ ૬૪૯૨૯)`
+      );
+      window.open(`https://wa.me/?text=${waMsg}`, '_blank');
+    });
   }
 
   filterAndRenderServices() {
