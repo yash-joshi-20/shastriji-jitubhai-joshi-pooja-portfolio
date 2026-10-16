@@ -53,9 +53,9 @@ class App {
       db.getServices().then(s => { this.services = s; this.filterAndRenderServices(); });
     });
 
-    // Check if URL has #admin or ?admin
+    // Check if URL has #admin or ?admin -> redirect to full-screen dedicated portal
     if (window.location.hash === '#admin' || window.location.search.includes('admin')) {
-      adminPanel.openPinModal();
+      window.location.href = 'admin.html';
     }
   }
 

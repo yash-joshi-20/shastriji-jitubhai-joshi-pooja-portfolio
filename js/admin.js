@@ -25,6 +25,10 @@ class AdminPanel {
     const loginTriggerBtn = document.getElementById('adminLoginTrigger');
     if (loginTriggerBtn) {
       loginTriggerBtn.addEventListener('click', (e) => {
+        // If it's a link to admin.html, allow direct full-screen navigation
+        if (loginTriggerBtn.getAttribute('href')) {
+          return;
+        }
         e.preventDefault();
         this.openPinModal();
       });

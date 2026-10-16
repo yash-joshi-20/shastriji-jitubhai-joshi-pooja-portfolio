@@ -1,0 +1,1023 @@
+/* ==========================================================================
+   શાસ્ત્રીજી જીતેન્દ્ર જોષી - એડમિન CMS ડિઝાઇન સિસ્ટમ (UI/UX Pro Max)
+   સંપૂર્ણ ફુલ સ્ક્રીન રિસ્પોન્સિવ, પવિત્ર વૈદિક થીમ (Dharmik Divine Theme)
+   ========================================================================== */
+
+/* ૧. બેઝ લેઆઉટ અને પૃષ્ઠભૂમિ (Full Screen Background) */
+body.admin-page-body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: radial-gradient(circle at 5% 5%, rgba(217, 119, 6, 0.05) 0%, transparent 40%),
+              radial-gradient(circle at 95% 95%, rgba(139, 30, 15, 0.05) 0%, transparent 40%),
+              #FBF7EE;
+  font-family: var(--font-gujarati);
+  color: var(--color-text-main);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ૨. ફુલ-વિડ્થ ટોપબાર હેડર (Full-Width Sticky Header) */
+.admin-full-topbar {
+  width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: linear-gradient(135deg, #8B1E0F 0%, #631006 100%);
+  border-bottom: 3px solid #D97706;
+  box-shadow: 0 4px 20px rgba(99, 16, 6, 0.28);
+}
+
+.admin-full-topbar-inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0.85rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.admin-brand-group {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  text-decoration: none;
+  color: #FFFFFF;
+}
+
+.admin-om-badge {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #FEF3C7 0%, #FDE68A 100%);
+  border: 2px solid #F59E0B;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  color: #8B1E0F;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35);
+  flex-shrink: 0;
+}
+
+.admin-brand-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-brand-mantra {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #FDE68A;
+  letter-spacing: 0.5px;
+}
+
+.admin-brand-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  line-height: 1.2;
+}
+
+.admin-brand-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(254, 243, 199, 0.18);
+  border: 1px solid rgba(254, 243, 199, 0.4);
+  color: #FEF3C7;
+  padding: 0.15rem 0.6rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  margin-top: 0.2rem;
+  width: fit-content;
+}
+
+.admin-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.admin-server-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: rgba(16, 185, 129, 0.18);
+  border: 1px solid #10B981;
+  color: #A7F3D0;
+  padding: 0.4rem 0.85rem;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.admin-status-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #10B981;
+  box-shadow: 0 0 8px #10B981;
+  animation: pulseGreen 2s infinite ease-in-out;
+}
+
+@keyframes pulseGreen {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.85); }
+}
+
+.admin-view-site-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+  color: #8B1E0F;
+  border: 1px solid #F59E0B;
+  padding: 0.45rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.admin-view-site-link:hover {
+  background: #FFFFFF;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
+}
+
+.admin-top-logout-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: rgba(239, 68, 68, 0.15);
+  color: #FECACA;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  padding: 0.45rem 0.9rem;
+  border-radius: 9999px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.admin-top-logout-btn:hover {
+  background: #DC2626;
+  color: #FFFFFF;
+  border-color: #DC2626;
+}
+
+/* ૩. ફુલ-વિડ્થ મેઇન રેપર (Full-Width Main Container) */
+.admin-full-main {
+  flex: 1;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 1.5rem 1.5rem 3.5rem;
+}
+
+/* ૪. પિન લૉગિન સ્ક્રીન (Center Sacred PIN Screen) */
+.admin-pin-view-wrapper {
+  min-height: 65vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+.admin-pin-card {
+  max-width: 480px;
+  width: 100%;
+  background: #FFFFFF;
+  border: 2px solid #EAD8C2;
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(139, 30, 15, 0.16);
+  padding: 3rem 2.25rem 2.5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.admin-pin-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, #8B1E0F 0%, #D97706 50%, #8B1E0F 100%);
+}
+
+.admin-pin-om-large {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 1.25rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+  border: 2.5px solid #F59E0B;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  color: #8B1E0F;
+  box-shadow: 0 8px 24px rgba(245, 158, 11, 0.35);
+}
+
+.admin-pin-title {
+  font-size: 1.65rem;
+  font-weight: 800;
+  color: #8B1E0F;
+  margin-bottom: 0.35rem;
+}
+
+.admin-pin-sub {
+  font-size: 0.95rem;
+  color: #6B5446;
+  margin-bottom: 1.75rem;
+}
+
+.admin-pin-boxes-row {
+  display: flex;
+  justify-content: center;
+  gap: 0.85rem;
+  margin-bottom: 1.25rem;
+}
+
+.admin-pin-digit-input {
+  width: 62px;
+  height: 70px;
+  font-size: 2rem;
+  font-weight: 800;
+  text-align: center;
+  border: 2.5px solid #D9C2A7;
+  border-radius: 14px;
+  background: #FFFDF9;
+  color: #8B1E0F;
+  outline: none;
+  transition: all 0.2s ease;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.03);
+}
+
+.admin-pin-digit-input:focus {
+  border-color: #D97706;
+  background: #FFFFFF;
+  box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.22);
+  transform: translateY(-2px);
+}
+
+.admin-pin-error {
+  min-height: 24px;
+  margin-bottom: 1.25rem;
+  color: #DC2626;
+  font-size: 0.92rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.admin-pin-submit-btn {
+  width: 100%;
+  min-height: 50px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #8B1E0F 0%, #631006 100%);
+  color: #FFFFFF;
+  border: 1px solid #D97706;
+  font-size: 1.1rem;
+  font-weight: 800;
+  font-family: var(--font-gujarati);
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(139, 30, 15, 0.3);
+  transition: all 0.2s ease;
+}
+
+.admin-pin-submit-btn:hover {
+  background: linear-gradient(135deg, #D97706 0%, #B45309 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(217, 119, 6, 0.35);
+}
+
+.admin-pin-hint-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 1.5rem;
+  background: #FEF3C7;
+  border: 1px dashed #F59E0B;
+  color: #92400E;
+  padding: 0.4rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+/* ૫. ડેશબોર્ડ મેટ્રિક્સ કાર્ડ્સ (Top Statistics Ribbon) */
+.admin-metrics-ribbon {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.admin-metric-card {
+  background: #FFFFFF;
+  border: 1.5px solid #EFE4D6;
+  border-radius: 16px;
+  padding: 1.25rem 1.4rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 4px 14px rgba(139, 30, 15, 0.04);
+  transition: all 0.2s ease;
+}
+
+.admin-metric-card:hover {
+  border-color: #D97706;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(139, 30, 15, 0.08);
+}
+
+.admin-metric-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #FFFDF7 0%, #FEF3C7 100%);
+  border: 1.5px solid #FDE68A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  color: #8B1E0F;
+  flex-shrink: 0;
+}
+
+.admin-metric-value {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #8B1E0F;
+  line-height: 1.1;
+}
+
+.admin-metric-label {
+  font-size: 0.88rem;
+  color: #6B5446;
+  font-weight: 700;
+  margin-top: 0.2rem;
+}
+
+/* ૬. ટેબ્સ નેવિગેશન બાર (Sleek Tab Navigation, Zero Scrollbar) */
+.admin-tabs-nav-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding-bottom: 0.25rem;
+}
+
+.admin-tabs-nav-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.admin-tab-nav-btn {
+  min-height: 46px;
+  padding: 0.65rem 1.4rem;
+  border-radius: 12px;
+  background: #FFFFFF;
+  border: 1.5px solid #EAD8C2;
+  color: #6B5446;
+  font-family: var(--font-gujarati);
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+}
+
+.admin-tab-nav-btn:hover {
+  background: #FFFDF7;
+  border-color: #D97706;
+  color: #8B1E0F;
+  transform: translateY(-1px);
+}
+
+.admin-tab-nav-btn.active {
+  background: linear-gradient(135deg, #8B1E0F 0%, #631006 100%);
+  color: #FFFFFF;
+  border-color: #8B1E0F;
+  box-shadow: 0 6px 18px rgba(139, 30, 15, 0.28);
+}
+
+/* ૭. સર્વિસીસ લિસ્ટ વ્યુ (All Services View - Full Grid) */
+.admin-view-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  background: #FFFFFF;
+  border: 1.5px solid #EFE4D6;
+  border-radius: 16px;
+  padding: 1.15rem 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 14px rgba(139, 30, 15, 0.03);
+}
+
+.admin-search-box-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 280px;
+}
+
+.admin-search-box-wrap svg {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #A89078;
+  pointer-events: none;
+}
+
+.admin-search-box-input {
+  width: 100%;
+  min-height: 46px;
+  padding: 0.6rem 1rem 0.6rem 2.8rem;
+  font-family: var(--font-gujarati);
+  font-size: 1rem;
+  border: 1.5px solid #E2D0BA;
+  border-radius: 9999px;
+  background: #FFFDF9;
+  color: #2D1A10;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.admin-search-box-input:focus {
+  border-color: #D97706;
+  background: #FFFFFF;
+  box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.16);
+}
+
+.admin-filter-select {
+  min-height: 46px;
+  padding: 0.6rem 1.2rem;
+  font-family: var(--font-gujarati);
+  font-size: 0.95rem;
+  font-weight: 700;
+  border: 1.5px solid #E2D0BA;
+  border-radius: 12px;
+  background: #FFFDF9;
+  color: #6B5446;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.admin-filter-select:focus {
+  border-color: #8B1E0F;
+}
+
+.admin-btn-primary {
+  min-height: 46px;
+  padding: 0.6rem 1.4rem;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #8B1E0F 0%, #631006 100%);
+  color: #FFFFFF;
+  border: 1px solid #D97706;
+  font-family: var(--font-gujarati);
+  font-size: 0.98rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 14px rgba(139, 30, 15, 0.25);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.admin-btn-primary:hover {
+  background: linear-gradient(135deg, #D97706 0%, #B45309 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(217, 119, 6, 0.32);
+}
+
+.admin-btn-secondary {
+  min-height: 46px;
+  padding: 0.6rem 1.2rem;
+  border-radius: 12px;
+  background: #FFFFFF;
+  color: #6B5446;
+  border: 1.5px solid #E2D0BA;
+  font-family: var(--font-gujarati);
+  font-size: 0.98rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.admin-btn-secondary:hover {
+  background: #FEF3C7;
+  border-color: #D97706;
+  color: #8B1E0F;
+}
+
+/* સર્વિસીસ ગ્રીડ (Services Responsive Grid) */
+.admin-services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 1.5rem;
+}
+
+.admin-srv-card-new {
+  background: #FFFFFF;
+  border: 1.5px solid #EFE4D6;
+  border-radius: 18px;
+  padding: 1.4rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1rem;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.03);
+  transition: all 0.25s ease;
+}
+
+.admin-srv-card-new:hover {
+  border-color: #D97706;
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(139, 30, 15, 0.1);
+}
+
+.admin-srv-card-top {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.admin-srv-thumb-box {
+  width: 82px;
+  height: 82px;
+  min-width: 82px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #FFF7ED;
+  border: 2px solid #FED7AA;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-srv-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.admin-srv-card-new:hover .admin-srv-thumb-img {
+  transform: scale(1.06);
+}
+
+.admin-srv-meta-col {
+  flex: 1;
+  min-width: 0;
+}
+
+.admin-srv-tags-row {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.35rem;
+}
+
+.admin-tag-category {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.18rem 0.6rem;
+  border-radius: 6px;
+  background: #FFFBEB;
+  color: #B45309;
+  border: 1px solid #FDE68A;
+}
+
+.admin-tag-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.18rem 0.6rem;
+  border-radius: 6px;
+  background: #FEF2F2;
+  color: #B91C1C;
+  border: 1px solid #FECACA;
+}
+
+.admin-srv-title-text {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #8B1E0F;
+  line-height: 1.3;
+  margin-bottom: 0.15rem;
+}
+
+.admin-srv-english-text {
+  font-size: 0.85rem;
+  color: #8C7A6B;
+  font-style: italic;
+  margin-bottom: 0.35rem;
+}
+
+.admin-srv-price-text {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #15803D;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.admin-srv-card-middle {
+  padding: 0.75rem 0.9rem;
+  background: #FFFDF9;
+  border: 1px solid #F3E8DB;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  color: #6B5446;
+  line-height: 1.45;
+}
+
+.admin-srv-samagri-count {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 700;
+  color: #8B1E0F;
+  margin-bottom: 0.25rem;
+}
+
+.admin-srv-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding-top: 0.5rem;
+  border-top: 1px dashed #E2D0BA;
+}
+
+.admin-action-btn-edit {
+  flex: 1;
+  min-height: 40px;
+  padding: 0.4rem 0.85rem;
+  border-radius: 8px;
+  background: #FFFBEB;
+  border: 1.5px solid #FDE68A;
+  color: #B45309;
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  transition: all 0.2s ease;
+}
+
+.admin-action-btn-edit:hover {
+  background: #FEF3C7;
+  border-color: #F59E0B;
+  transform: translateY(-1px);
+}
+
+.admin-action-btn-del {
+  min-height: 40px;
+  padding: 0.4rem 0.85rem;
+  border-radius: 8px;
+  background: #FEF2F2;
+  border: 1.5px solid #FECACA;
+  color: #DC2626;
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  transition: all 0.2s ease;
+}
+
+.admin-action-btn-del:hover {
+  background: #FEE2E2;
+  border-color: #EF4444;
+  transform: translateY(-1px);
+}
+
+/* ૮. ફોર્મ લેઆઉટ (Full Screen 2-Column Form Architecture) */
+.admin-form-full-wrap {
+  background: #FFFFFF;
+  border: 1.5px solid #EFE4D6;
+  border-radius: 20px;
+  padding: 2rem 2.25rem;
+  box-shadow: 0 6px 20px rgba(139, 30, 15, 0.05);
+}
+
+.admin-form-title-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding-bottom: 1.25rem;
+  margin-bottom: 1.75rem;
+  border-bottom: 2px solid #EAD8C2;
+}
+
+.admin-form-main-heading {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #8B1E0F;
+  margin: 0;
+}
+
+.admin-form-sub-heading {
+  font-size: 0.92rem;
+  color: #6B5446;
+  margin-top: 0.2rem;
+}
+
+.admin-form-grid-2col {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.admin-fieldset-card {
+  border: 1.5px solid #EAD8C2;
+  border-radius: 16px;
+  padding: 1.5rem 1.5rem 1.25rem;
+  background: #FFFFFF;
+  margin-bottom: 1.5rem;
+}
+
+.admin-fieldset-legend {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 1rem;
+  font-size: 0.98rem;
+  font-weight: 800;
+  color: #8B1E0F;
+  background: #FEF3C7;
+  border: 1px solid #FDE68A;
+  border-radius: 9999px;
+  box-shadow: 0 2px 6px rgba(245, 158, 11, 0.15);
+}
+
+.admin-form-group {
+  margin-bottom: 1.25rem;
+}
+
+.admin-form-label {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #8B1E0F;
+  margin-bottom: 0.45rem;
+}
+
+.admin-form-input {
+  width: 100%;
+  min-height: 48px;
+  padding: 0.65rem 1rem;
+  font-family: var(--font-gujarati);
+  font-size: 1rem;
+  color: #2D1A10;
+  background: #FFFDF9;
+  border: 1.5px solid #E2D0BA;
+  border-radius: 10px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.admin-form-input:focus {
+  border-color: #8B1E0F;
+  background: #FFFFFF;
+  box-shadow: 0 0 0 3px rgba(139, 30, 15, 0.15);
+}
+
+textarea.admin-form-input {
+  min-height: 105px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.admin-form-hint {
+  font-size: 0.82rem;
+  color: #8C7A6B;
+  margin-top: 0.35rem;
+  line-height: 1.4;
+}
+
+.admin-form-row-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+/* કસ્ટમ ફાઈલ ડ્રોપઝોન (No ugly browser "Choose file") */
+.admin-custom-file-dropzone {
+  border: 2px dashed #D97706;
+  border-radius: 14px;
+  background: #FFFDF7;
+  padding: 1.5rem 1rem;
+  text-align: center;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  transition: all 0.2s ease;
+}
+
+.admin-custom-file-dropzone:hover {
+  background: #FEF3C7;
+  border-color: #8B1E0F;
+  transform: translateY(-2px);
+}
+
+.admin-dropzone-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #FEF3C7;
+  border: 1.5px solid #FDE68A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #8B1E0F;
+  font-size: 1.5rem;
+}
+
+.admin-dropzone-title {
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: #8B1E0F;
+}
+
+.admin-dropzone-sub {
+  font-size: 0.82rem;
+  color: #8C7A6B;
+}
+
+/* OCR સ્કેનર કાર્ડ (Scanner Banner) */
+.admin-scanner-banner-card {
+  background: linear-gradient(135deg, #FFFDF7 0%, #FEF3C7 100%);
+  border: 2px dashed #D97706;
+  border-radius: 16px;
+  padding: 1.25rem 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.admin-scanner-left {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.admin-scanner-icon {
+  font-size: 2.2rem;
+  line-height: 1;
+}
+
+.admin-scanner-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #8B1E0F;
+}
+
+.admin-scanner-desc {
+  font-size: 0.85rem;
+  color: #6B5446;
+}
+
+/* ફોર્મ બોટમ એક્શન બાર */
+.admin-form-actions-bottom-bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding-top: 1.5rem;
+  margin-top: 1.5rem;
+  border-top: 2px solid #EFE4D6;
+}
+
+/* ૯. પ્રોફાઈલ અને પિન ચેન્જ કાર્ડ્સ */
+.admin-profile-full-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.admin-profile-preview-card {
+  background: #FFFDF7;
+  border: 1.5px solid #EAD8C2;
+  border-radius: 16px;
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+
+.admin-profile-avatar-circle {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #D97706;
+  box-shadow: 0 8px 24px rgba(139, 30, 15, 0.18);
+  margin-bottom: 1rem;
+}
+
+/* ૧૦. ફૂટર (Full Width Footer) */
+.admin-full-footer {
+  width: 100%;
+  background: #FAF5EB;
+  border-top: 1.5px solid #E8D3B8;
+  padding: 1.5rem 1.5rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #6B5446;
+}
+
+/* ૧૧. રિસ્પોન્સિવ મીડિયા ક્વેરીઝ (Responsive Breakpoints) */
+@media (max-width: 1024px) {
+  .admin-metrics-ribbon {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .admin-form-grid-2col {
+    grid-template-columns: 1fr;
+  }
+  .admin-profile-full-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .admin-full-topbar-inner {
+    padding: 0.75rem 1rem;
+  }
+  .admin-brand-title {
+    font-size: 1.05rem;
+  }
+  .admin-full-main {
+    padding: 1rem 1rem 3rem;
+  }
+  .admin-metrics-ribbon {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  .admin-services-grid {
+    grid-template-columns: 1fr;
+  }
+  .admin-srv-card-new {
+    padding: 1rem;
+  }
+  .admin-form-full-wrap {
+    padding: 1.25rem 1rem;
+  }
+  .admin-fieldset-card {
+    padding: 1.15rem 0.85rem;
+  }
+  .admin-form-row-2col {
+    grid-template-columns: 1fr;
+  }
+  .admin-pin-card {
+    padding: 2rem 1.25rem;
+  }
+  .admin-pin-digit-input {
+    width: 50px;
+    height: 58px;
+    font-size: 1.6rem;
+  }
+}

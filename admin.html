@@ -9,7 +9,7 @@
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="assets/icons/gemini-svg.svg">
 
-  <!-- Google Fonts: Noto Sans Gujarati -->
+  <!-- Google Fonts: Noto Sans Gujarati & Rozha One -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Gujarati:wght@300;400;500;600;700;800&family=Rozha+One&display=swap" rel="stylesheet">
@@ -17,82 +17,71 @@
   <!-- Stylesheets -->
   <link rel="stylesheet" href="css/design-system.css">
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/admin.css">
 
   <!-- Client-Side OCR Engine (Zero AI / Zero LLM) -->
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js" defer></script>
-
-  <style>
-    .admin-page-wrapper {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-    .admin-standalone-container {
-      flex: 1;
-      max-width: 800px;
-      margin: 2rem auto;
-      width: 100%;
-      padding-left: 15px;
-      padding-right: 15px;
-    }
-    .admin-standalone-card {
-      background: #FFFFFF;
-      border: 3px double var(--color-maroon);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-card);
-      padding: 2rem;
-    }
-    @media (max-width: 600px) {
-      .admin-standalone-container {
-        margin: 1rem auto;
-        padding-left: 15px;
-        padding-right: 15px;
-      }
-      .admin-standalone-card {
-        padding: 1.25rem 0.85rem;
-      }
-    }
-  </style>
 </head>
-<body class="admin-page-wrapper">
+<body class="admin-page-body">
 
-  <!-- એડમિન પેનલ હેડર -->
-  <header class="site-header">
-    <div class="container header-inner">
-      <a href="index.html" class="brand-wrapper" title="શાસ્ત્રીજી જીતેન્દ્ર જોષી">
-        <div class="sacred-logo-ring">
-          <img src="assets/icons/gemini-svg.svg" alt="ॐ પ્રતીક" class="sacred-logo-img">
-        </div>
-        <div class="brand-info">
-          <span class="brand-shree-ganesh">।। શ્રી ગણેશાય નમઃ ।।</span>
-          <span class="brand-name">શાસ્ત્રીજી જીતેન્દ્ર જોષી (એડમિન પેનલ)</span>
+  <!-- ૧. ફુલ-વિડ્થ ટોપબાર હેડર (Full-Width Sacred Sticky Header) -->
+  <header class="admin-full-topbar">
+    <div class="admin-full-topbar-inner">
+      <a href="index.html" class="admin-brand-group" title="મુખ્ય વેબસાઈટ પર જાઓ">
+        <div class="admin-om-badge">🕉️</div>
+        <div class="admin-brand-text">
+          <span class="admin-brand-mantra">।। શ્રી ગણેશાય નમઃ ।।</span>
+          <span class="admin-brand-title">શાસ્ત્રીજી જીતેન્દ્ર જોષી (જીતુભાઈ)</span>
+          <span class="admin-brand-tag">🔒 સંચાલન પોર્ટલ (Admin CMS)</span>
         </div>
       </a>
+
+      <div class="admin-header-actions">
+        <div class="admin-server-status-pill" id="adminServerPill">
+          <span class="admin-status-dot"></span>
+          <span id="adminServerStatusText">લાઈવ સર્વર તપાસી રહ્યા છીએ...</span>
+        </div>
+        <a href="index.html" target="_blank" class="admin-view-site-link">
+          <span>🌐 વેબસાઈટ જુઓ</span>
+          <span aria-hidden="true">➔</span>
+        </a>
+        <button class="admin-top-logout-btn" id="topLogoutBtn" style="display: none;">
+          <span>🚪 બહાર નીકળો</span>
+        </button>
+      </div>
     </div>
   </header>
 
-  <!-- એડમિન બોડી કન્ટેનર -->
-  <main class="admin-standalone-container">
-    <div class="admin-standalone-card" id="adminMainContainer">
-      <!-- Dynamically rendered by admin standalone script -->
-    </div>
+  <!-- ૨. મુખ્ય ફુલ-સ્ક્રીન કન્ટેનર (Full-Width Main Container) -->
+  <main class="admin-full-main" id="adminMainArea">
+    <!-- Rendered dynamically by StandaloneAdmin -->
   </main>
 
-  <!-- ટોસ્ટ નોટિફિકેશન કન્ટેનર -->
+  <!-- ૩. ટોસ્ટ નોટિફિકેશન કન્ટેનર -->
   <div class="toast-container" id="toastContainer"></div>
 
-  <!-- ફૂટર -->
-  <footer class="site-footer" style="padding: 1.5rem 15px 1rem; margin-top: auto;">
-    <div class="container text-center">
-      <div style="font-weight: 700; color: var(--color-maroon); font-size: 0.95rem;">
-        શાસ્ત્રીજી જીતેન્દ્ર જોષી પૂજા પોર્ટફોલિયો CMS
+  <!-- ૪. ક્વિક પેમ્ફ્લેટ પ્રીવ્યૂ મોડલ (Devotee Pamphlet Preview Modal) -->
+  <div class="modal-overlay" id="previewModalOverlay" style="display: none; position: fixed; inset: 0; background: rgba(50, 10, 5, 0.7); backdrop-filter: blur(4px); z-index: 1000; align-items: center; justify-content: center; padding: 1rem;">
+    <div style="background: #FFFFFF; border: 2px solid #EAD8C2; border-radius: 20px; max-width: 720px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 1.75rem; position: relative; box-shadow: 0 25px 50px rgba(0,0,0,0.3);">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #FEF3C7; padding-bottom: 0.75rem; margin-bottom: 1.25rem;">
+        <h3 id="previewModalTitle" style="font-size: 1.35rem; color: #8B1E0F; margin: 0; font-weight: 800;"></h3>
+        <button type="button" id="closePreviewBtn" style="background: #FFFDF9; border: 1.5px solid #E2D0BA; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; font-weight: 700; color: #8B1E0F; display: flex; align-items: center; justify-content: center;">✕</button>
       </div>
-      <div class="footer-copyright" style="margin-top: 0.35rem;">
-        © 2026 શાસ્ત્રીજી જીતેન્દ્ર જોષી. સર્વાધિકાર સુરક્ષિત.
-      </div>
+      <div id="previewModalBody"></div>
+    </div>
+  </div>
+
+  <!-- ૫. ફુલ-વિડ્થ ફૂટર (Footer) -->
+  <footer class="admin-full-footer">
+    <div style="font-weight: 700; color: #8B1E0F; font-size: 0.95rem;">
+      શાસ્ત્રીજી જીતેન્દ્ર જોષી પૂજા પોર્ટફોલિયો CMS
+    </div>
+    <div style="margin-top: 0.35rem; color: #6B5446;">
+      © 2026 શાસ્ત્રીજી જીતેન્દ્ર જોષી. સર્વાધિકાર સુરક્ષિત. • મોબાઈલ: ૯૯૨૫૨ ૬૪૯૨૯ • ગુજરાત
     </div>
   </footer>
 
+  <!-- ૬. મોડ્યુલર જાવાસ્ક્રિપ્ટ લોજિક (Full UI/UX Pro Max Logic) -->
   <script type="module">
     import { db } from './js/db.js';
     import { CATEGORIES } from './js/data.js';
@@ -102,15 +91,47 @@
     class StandaloneAdmin {
       constructor() {
         this.isAuthenticated = false;
-        this.container = document.getElementById('adminMainContainer');
+        this.mainContainer = document.getElementById('adminMainArea');
+        this.activeTab = 'services'; // 'services', 'add', 'profile', 'pin'
+        this.editingService = null;
+        this.searchQuery = '';
+        this.categoryFilter = 'બધા વિભાગો';
+        this.cachedServices = [];
       }
 
       async init() {
+        this.checkServerStatus();
+
         if (sessionStorage.getItem('shastriji_admin_auth') === 'true') {
           this.isAuthenticated = true;
-          this.renderDashboard('services');
+          document.getElementById('topLogoutBtn').style.display = 'inline-flex';
+          document.getElementById('topLogoutBtn').onclick = () => this.logout();
+          await this.renderDashboard();
         } else {
           this.renderPinScreen();
+        }
+
+        // Preview modal close handler
+        const closeBtn = document.getElementById('closePreviewBtn');
+        const overlay = document.getElementById('previewModalOverlay');
+        if (closeBtn && overlay) {
+          closeBtn.onclick = () => { overlay.style.display = 'none'; };
+          overlay.onclick = (e) => { if (e.target === overlay) overlay.style.display = 'none'; };
+        }
+      }
+
+      async checkServerStatus() {
+        const pillText = document.getElementById('adminServerStatusText');
+        try {
+          const res = await fetch('/api/status', { cache: 'no-store' });
+          if (res.ok) {
+            const data = await res.json();
+            if (pillText) pillText.textContent = `🟢 લાઈવ સર્વર (${data.servicesCount || 'ડેટા'} સક્રિય)`;
+          } else {
+            if (pillText) pillText.textContent = '🟠 સ્થાનિક સ્ટોરેજ સક્રિય';
+          }
+        } catch {
+          if (pillText) pillText.textContent = '🟠 સ્થાનિક સ્ટોરેજ સક્રિય';
         }
       }
 
@@ -128,27 +149,44 @@
         }, 3500);
       }
 
+      logout() {
+        this.isAuthenticated = false;
+        sessionStorage.removeItem('shastriji_admin_auth');
+        document.getElementById('topLogoutBtn').style.display = 'none';
+        this.showToast('આપ સફળતાપૂર્વક લૉગ આઉટ થયા છો.');
+        this.renderPinScreen();
+      }
+
+      /* -------------------------------------------------------------
+         ૧. પિન લૉગિન સ્ક્રીન (Sacred PIN Authentication Screen)
+         ------------------------------------------------------------- */
       renderPinScreen() {
-        this.container.innerHTML = `
-          <div class="pin-screen-box">
-            <div class="pamphlet-om-badge">
-              <img src="assets/icons/gemini-svg.svg" alt="ॐ">
-            </div>
-            <h2 style="font-size: 1.7rem; color: var(--color-maroon); margin-bottom: 0.5rem;">શાસ્ત્રીજી સુરક્ષિત લૉગિન</h2>
-            <p style="color: var(--color-text-sub); font-size: 1rem;">કૃપા કરીને આપનો ૪-અંકનો ગુપ્ત પિન દાખલ કરો (મૂળભૂત પિન: 1234)</p>
-            
-            <div class="pin-input-group">
-              <input type="password" maxlength="1" class="pin-digit-box" id="pinDigit1" autofocus autocomplete="off" inputmode="numeric">
-              <input type="password" maxlength="1" class="pin-digit-box" id="pinDigit2" autocomplete="off" inputmode="numeric">
-              <input type="password" maxlength="1" class="pin-digit-box" id="pinDigit3" autocomplete="off" inputmode="numeric">
-              <input type="password" maxlength="1" class="pin-digit-box" id="pinDigit4" autocomplete="off" inputmode="numeric">
-            </div>
+        this.mainContainer.innerHTML = `
+          <div class="admin-pin-view-wrapper">
+            <div class="admin-pin-card">
+              <div class="admin-pin-om-large">🕉️</div>
+              <h2 class="admin-pin-title">શાસ્ત્રીજી સુરક્ષિત લૉગિન</h2>
+              <p class="admin-pin-sub">કૃપા કરીને આપનો ૪-અંકનો ગુપ્ત પિન દાખલ કરો</p>
 
-            <div id="pinErrorMsg" style="color: var(--color-danger); font-size: 0.95rem; font-weight: 700; min-height: 24px; margin-bottom: 1rem;"></div>
+              <div class="admin-pin-boxes-row">
+                <input type="password" maxlength="1" class="admin-pin-digit-input" id="pinDigit1" autofocus autocomplete="off" inputmode="numeric">
+                <input type="password" maxlength="1" class="admin-pin-digit-input" id="pinDigit2" autocomplete="off" inputmode="numeric">
+                <input type="password" maxlength="1" class="admin-pin-digit-input" id="pinDigit3" autocomplete="off" inputmode="numeric">
+                <input type="password" maxlength="1" class="admin-pin-digit-input" id="pinDigit4" autocomplete="off" inputmode="numeric">
+              </div>
 
-            <button class="btn btn-primary" id="pinSubmitBtn" style="width: 100%; max-width: 280px; margin: 0 auto;">
-              પ્રવેશ કરો ➔
-            </button>
+              <div class="admin-pin-error" id="pinErrorMsg"></div>
+
+              <button class="admin-pin-submit-btn" id="pinSubmitBtn">
+                પ્રવેશ કરો ➔
+              </button>
+
+              <div style="margin-top: 1.25rem;">
+                <span class="admin-pin-hint-tag">
+                  💡 મૂળભૂત પિન: <strong>1234</strong> (લૉગિન પછી બદલી શકાય છે)
+                </span>
+              </div>
+            </div>
           </div>
         `;
 
@@ -174,9 +212,19 @@
               digits[index - 1].focus();
             }
           });
+
+          // Paste support (e.g. pasting "1234")
+          input.addEventListener('paste', (e) => {
+            e.preventDefault();
+            const pastedData = (e.clipboardData || window.clipboardData).getData('text').trim();
+            if (pastedData.length >= 4) {
+              digits.forEach((d, i) => { if (d) d.value = pastedData[i] || ''; });
+              this.verifyPin(digits.map(d => d.value).join(''));
+            }
+          });
         });
 
-        document.getElementById('pinSubmitBtn').addEventListener('click', () => {
+        document.getElementById('pinSubmitBtn')?.addEventListener('click', () => {
           const pin = digits.map(d => d.value).join('');
           this.verifyPin(pin);
         });
@@ -190,11 +238,13 @@
         if (enteredPin === correctPin) {
           this.isAuthenticated = true;
           sessionStorage.setItem('shastriji_admin_auth', 'true');
+          document.getElementById('topLogoutBtn').style.display = 'inline-flex';
+          document.getElementById('topLogoutBtn').onclick = () => this.logout();
           this.showToast('સ્વાગત છે શાસ્ત્રીજી! લૉગિન સફળ રહ્યું.');
-          this.renderDashboard();
+          await this.renderDashboard();
         } else {
           if (errorEl) {
-            errorEl.textContent = '❌ ખોટો પિન! કૃપા કરીને ફરી પ્રયાસ કરો.';
+            errorEl.innerHTML = '<span>❌ ખોટો પિન! કૃપા કરીને ફરી પ્રયાસ કરો.</span>';
           }
           const digits = ['pinDigit1', 'pinDigit2', 'pinDigit3', 'pinDigit4'].map(id => document.getElementById(id));
           digits.forEach(d => { if (d) d.value = ''; });
@@ -202,235 +252,548 @@
         }
       }
 
-      async renderDashboard(activeTab = 'services') {
-        this.container.innerHTML = `
-          <div class="admin-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
-            <div>
-              <h2>શાસ્ત્રીજી કંટ્રોલ પેનલ (CMS)</h2>
-              <p style="font-size: 0.95rem; color: var(--color-text-sub);">પૂજા સામગ્રી, પેમ્ફ્લેટ અને સંપર્ક વિગતનું સરળ સંચાલન</p>
+      /* -------------------------------------------------------------
+         ૨. મુખ્ય ડેશબોર્ડ શેલ (Metrics Ribbon, Tabs, Workspace)
+         ------------------------------------------------------------- */
+      async renderDashboard() {
+        this.cachedServices = await db.getServices();
+
+        // Calculate metrics
+        const totalServices = this.cachedServices.length;
+        const uniqueCategories = new Set(this.cachedServices.map(s => s.category)).size;
+        const totalItemsCount = this.cachedServices.reduce((acc, s) => {
+          const items = (s.pujapo || '').split(/[,;\n]+/).filter(Boolean).length;
+          return acc + items;
+        }, 0);
+
+        this.mainContainer.innerHTML = `
+          <!-- ટોપ મેટ્રિક્સ રિબન (Top Metrics Ribbon) -->
+          <div class="admin-metrics-ribbon">
+            <div class="admin-metric-card">
+              <div class="admin-metric-icon">🪔</div>
+              <div>
+                <div class="admin-metric-value">${totalServices} પૂજાઓ</div>
+                <div class="admin-metric-label">કુલ સક્રિય યાદી</div>
+              </div>
             </div>
-            <div style="font-size: 0.85rem; background: #ECFDF5; color: #047857; border: 1px solid #10B981; padding: 0.35rem 0.85rem; border-radius: 999px; font-weight: 700;">
-              🟢 લાઈવ સર્વર ડેટા
+
+            <div class="admin-metric-card">
+              <div class="admin-metric-icon">🏷️</div>
+              <div>
+                <div class="admin-metric-value">${uniqueCategories} શ્રેણીઓ</div>
+                <div class="admin-metric-label">કર્મકાંડ, શાંતિ, વ્રત</div>
+              </div>
+            </div>
+
+            <div class="admin-metric-card">
+              <div class="admin-metric-icon">📜</div>
+              <div>
+                <div class="admin-metric-value">${totalItemsCount}+ વસ્તુઓ</div>
+                <div class="admin-metric-label">શાસ્ત્રોક્ત સામગ્રી લિસ્ટ</div>
+              </div>
+            </div>
+
+            <div class="admin-metric-card">
+              <div class="admin-metric-icon">💾</div>
+              <div>
+                <div class="admin-metric-value">૧૦૦% સુરક્ષિત</div>
+                <div class="admin-metric-label">સર્વર + ઑટો-બેકઅપ</div>
+              </div>
             </div>
           </div>
 
-          <div class="admin-nav-tabs">
-            <button class="admin-tab-btn ${activeTab === 'services' ? 'active' : ''}" id="tabBtnServices">📋 બધી પૂજાઓ</button>
-            <button class="admin-tab-btn ${activeTab === 'add' ? 'active' : ''}" id="tabBtnAdd">➕ નવી પૂજા ઉમેરો</button>
-            <button class="admin-tab-btn ${activeTab === 'profile' ? 'active' : ''}" id="tabBtnProfile">👤 પ્રોફાઈલ વિગત</button>
-            <button class="admin-tab-btn ${activeTab === 'pin' ? 'active' : ''}" id="tabBtnPin">🔑 પિન બદલો</button>
-            <button class="admin-tab-btn" id="tabBtnLogout" style="color: var(--color-danger); margin-left: auto;">🚪 બહાર નીકળો</button>
+          <!-- નેવિગેશન ટેબ્સ બાર (Sleek Tabs, Zero Scrollbar) -->
+          <div class="admin-tabs-nav-bar">
+            <button class="admin-tab-nav-btn ${this.activeTab === 'services' ? 'active' : ''}" id="tabServicesBtn">
+              <span>📋</span> <span>બધી પૂજાઓ (${totalServices})</span>
+            </button>
+            <button class="admin-tab-nav-btn ${this.activeTab === 'add' ? 'active' : ''}" id="tabAddBtn">
+              <span>➕</span> <span>નવી પૂજા ઉમેરો</span>
+            </button>
+            <button class="admin-tab-nav-btn ${this.activeTab === 'profile' ? 'active' : ''}" id="tabProfileBtn">
+              <span>👤</span> <span>શાસ્ત્રીજી પ્રોફાઈલ</span>
+            </button>
+            <button class="admin-tab-nav-btn ${this.activeTab === 'pin' ? 'active' : ''}" id="tabPinBtn">
+              <span>🔑</span> <span>સુરક્ષા પિન બદલો</span>
+            </button>
           </div>
 
-          <div id="adminTabContent"></div>
+          <!-- વર્કસ્પેસ કન્ટેન્ટ એરિયા -->
+          <div id="adminWorkspace"></div>
         `;
 
-        document.getElementById('tabBtnServices').addEventListener('click', () => this.renderDashboard('services'));
-        document.getElementById('tabBtnAdd').addEventListener('click', () => this.renderAddEditForm(null));
-        document.getElementById('tabBtnProfile').addEventListener('click', () => this.renderProfileForm());
-        document.getElementById('tabBtnPin').addEventListener('click', () => this.renderPinChangeForm());
-        document.getElementById('tabBtnLogout').addEventListener('click', () => {
-          this.isAuthenticated = false;
-          sessionStorage.removeItem('shastriji_admin_auth');
-          this.showToast('આપ સફળતાપૂર્વક લૉગ આઉટ થયા છો.');
-          this.renderPinScreen();
+        // Wire Tab Clicks
+        document.getElementById('tabServicesBtn')?.addEventListener('click', () => {
+          this.activeTab = 'services';
+          this.editingService = null;
+          this.updateTabStyles();
+          this.renderServicesView();
         });
 
-        if (activeTab === 'services') {
-          await this.renderServicesList();
+        document.getElementById('tabAddBtn')?.addEventListener('click', () => {
+          this.activeTab = 'add';
+          this.editingService = null;
+          this.updateTabStyles();
+          this.renderAddEditView(null);
+        });
+
+        document.getElementById('tabProfileBtn')?.addEventListener('click', () => {
+          this.activeTab = 'profile';
+          this.updateTabStyles();
+          this.renderProfileView();
+        });
+
+        document.getElementById('tabPinBtn')?.addEventListener('click', () => {
+          this.activeTab = 'pin';
+          this.updateTabStyles();
+          this.renderPinChangeView();
+        });
+
+        // Initial view load
+        if (this.activeTab === 'services') {
+          await this.renderServicesView();
+        } else if (this.activeTab === 'add') {
+          await this.renderAddEditView(this.editingService);
+        } else if (this.activeTab === 'profile') {
+          await this.renderProfileView();
+        } else if (this.activeTab === 'pin') {
+          await this.renderPinChangeView();
         }
       }
 
-      async renderServicesList() {
-        const content = document.getElementById('adminTabContent');
-        if (!content) return;
+      updateTabStyles() {
+        const btnMap = {
+          services: 'tabServicesBtn',
+          add: 'tabAddBtn',
+          profile: 'tabProfileBtn',
+          pin: 'tabPinBtn'
+        };
+        Object.entries(btnMap).forEach(([tab, btnId]) => {
+          const btn = document.getElementById(btnId);
+          if (btn) {
+            if (this.activeTab === tab) btn.classList.add('active');
+            else btn.classList.remove('active');
+          }
+        });
+      }
 
-        const services = await db.getServices();
+      /* -------------------------------------------------------------
+         ૩. "બધી પૂજાઓ" વ્યુ (All Services View - Full Responsive Grid)
+         ------------------------------------------------------------- */
+      async renderServicesView() {
+        const workspace = document.getElementById('adminWorkspace');
+        if (!workspace) return;
 
-        if (services.length === 0) {
-          content.innerHTML = `
-            <div style="text-align: center; padding: 2rem; color: var(--color-text-sub);">
-              <p>હજી કોઈ પૂજા ઉમેરેલ નથી.</p>
-              <button class="btn btn-primary" id="emptyAddBtn" style="margin-top: 1rem; display: inline-flex; align-items: center; gap: 0.5rem;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                <span>નવી પૂજા ઉમેરો</span>
+        this.cachedServices = await db.getServices();
+
+        // Unique categories for filter dropdown
+        const categories = ['બધા વિભાગો', ...new Set(this.cachedServices.map(s => s.category).filter(Boolean))];
+        const catOptions = categories
+          .map(cat => `<option value="${cat}" ${this.categoryFilter === cat ? 'selected' : ''}>${cat}</option>`)
+          .join('');
+
+        // Apply filters
+        const filtered = this.cachedServices.filter(s => {
+          const matchesCategory = (this.categoryFilter === 'બધા વિભાગો') || (s.category === this.categoryFilter);
+          const q = this.searchQuery.toLowerCase().trim();
+          if (!q) return matchesCategory;
+
+          const title = (s.title || '').toLowerCase();
+          const engTitle = (s.englishTitle || '').toLowerCase();
+          const pujapo = (s.pujapo || '').toLowerCase();
+          const keywords = Array.isArray(s.keywords) ? s.keywords.join(' ').toLowerCase() : '';
+
+          const matchesQuery = title.includes(q) || engTitle.includes(q) || pujapo.includes(q) || keywords.includes(q);
+          return matchesCategory && matchesQuery;
+        });
+
+        let gridHtml = '';
+
+        if (filtered.length === 0) {
+          gridHtml = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 3.5rem 1.5rem; background: #FFFFFF; border: 1.5px dashed #EAD8C2; border-radius: 18px;">
+              <div style="font-size: 3rem; margin-bottom: 0.75rem;">🔍</div>
+              <h3 style="font-size: 1.3rem; color: #8B1E0F; margin-bottom: 0.35rem;">કોઈ પૂજા મળી નહીં</h3>
+              <p style="color: #6B5446; font-size: 0.95rem; margin-bottom: 1.25rem;">
+                ${this.searchQuery ? `"${this.searchQuery}" માટે કોઈ પરિણામ મળ્યું નથી.` : 'હજી કોઈ પૂજા ઉમેરેલ નથી.'}
+              </p>
+              <button class="admin-btn-primary" id="emptyAddNewBtn" style="margin: 0 auto;">
+                <span>➕ નવી પૂજા ઉમેરો</span>
               </button>
             </div>
           `;
-          document.getElementById('emptyAddBtn')?.addEventListener('click', () => this.renderAddEditForm(null));
-          return;
-        }
+        } else {
+          gridHtml = filtered.map(item => {
+            const samagriCount = (item.pujapo || '').split(/[,;\n]+/).filter(Boolean).length;
+            const thumb = item.thumbnailUrl || 'assets/images/card-ganesh.png';
+            const price = item.price || 'દક્ષિણા માટે સંપર્ક કરો';
+            const badge = item.badge || 'ધાર્મિક વિધિ';
+            const engTitle = item.englishTitle || '';
 
-        let listHtml = `<div style="margin-bottom: 1.25rem; display: flex; justify-content: space-between; align-items: center; gap: 0.75rem;">
-          <h3 style="font-size: 1.2rem; color: var(--color-maroon);">કુલ પૂજાઓ (${services.length})</h3>
-          <button class="btn btn-primary btn-icon-action" id="addNewServiceTopBtn" title="નવી પૂજા ઉમેરો" aria-label="નવી પૂજા ઉમેરો">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-          </button>
-        </div>`;
+            return `
+              <div class="admin-srv-card-new">
+                <div class="admin-srv-card-top">
+                  <div class="admin-srv-thumb-box">
+                    <img src="${thumb}" alt="${item.title}" class="admin-srv-thumb-img" onerror="this.src='assets/icons/gemini-svg.svg'">
+                  </div>
 
-        services.forEach(item => {
-          listHtml += `
-            <div class="admin-service-item">
-              <div style="flex: 1; min-width: 0;">
-                <div class="admin-item-title">${item.title}</div>
-                <div style="font-size: 0.85rem; color: var(--color-text-sub);">
-                  વિભાગ: <strong>${item.category}</strong> | કિંમત: ${item.price || 'સંપર્ક કરો'}
+                  <div class="admin-srv-meta-col">
+                    <div class="admin-srv-tags-row">
+                      <span class="admin-tag-category">🏷️ ${item.category}</span>
+                      <span class="admin-tag-badge">⭐ ${badge}</span>
+                    </div>
+                    <div class="admin-srv-title-text">${item.title}</div>
+                    ${engTitle ? `<div class="admin-srv-english-text">${engTitle}</div>` : ''}
+                    <div class="admin-srv-price-text">
+                      <span>💰</span> <span>${price}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="admin-srv-card-middle">
+                  <div class="admin-srv-samagri-count">
+                    <span>📋 શાસ્ત્રોક્ત સામગ્રી:</span> <span>${samagriCount} વસ્તુઓ</span>
+                  </div>
+                  <div style="font-size: 0.82rem; color: #8C7A6B; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                    ${item.pujapo ? item.pujapo : 'સામગ્રી વિગત ઉપલબ્ધ નથી.'}
+                  </div>
+                </div>
+
+                <div class="admin-srv-card-actions">
+                  <button class="admin-action-btn-edit edit-srv-btn" data-id="${item.id}" title="આ પૂજામાં ફેરફાર કરો">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                    <span>સુધારો</span>
+                  </button>
+
+                  <button class="admin-btn-secondary preview-srv-btn" data-id="${item.id}" style="min-height: 40px; padding: 0.4rem 0.85rem; font-size: 0.88rem;" title="પેમ્ફ્લેટ પ્રીવ્યૂ જુઓ">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    <span>પ્રીવ્યૂ</span>
+                  </button>
+
+                  <button class="admin-action-btn-del del-srv-btn" data-id="${item.id}" title="આ પૂજા કાઢી નાખો">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    <span>કાઢી નાખો</span>
+                  </button>
                 </div>
               </div>
-              <div class="admin-item-actions">
-                <button class="btn btn-outline btn-icon-action edit-srv-btn" data-id="${item.id}" title="સુધારો" aria-label="સુધારો">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-                </button>
-                <button class="btn btn-call btn-icon-action del-srv-btn" data-id="${item.id}" title="કાઢી નાખો" aria-label="કાઢી નાખો">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                </button>
-              </div>
+            `;
+          }).join('');
+        }
+
+        workspace.innerHTML = `
+          <!-- કંટ્રોલ બાર (Live Search, Category Filter, Add CTA) -->
+          <div class="admin-view-header-bar">
+            <div class="admin-search-box-wrap">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input type="text" class="admin-search-box-input" id="adminSearchInput" value="${this.searchQuery}" placeholder="પૂજાનું નામ, અંગ્રેજી કીવર્ડ (દા.ત. Satyanarayan, Vastu) કે સામગ્રી શોધો...">
             </div>
-          `;
+
+            <select class="admin-filter-select" id="adminCategorySelect">
+              ${catOptions}
+            </select>
+
+            <button class="admin-btn-primary" id="addNewServiceTopBtn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              <span>નવી પૂજા ઉમેરો</span>
+            </button>
+          </div>
+
+          <!-- સર્વિસીસ ગ્રીડ (Full Responsive Grid) -->
+          <div class="admin-services-grid">
+            ${gridHtml}
+          </div>
+        `;
+
+        // Wire Search Input
+        const searchInput = document.getElementById('adminSearchInput');
+        if (searchInput) {
+          searchInput.addEventListener('input', (e) => {
+            this.searchQuery = e.target.value;
+            this.renderServicesView();
+            // Re-focus and preserve cursor
+            const updatedInput = document.getElementById('adminSearchInput');
+            if (updatedInput) {
+              updatedInput.focus();
+              updatedInput.setSelectionRange(updatedInput.value.length, updatedInput.value.length);
+            }
+          });
+        }
+
+        // Wire Category Filter
+        const catSelect = document.getElementById('adminCategorySelect');
+        if (catSelect) {
+          catSelect.addEventListener('change', (e) => {
+            this.categoryFilter = e.target.value;
+            this.renderServicesView();
+          });
+        }
+
+        // Wire Add Button
+        document.getElementById('addNewServiceTopBtn')?.addEventListener('click', () => {
+          this.activeTab = 'add';
+          this.editingService = null;
+          this.updateTabStyles();
+          this.renderAddEditView(null);
         });
 
-        content.innerHTML = listHtml;
-        document.getElementById('addNewServiceTopBtn')?.addEventListener('click', () => this.renderAddEditForm(null));
+        document.getElementById('emptyAddNewBtn')?.addEventListener('click', () => {
+          this.activeTab = 'add';
+          this.editingService = null;
+          this.updateTabStyles();
+          this.renderAddEditView(null);
+        });
 
-        content.querySelectorAll('.edit-srv-btn').forEach(btn => {
+        // Wire Edit Buttons
+        workspace.querySelectorAll('.edit-srv-btn').forEach(btn => {
           btn.addEventListener('click', async (e) => {
             const id = e.currentTarget.dataset.id;
             const srv = await db.getServiceById(id);
-            this.renderAddEditForm(srv);
+            this.activeTab = 'add';
+            this.editingService = srv;
+            this.updateTabStyles();
+            this.renderAddEditView(srv);
           });
         });
 
-        content.querySelectorAll('.del-srv-btn').forEach(btn => {
+        // Wire Preview Buttons
+        workspace.querySelectorAll('.preview-srv-btn').forEach(btn => {
           btn.addEventListener('click', async (e) => {
             const id = e.currentTarget.dataset.id;
             const srv = await db.getServiceById(id);
-            const confirmDelete = confirm(`શું આપ ખરેખર "${srv?.title || 'આ પૂજા'}" કાઢી નાખવા માંગો છો?`);
-            if (confirmDelete) {
+            this.openPreviewModal(srv);
+          });
+        });
+
+        // Wire Delete Buttons
+        workspace.querySelectorAll('.del-srv-btn').forEach(btn => {
+          btn.addEventListener('click', async (e) => {
+            const id = e.currentTarget.dataset.id;
+            const srv = await db.getServiceById(id);
+            const confirmDel = confirm(`શું આપ ખરેખર "${srv?.title || 'આ પૂજા'}" પૂજા પોર્ટફોલિયોમાંથી કાઢી નાખવા માંગો છો?`);
+            if (confirmDel) {
               await db.deleteService(id);
               this.showToast('પૂજા સફળતાપૂર્વક કાઢી નાખવામાં આવી.');
-              this.renderServicesList();
+              await this.renderDashboard();
             }
           });
         });
       }
 
-      renderAddEditForm(service = null) {
+      /* -------------------------------------------------------------
+         ૪. "નવી પૂજા ઉમેરો / ફેરફાર કરો" વ્યુ (2-Column Full Form Architecture)
+         ------------------------------------------------------------- */
+      async renderAddEditView(service = null) {
+        const workspace = document.getElementById('adminWorkspace');
+        if (!workspace) return;
+
         const isEdit = Boolean(service);
-        const content = document.getElementById('adminTabContent');
-        if (!content) return;
-
-        if (!isEdit) {
-          document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.remove('active'));
-          document.getElementById('tabBtnAdd')?.classList.add('active');
-        }
-
         const categoriesOptions = CATEGORIES
           .filter(c => c !== "બધી વિધિઓ")
           .map(cat => `<option value="${cat}" ${service?.category === cat ? 'selected' : ''}>${cat}</option>`)
           .join('');
 
-        content.innerHTML = `
-          <form id="serviceForm" style="display: flex; flex-direction: column; gap: 1rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.25rem;">
-              <h3 style="font-size: 1.25rem; color: var(--color-maroon); margin: 0;">
-                ${isEdit ? '✏️ પૂજામાં ફેરફાર કરો' : '➕ નવી પૂજા ઉમેરો'}
-              </h3>
-              <span style="font-size: 0.85rem; color: var(--color-text-sub);">સંપૂર્ણ ગુજરાતી CMS</span>
-            </div>
-
-            <!-- ૧. કેમેરા / ગેલેરી સ્કેનર ટૂલબાર (Camera & Gallery Scanner) -->
-            <div class="scanner-trigger-banner" style="background: linear-gradient(135deg, #FFFDF7, #FEF3C7); border: 2px dashed var(--color-border-ornate); border-radius: var(--radius-md); padding: 0.85rem 1rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem;">
-              <div style="display: flex; align-items: center; gap: 0.65rem;">
-                <span style="font-size: 1.6rem;">📸</span>
-                <div>
-                  <div style="font-weight: 800; color: var(--color-maroon); font-size: 0.95rem;">કેમેરા અથવા ગેલેરીમાંથી સ્કેન કરો</div>
-                  <div style="font-size: 0.82rem; color: var(--color-text-sub);">પેમ્ફ્લેટ અથવા સામગ્રી લિસ્ટનો ફોટો પાડી આપમેળે વિગત ભરો (AI વગર)</div>
+        workspace.innerHTML = `
+          <div class="admin-form-full-wrap">
+            <div class="admin-form-title-bar">
+              <div>
+                <h2 class="admin-form-main-heading">
+                  ${isEdit ? '✏️ પૂજામાં ફેરફાર કરો' : '➕ નવી પૂજા ઉમેરો'}
+                </h2>
+                <div class="admin-form-sub-heading">
+                  શુદ્ધ ગુજરાતીમાં વિગતો ભરો • ભક્તો માટે મોબાઈલ પેમ્ફ્લેટ આપોઆપ તૈયાર થશે
                 </div>
               </div>
-              <button type="button" class="btn btn-outline" id="fOpenScannerBtn" style="font-size: 0.9rem; font-weight: 700; border-color: var(--color-maroon); color: var(--color-maroon); min-height: 40px; padding: 0.4rem 1rem;">
-                📷 સ્કેન શરૂ કરો ➔
+              <button type="button" class="admin-btn-secondary" id="formBackToListBtn">
+                <span>← બધી પૂજાઓ પર પાછા જાઓ</span>
               </button>
             </div>
 
-            <div class="form-group">
-              <label class="form-label">પૂજાનું નામ *</label>
-              <input type="text" class="form-control" id="fTitle" required value="${service?.title || ''}" placeholder="ઉદાહરણ: શ્રી ગણેશ સ્થાપન પૂજા">
-            </div>
-
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-              <div class="form-group">
-                <label class="form-label">વિભાગ (Category) *</label>
-                <select class="form-control" id="fCategory" required>
-                  ${categoriesOptions}
-                </select>
-              </div>
-              <div class="form-group">
-                <label class="form-label">દક્ષિણા / કિંમત</label>
-                <input type="text" class="form-control" id="fPrice" value="${service?.price || 'દક્ષિણા માટે સંપર્ક કરો'}" placeholder="દક્ષિણા માટે સંપર્ક કરો">
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">બેજ (વિશેષતા)</label>
-              <input type="text" class="form-control" id="fBadge" value="${service?.badge || 'ધાર્મિક વિધિ'}" placeholder="ઉદાહરણ: લોકપ્રિય પૂજા">
-            </div>
-
-            <!-- ૨. મુખ્ય ઈમેજ અને કેનવાસ કાર્ડ જનરેટર સેક્શન -->
-            <div class="form-group" style="background: #FFFDF7; border: 1.5px solid var(--color-border); border-radius: var(--radius-md); padding: 1rem;">
-              <label class="form-label" style="margin-bottom: 0.25rem;">પૂજાનો મુખ્ય ફોટો (Main Card Image)</label>
-              <p style="font-size: 0.82rem; color: var(--color-text-sub); margin-bottom: 0.75rem;">આપ નવો ફોટો અપલોડ કરી શકો છો અથવા નીચે આપેલ કેનવાસ ટૂલથી ૧-ક્લિકમાં દિવ્ય કાર્ડ બનાવી શકો છો.</p>
-
-              <input type="file" accept="image/*" class="form-control" id="fImageFile" style="padding: 0.4rem;">
-
-              <div id="imagePreviewBox" style="margin-top: 0.75rem; display: ${service?.thumbnailUrl ? 'flex' : 'none'}; align-items: center; gap: 0.75rem; background: #FFFFFF; padding: 0.5rem; border-radius: 6px; border: 1px solid var(--color-border);">
-                <img id="imgPreviewThumb" src="${service?.thumbnailUrl || ''}" style="width: 70px; height: 50px; object-fit: cover; border-radius: 6px; border: 1.5px solid var(--color-border-ornate);">
+            <!-- OCR કેમેરા / ગેલેરી સ્કેનર બેનર (Zero AI) -->
+            <div class="admin-scanner-banner-card">
+              <div class="admin-scanner-left">
+                <span class="admin-scanner-icon">📸</span>
                 <div>
-                  <span id="imgPreviewStatus" style="font-size: 0.85rem; font-weight: 700; color: var(--color-maroon);">મુખ્ય ફોટો સેટ થયેલ છે</span>
-                  <div id="imgPreviewMeta" style="font-size: 0.75rem; color: var(--color-text-sub);">સાચવવા પર આ ફોટો વેબસાઈટ પર દેખાશે</div>
+                  <div class="admin-scanner-title">કેમેરા અથવા ગેલેરીમાંથી સ્કેન કરો (Zero AI OCR)</div>
+                  <div class="admin-scanner-desc">કાગળના પેમ્ફ્લેટ કે સામગ્રી યાદીનો ફોટો પાડી આપમેળે ફોર્મ ભરો.</div>
+                </div>
+              </div>
+              <button type="button" class="admin-btn-secondary" id="fOpenScannerBtn" style="border-color: #8B1E0F; color: #8B1E0F; font-weight: 800;">
+                <span>📷 સ્કેન શરૂ કરો ➔</span>
+              </button>
+            </div>
+
+            <form id="serviceFullForm">
+              <div class="admin-form-grid-2col">
+                <!-- ડાબી કોલમ: મૂળભૂત વિગતો અને સામગ્રી -->
+                <div>
+                  <!-- ફીલ્ડસેટ ૧: મૂળભૂત વિગતો -->
+                  <div class="admin-fieldset-card">
+                    <div style="margin-bottom: 1.25rem;">
+                      <span class="admin-fieldset-legend">૧. મૂળભૂત પૂજા વિગતો</span>
+                    </div>
+
+                    <div class="admin-form-group">
+                      <label class="admin-form-label">પૂજાનું નામ (ગુજરાતી) *</label>
+                      <input type="text" class="admin-form-input" id="fTitle" required value="${service?.title || ''}" placeholder="ઉદાહરણ: શ્રી સત્યનારાયણ દેવ પૂજા">
+                      <div class="admin-form-hint">વેબસાઈટ અને પેમ્ફ્લેટમાં આ મુખ્ય શીર્ષક તરીકે દેખાશે.</div>
+                    </div>
+
+                    <div class="admin-form-group">
+                      <label class="admin-form-label">પૂજાનું અંગ્રેજી નામ / સર્ચ કીવર્ડ્સ</label>
+                      <input type="text" class="admin-form-input" id="fEnglishTitle" value="${service?.englishTitle || ''}" placeholder="ઉદાહરણ: Satyanarayan Katha Pooja / Vastu / Havan">
+                      <div class="admin-form-hint">ભક્તો અંગ્રેજીમાં ટાઈપ કરીને પણ આ પૂજા સરળતાથી શોધી શકશે.</div>
+                    </div>
+
+                    <div class="admin-form-row-2col">
+                      <div class="admin-form-group">
+                        <label class="admin-form-label">વિભાગ (Category) *</label>
+                        <select class="admin-form-input" id="fCategory" required>
+                          ${categoriesOptions}
+                        </select>
+                      </div>
+
+                      <div class="admin-form-group">
+                        <label class="admin-form-label">દક્ષિણા / કિંમત</label>
+                        <input type="text" class="admin-form-input" id="fPrice" value="${service?.price || 'દક્ષિણા માટે સંપર્ક કરો'}" placeholder="દક્ષિણા માટે સંપર્ક કરો">
+                      </div>
+                    </div>
+
+                    <div class="admin-form-group">
+                      <label class="admin-form-label">બેજ (વિશેષતા)</label>
+                      <input type="text" class="admin-form-input" id="fBadge" value="${service?.badge || 'ધાર્મિક વિધિ'}" placeholder="ઉદાહરણ: લોકપ્રિય વિધિ / પ્રથમ પૂજ્ય દેવ">
+                    </div>
+
+                    <div class="admin-form-group">
+                      <label class="admin-form-label">વિશેષ નોંધ અને શાસ્ત્રોક્ત મહત્વ</label>
+                      <input type="text" class="admin-form-input" id="fNotes" value="${service?.notes || ''}" placeholder="પૂજા સંબંધિત ફળશ્રુતિ અને શાસ્ત્રોક્ત વિગત">
+                    </div>
+                  </div>
+
+                  <!-- ફીલ્ડસેટ ૨: સામગ્રી અને તૈયારી લિસ્ટ -->
+                  <div class="admin-fieldset-card">
+                    <div style="margin-bottom: 1.25rem;">
+                      <span class="admin-fieldset-legend">૨. પૂજાપો, સામગ્રી અને તૈયારી લિસ્ટ</span>
+                    </div>
+
+                    <div class="admin-form-group">
+                      <label class="admin-form-label">પૂજાપો / મુખ્ય સામગ્રી લિસ્ટ *</label>
+                      <textarea class="admin-form-input" id="fPujapo" required placeholder="શ્રીફળ-૧, સોપારી-૫, કંકુ, અબીલ, ગુલાલ, સિંદૂર, નાડાછડી દડી-૧, જનોઈ જોડી-૧...">${service?.pujapo || ''}</textarea>
+                      <div class="admin-form-hint">અલ્પવિરામ ',' અથવા નવી લાઈનમાં દરેક સામગ્રી લખો. ભક્તો પેમ્ફ્લેટમાં આનું લિસ્ટ જોશે.</div>
+                    </div>
+
+                    <div class="admin-form-group">
+                      <label class="admin-form-label">અનાજ અને નૈવેદ્ય</label>
+                      <textarea class="admin-form-input" id="fAnaj" placeholder="ઘઉં, ચોખા, ફળો, સાકર, મોદક, શીરો, પંચામૃત...">${service?.anajNaivedya || ''}</textarea>
+                      <div class="admin-form-hint">યજમાન દ્વારા લાવવાના અનાજ, ફળ અને પ્રસાદની વિગત.</div>
+                    </div>
+
+                    <div class="admin-form-group">
+                      <label class="admin-form-label">મૂર્તિ, વાસણ અને ઘરની તૈયારી</label>
+                      <textarea class="admin-form-input" id="fTaiyari" placeholder="બાજોઠ-૧, પાટલો-૧, થાળી-૨, વાટકા-૨, ચમચી-૨, તાંબાનો લોટો, ઘીનો દીવો, બાકસ, આસન...">${service?.taiyari || ''}</textarea>
+                      <div class="admin-form-hint">ઘરે તૈયાર રાખવાના વાસણો અને પૂજા સ્થાનની વ્યવસ્થા.</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- જમણી કોલમ: ફોટો અપલોડ અને કેનવાસ કાર્ડ જનરેટર -->
+                <div>
+                  <div class="admin-fieldset-card">
+                    <div style="margin-bottom: 1.25rem;">
+                      <span class="admin-fieldset-legend">૩. પૂજા ફોટો અને કાર્ડ નિર્માણ</span>
+                    </div>
+
+                    <div class="admin-form-group">
+                      <label class="admin-form-label">કમ્પ્યુટર અથવા મોબાઈલમાંથી ફોટો અપલોડ કરો</label>
+                      
+                      <!-- કસ્ટમ ફાઈલ ડ્રોપઝોન (No raw browser input) -->
+                      <label for="fImageFile" class="admin-custom-file-dropzone" id="fileDropzone">
+                        <div class="admin-dropzone-icon">📁</div>
+                        <div class="admin-dropzone-title">નવો ફોટો પસંદ કરવા અહીં ક્લિક કરો</div>
+                        <div class="admin-dropzone-sub">JPG, PNG, WebP ફોર્મેટ સ્વીકાર્ય છે</div>
+                        <div id="selectedFileName" style="font-size: 0.85rem; color: #15803D; font-weight: 700; margin-top: 0.25rem;"></div>
+                      </label>
+                      <input type="file" accept="image/*" id="fImageFile" style="display: none;">
+                    </div>
+
+                    <!-- કરન્ટ ફોટો પ્રીવ્યૂ -->
+                    <div id="imagePreviewBox" style="margin-bottom: 1.5rem; display: ${service?.thumbnailUrl ? 'flex' : 'none'}; align-items: center; gap: 0.85rem; background: #FFFDF9; padding: 0.85rem; border-radius: 12px; border: 1.5px solid #EAD8C2;">
+                      <img id="imgPreviewThumb" src="${service?.thumbnailUrl || ''}" style="width: 80px; height: 60px; object-fit: cover; border-radius: 8px; border: 2px solid #F59E0B;">
+                      <div>
+                        <div id="imgPreviewStatus" style="font-size: 0.92rem; font-weight: 800; color: #8B1E0F;">મુખ્ય ફોટો સેટ થયેલ છે</div>
+                        <div id="imgPreviewMeta" style="font-size: 0.8rem; color: #6B5446;">સાચવવા પર આ ફોટો વેબસાઈટ પર દેખાશે.</div>
+                      </div>
+                    </div>
+
+                    <!-- દિવ્ય પૂજા કાર્ડ ઈમેજ જનરેટર (HTML5 Canvas Mount Point) -->
+                    <div style="border-top: 1.5px dashed #E2D0BA; padding-top: 1.25rem; margin-top: 1rem;">
+                      <div style="font-weight: 800; color: #8B1E0F; font-size: 1rem; margin-bottom: 0.25rem;">
+                        ✨ દિવ્ય પૂજા કાર્ડ ઈમેજ જનરેટર (AI વગર)
+                      </div>
+                      <div style="font-size: 0.82rem; color: #6B5446; margin-bottom: 0.85rem;">
+                        જો આપની પાસે ફોટો ન હોય, તો નીચે આપેલ કેનવાસ ટૂલથી ૧-ક્લિકમાં ઉચ્ચ ગુણવત્તાવાળું પવિત્ર કાર્ડ બનાવી સેટ કરી શકો છો.
+                      </div>
+                      <div id="cardGenMountPoint"></div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <!-- કેનવાસ કાર્ડ જનરેટર માઉન્ટ પોઈન્ટ -->
-              <div id="cardGenMountPoint" style="margin-top: 1rem;"></div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">પૂજાપો / મુખ્ય સામગ્રી લિસ્ટ *</label>
-              <textarea class="form-control" id="fPujapo" required placeholder="શ્રીફળ, સોપારી, કંકુ, અબીલ, ગુલાલ, વગેરે...">${service?.pujapo || ''}</textarea>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">અનાજ અને નૈવેદ્ય</label>
-              <textarea class="form-control" id="fAnaj" placeholder="ઘઉં, ચોખા, ફળો, પ્રસાદ, વગેરે...">${service?.anajNaivedya || ''}</textarea>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">મૂર્તિ, વાસણ અને ઘરની તૈયારી</label>
-              <textarea class="form-control" id="fTaiyari" placeholder="બાજોઠ, પાટલો, થાળી, વાટકા, દીવો, આસન, વગેરે...">${service?.taiyari || ''}</textarea>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">વિશેષ નોંધ / મહત્વ</label>
-              <input type="text" class="form-control" id="fNotes" value="${service?.notes || ''}" placeholder="પૂજા સંબંધિત વધારાની વિગત">
-            </div>
-
-            <div style="display: flex; gap: 0.75rem; margin-top: 0.5rem;">
-              <button type="submit" class="btn btn-primary" style="flex: 2;">
-                💾 ${isEdit ? 'ફેરફાર સાચવો' : 'પૂજા ઉમેરો'}
-              </button>
-              <button type="button" class="btn btn-outline" id="fCancelBtn" style="flex: 1;">
-                રદ કરો
-              </button>
-            </div>
-          </form>
+              <!-- ફોર્મ બોટમ એક્શન બાર -->
+              <div class="admin-form-actions-bottom-bar">
+                <button type="button" class="admin-btn-secondary" id="formCancelBtn">
+                  <span>રદ કરો</span>
+                </button>
+                <button type="submit" class="admin-btn-primary" id="formSubmitBtn" style="min-height: 50px; font-size: 1.05rem; padding: 0.65rem 2rem;">
+                  <span>💾 ${isEdit ? 'ફેરફાર સાચવો' : 'પૂજા સાચવો'}</span>
+                </button>
+              </div>
+            </form>
+          </div>
         `;
 
-        document.getElementById('fCancelBtn').addEventListener('click', () => {
-          this.renderDashboard('services');
+        // Back to list button
+        document.getElementById('formBackToListBtn')?.addEventListener('click', () => {
+          this.activeTab = 'services';
+          this.editingService = null;
+          this.updateTabStyles();
+          this.renderServicesView();
         });
 
-        // Track user-generated canvas image
+        document.getElementById('formCancelBtn')?.addEventListener('click', () => {
+          this.activeTab = 'services';
+          this.editingService = null;
+          this.updateTabStyles();
+          this.renderServicesView();
+        });
+
+        // Custom File Upload display
+        const fileInput = document.getElementById('fImageFile');
+        const fileNameDisplay = document.getElementById('selectedFileName');
+        const previewBox = document.getElementById('imagePreviewBox');
+        const previewThumb = document.getElementById('imgPreviewThumb');
+        const previewStatus = document.getElementById('imgPreviewStatus');
+
         let selectedGeneratedImage = null;
+
+        if (fileInput) {
+          fileInput.addEventListener('change', () => {
+            if (fileInput.files && fileInput.files[0]) {
+              const file = fileInput.files[0];
+              if (fileNameDisplay) fileNameDisplay.textContent = `પસંદ કરેલ ફાઈલ: ${file.name}`;
+              const reader = new FileReader();
+              reader.onload = (e) => {
+                if (previewThumb) previewThumb.src = e.target.result;
+                if (previewBox) previewBox.style.display = 'flex';
+                if (previewStatus) previewStatus.textContent = 'નવી ફાઈલ અપલોડ માટે તૈયાર';
+              };
+              reader.readAsDataURL(file);
+            }
+          });
+        }
 
         // Mount the Auspicious Canvas Card Generator
         const cardGenHandle = mountCardGenerator(
@@ -440,16 +803,10 @@
             initialCategory: service?.category || document.getElementById('fCategory')?.value || 'ધાર્મિક પૂજા',
             onSetImage: async (dataUrl) => {
               selectedGeneratedImage = dataUrl;
-              const previewBox = document.getElementById('imagePreviewBox');
-              const previewThumb = document.getElementById('imgPreviewThumb');
-              const previewStatus = document.getElementById('imgPreviewStatus');
-              const previewMeta = document.getElementById('imgPreviewMeta');
-              if (previewBox && previewThumb) {
-                previewThumb.src = dataUrl;
-                previewBox.style.display = 'flex';
-                if (previewStatus) previewStatus.textContent = '✨ દિવ્ય જનરેટ કરેલ ફોટો પસંદ થયો!';
-                if (previewMeta) previewMeta.textContent = 'સાચવવા પર આ નવું કાર્ડ મુખ્ય ફોટો બનશે';
-              }
+              if (previewThumb) previewThumb.src = dataUrl;
+              if (previewBox) previewBox.style.display = 'flex';
+              if (previewStatus) previewStatus.textContent = '✨ દિવ્ય જનરેટ કરેલ ફોટો પસંદ થયો!';
+              if (fileNameDisplay) fileNameDisplay.textContent = 'કેનવાસ કાર્ડ મુખ્ય ફોટો તરીકે સેટ થયું.';
               this.showToast('✨ દિવ્ય કાર્ડ મુખ્ય ફોટો તરીકે સેટ થઈ ગયું!');
             }
           }
@@ -488,16 +845,17 @@
           });
         });
 
-        const form = document.getElementById('serviceForm');
+        // Form Submission
+        const form = document.getElementById('serviceFullForm');
         form.addEventListener('submit', async (e) => {
           e.preventDefault();
-          const submitBtn = form.querySelector('button[type="submit"]');
+          const submitBtn = document.getElementById('formSubmitBtn');
           submitBtn.disabled = true;
-          submitBtn.textContent = 'સાચવી રહ્યા છીએ...';
+          submitBtn.innerHTML = '<span>⏳ સાચવી રહ્યા છીએ...</span>';
 
           try {
-            let imageUrl = service?.thumbnailUrl || 'assets/images/satyanarayan-card.jpg';
-            const fileInput = document.getElementById('fImageFile');
+            let imageUrl = service?.thumbnailUrl || 'assets/images/card-ganesh.png';
+
             if (fileInput.files && fileInput.files[0]) {
               imageUrl = await db.uploadImage(fileInput.files[0]);
             } else if (selectedGeneratedImage) {
@@ -505,12 +863,20 @@
               imageUrl = await db.uploadImage(selectedGeneratedImage, `card_${safeTitle}_${Date.now()}.jpg`);
             }
 
+            const rawKeywords = document.getElementById('fEnglishTitle').value.trim();
+            const keywordsArray = rawKeywords
+              .split(/[\s,]+/)
+              .filter(Boolean)
+              .map(k => k.toLowerCase());
+
             const data = {
               title: document.getElementById('fTitle').value.trim(),
+              englishTitle: document.getElementById('fEnglishTitle').value.trim(),
               category: document.getElementById('fCategory').value,
               price: document.getElementById('fPrice').value.trim() || 'દક્ષિણા માટે સંપર્ક કરો',
               badge: document.getElementById('fBadge').value.trim() || 'ધાર્મિક વિધિ',
               thumbnailUrl: imageUrl,
+              keywords: keywordsArray,
               pujapo: document.getElementById('fPujapo').value.trim(),
               anajNaivedya: document.getElementById('fAnaj').value.trim(),
               taiyari: document.getElementById('fTaiyari').value.trim(),
@@ -526,81 +892,123 @@
               this.showToast('નવી પૂજા સફળતાપૂર્વક ઉમેરવામાં આવી!');
             }
 
-            this.renderDashboard('services');
+            this.activeTab = 'services';
+            this.editingService = null;
+            await this.renderDashboard();
           } catch (err) {
             console.error('Save error:', err);
             alert('સાચવવામાં સમસ્યા આવી: ' + err.message);
             submitBtn.disabled = false;
-            submitBtn.textContent = 'ફરી પ્રયાસ કરો';
+            submitBtn.innerHTML = '<span>ફરી પ્રયાસ કરો</span>';
           }
         });
       }
 
-      async renderProfileForm() {
-        const content = document.getElementById('adminTabContent');
-        if (!content) return;
-
-        document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('tabBtnProfile')?.classList.add('active');
+      /* -------------------------------------------------------------
+         ૫. "શાસ્ત્રીજી પ્રોફાઈલ" વ્યુ (Profile Management)
+         ------------------------------------------------------------- */
+      async renderProfileView() {
+        const workspace = document.getElementById('adminWorkspace');
+        if (!workspace) return;
 
         const profile = await db.getProfile();
 
-        content.innerHTML = `
-          <form id="profileForm" style="display: flex; flex-direction: column; gap: 1rem;">
-            <h3 style="font-size: 1.25rem; color: var(--color-maroon); margin-bottom: 0.5rem;">
-              👤 શાસ્ત્રીજી પ્રોફાઈલ અને સંપર્ક વિગત
-            </h3>
-
-            <div class="form-group">
-              <label class="form-label">શાસ્ત્રીજીનું પૂરું નામ *</label>
-              <input type="text" class="form-control" id="pName" required value="${profile.name || ''}">
-            </div>
-
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-              <div class="form-group">
-                <label class="form-label">મોબાઈલ નંબર *</label>
-                <input type="text" class="form-control" id="pPhone" required value="${profile.phone || ''}">
-              </div>
-              <div class="form-group">
-                <label class="form-label">વોટ્સએપ નંબર *</label>
-                <input type="text" class="form-control" id="pWhatsapp" required value="${profile.whatsapp || ''}">
+        workspace.innerHTML = `
+          <div class="admin-form-full-wrap">
+            <div class="admin-form-title-bar">
+              <div>
+                <h2 class="admin-form-main-heading">👤 શાસ્ત્રીજી પ્રોફાઈલ અને સંપર્ક વિગત</h2>
+                <div class="admin-form-sub-heading">વેબસાઈટ અને પેમ્ફ્લેટ પર દર્શાવવા માટેની મુખ્ય શાસ્ત્રીજી વિગત</div>
               </div>
             </div>
 
-            <div class="form-group">
-              <label class="form-label">વિશેષતા / માર્ગદર્શન વિગત</label>
-              <textarea class="form-control" id="pSubtitle">${profile.subtitle || ''}</textarea>
-            </div>
+            <form id="profileFullForm">
+              <div class="admin-profile-full-grid">
+                <div>
+                  <div class="admin-fieldset-card">
+                    <div style="margin-bottom: 1.25rem;">
+                      <span class="admin-fieldset-legend">સંપર્ક અને પરિચય વિગત</span>
+                    </div>
 
-            <div class="form-group">
-              <label class="form-label">નવો સ્ટુડિયો ફોટો અપલોડ કરો (Profile Photo)</label>
-              <input type="file" accept="image/*" class="form-control" id="pPhotoFile" style="padding: 0.4rem;">
-              ${profile.avatarUrl ? `
-                <div style="margin-top: 0.5rem; display: flex; align-items: center; gap: 0.75rem;">
-                  <img src="${profile.avatarUrl}" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid var(--color-maroon);">
-                  <span style="font-size: 0.85rem; color: var(--color-text-sub);">હાલનો ફોટો</span>
+                    <div class="admin-form-group">
+                      <label class="admin-form-label">શાસ્ત્રીજીનું પૂરું નામ *</label>
+                      <input type="text" class="admin-form-input" id="pName" required value="${profile.name || ''}" placeholder="શાસ્ત્રીજી જીતેન્દ્ર જોષી (જીતુભાઈ જોષી)">
+                    </div>
+
+                    <div class="admin-form-row-2col">
+                      <div class="admin-form-group">
+                        <label class="admin-form-label">મોબાઈલ નંબર *</label>
+                        <input type="text" class="admin-form-input" id="pPhone" required value="${profile.phone || ''}" placeholder="99252 64929">
+                      </div>
+
+                      <div class="admin-form-group">
+                        <label class="admin-form-label">વોટ્સએપ નંબર *</label>
+                        <input type="text" class="admin-form-input" id="pWhatsapp" required value="${profile.whatsapp || ''}" placeholder="99252 64929">
+                      </div>
+                    </div>
+
+                    <div class="admin-form-group">
+                      <label class="admin-form-label">વિશેષતા / આશીર્વચન સંદેશ</label>
+                      <textarea class="admin-form-input" id="pSubtitle" placeholder="શ્રી ગણેશ કૃપા • કર્મકાંડ, જ્યોતિષ, વાસ્તુશાસ્ત્ર, કથા અને સર્વ પૂજા વિધાન">${profile.subtitle || ''}</textarea>
+                    </div>
+                  </div>
                 </div>
-              ` : ''}
-            </div>
 
-            <button type="submit" class="btn btn-primary" style="margin-top: 0.5rem;">
-              💾 પ્રોફાઈલ સાચવો
-            </button>
-          </form>
+                <div>
+                  <div class="admin-profile-preview-card">
+                    <div style="font-weight: 800; color: #8B1E0F; font-size: 1.1rem; margin-bottom: 1rem;">
+                      શાસ્ત્રીજી સ્ટુડિયો ફોટો (Profile Photo)
+                    </div>
+
+                    <img src="${profile.avatarUrl || 'assets/images/shastriji-profile.jpg'}" id="profileAvatarPreview" class="admin-profile-avatar-circle" onerror="this.src='assets/icons/gemini-svg.svg'">
+
+                    <label for="pPhotoFile" class="admin-btn-secondary" style="margin: 0 auto; display: inline-flex; cursor: pointer;">
+                      <span>📷 નવો ફોટો પસંદ કરો</span>
+                    </label>
+                    <input type="file" accept="image/*" id="pPhotoFile" style="display: none;">
+                    <div id="pPhotoNameDisplay" style="font-size: 0.82rem; color: #15803D; font-weight: 700; margin-top: 0.5rem;"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="admin-form-actions-bottom-bar">
+                <button type="submit" class="admin-btn-primary" id="saveProfileBtn" style="min-height: 50px; font-size: 1.05rem; padding: 0.65rem 2rem;">
+                  <span>💾 પ્રોફાઈલ સાચવો</span>
+                </button>
+              </div>
+            </form>
+          </div>
         `;
 
-        const form = document.getElementById('profileForm');
+        const photoInput = document.getElementById('pPhotoFile');
+        const photoPreview = document.getElementById('profileAvatarPreview');
+        const photoName = document.getElementById('pPhotoNameDisplay');
+
+        if (photoInput) {
+          photoInput.addEventListener('change', () => {
+            if (photoInput.files && photoInput.files[0]) {
+              const file = photoInput.files[0];
+              if (photoName) photoName.textContent = `પસંદ કરેલ ફોટો: ${file.name}`;
+              const reader = new FileReader();
+              reader.onload = (e) => {
+                if (photoPreview) photoPreview.src = e.target.result;
+              };
+              reader.readAsDataURL(file);
+            }
+          });
+        }
+
+        const form = document.getElementById('profileFullForm');
         form.addEventListener('submit', async (e) => {
           e.preventDefault();
-          const submitBtn = form.querySelector('button[type="submit"]');
+          const submitBtn = document.getElementById('saveProfileBtn');
           submitBtn.disabled = true;
-          submitBtn.textContent = 'સાચવી રહ્યા છીએ...';
+          submitBtn.innerHTML = '<span>⏳ સાચવી રહ્યા છીએ...</span>';
 
           try {
             let avatarUrl = profile.avatarUrl;
-            const fileInput = document.getElementById('pPhotoFile');
-            if (fileInput.files && fileInput.files[0]) {
-              avatarUrl = await db.uploadImage(fileInput.files[0]);
+            if (photoInput.files && photoInput.files[0]) {
+              avatarUrl = await db.uploadImage(photoInput.files[0]);
             }
 
             const updated = {
@@ -614,49 +1022,57 @@
             await db.updateProfile(updated);
             this.showToast('પ્રોફાઈલ સફળતાપૂર્વક અપડેટ કરવામાં આવી!');
             submitBtn.disabled = false;
-            submitBtn.textContent = '💾 પ્રોફાઈલ સાચવો';
+            submitBtn.innerHTML = '<span>💾 પ્રોફાઈલ સાચવો</span>';
           } catch (err) {
             console.error('Profile update error:', err);
             alert('પ્રોફાઈલ સાચવવામાં સમસ્યા આવી: ' + err.message);
             submitBtn.disabled = false;
+            submitBtn.innerHTML = '<span>ફરી પ્રયાસ કરો</span>';
           }
         });
       }
 
-      async renderPinChangeForm() {
-        const content = document.getElementById('adminTabContent');
-        if (!content) return;
+      /* -------------------------------------------------------------
+         ૬. "સુરક્ષા પિન" વ્યુ (Security PIN Management)
+         ------------------------------------------------------------- */
+      async renderPinChangeView() {
+        const workspace = document.getElementById('adminWorkspace');
+        if (!workspace) return;
 
-        document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('tabBtnPin')?.classList.add('active');
-
-        content.innerHTML = `
-          <form id="pinChangeForm" style="display: flex; flex-direction: column; gap: 1rem; max-width: 400px; margin: 0 auto;">
-            <h3 style="font-size: 1.25rem; color: var(--color-maroon); text-align: center;">
-              🔑 સુરક્ષા પિન બદલો
-            </h3>
-
-            <div class="form-group">
-              <label class="form-label">હાલનો પિન (Current PIN) *</label>
-              <input type="password" maxlength="4" class="form-control" id="curPin" required placeholder="૪ અંકનો પિન">
+        workspace.innerHTML = `
+          <div class="admin-form-full-wrap" style="max-width: 580px; margin: 0 auto;">
+            <div class="admin-form-title-bar" style="text-align: center; justify-content: center;">
+              <div>
+                <h2 class="admin-form-main-heading">🔑 સુરક્ષા પિન બદલો</h2>
+                <div class="admin-form-sub-heading">એડમિન કંટ્રોલ પેનલ માટે નવો ૪-અંકનો પાસવર્ડ પિન સેટ કરો</div>
+              </div>
             </div>
 
-            <div class="form-group">
-              <label class="form-label">નવો પિન (New PIN) *</label>
-              <input type="password" maxlength="4" class="form-control" id="newPin" required placeholder="નવો ૪ અંકનો પિન">
-            </div>
+            <form id="pinChangeForm" style="display: flex; flex-direction: column; gap: 1.25rem;">
+              <div class="admin-form-group">
+                <label class="admin-form-label">હાલનો પિન (Current PIN) *</label>
+                <input type="password" maxlength="4" class="admin-form-input" id="curPin" required placeholder="હાલનો ૪ અંકનો પિન">
+              </div>
 
-            <div class="form-group">
-              <label class="form-label">નવો પિન ફરીથી દાખલ કરો *</label>
-              <input type="password" maxlength="4" class="form-control" id="confirmPin" required placeholder="નવો પિન કન્ફર્મ કરો">
-            </div>
+              <div class="admin-form-group">
+                <label class="admin-form-label">નવો પિન (New PIN) *</label>
+                <input type="password" maxlength="4" class="admin-form-input" id="newPin" required placeholder="નવો ૪ અંકનો પિન">
+              </div>
 
-            <div id="pinChangeError" style="color: var(--color-danger); font-size: 0.9rem; font-weight: 700; text-align: center;"></div>
+              <div class="admin-form-group">
+                <label class="admin-form-label">નવો પિન ફરીથી દાખલ કરો *</label>
+                <input type="password" maxlength="4" class="admin-form-input" id="confirmPin" required placeholder="નવો પિન કન્ફર્મ કરો">
+              </div>
 
-            <button type="submit" class="btn btn-primary" style="margin-top: 0.5rem;">
-              💾 નવો પિન સાચવો
-            </button>
-          </form>
+              <div id="pinChangeError" style="color: #DC2626; font-size: 0.92rem; font-weight: 700; text-align: center; min-height: 20px;"></div>
+
+              <div style="display: flex; justify-content: center; margin-top: 0.5rem;">
+                <button type="submit" class="admin-btn-primary" style="width: 100%; min-height: 50px; font-size: 1.05rem;">
+                  <span>💾 નવો પિન સાચવો</span>
+                </button>
+              </div>
+            </form>
+          </div>
         `;
 
         const form = document.getElementById('pinChangeForm');
@@ -685,8 +1101,70 @@
 
           await db.updateProfile({ pin: newPin });
           this.showToast('સુરક્ષા પિન સફળતાપૂર્વક બદલાઈ ગયો છે!');
-          this.renderDashboard('services');
+          this.activeTab = 'services';
+          await this.renderDashboard();
         });
+      }
+
+      /* -------------------------------------------------------------
+         ૭. પેમ્ફ્લેટ પ્રીવ્યૂ મોડલ (Quick Pamphlet Modal)
+         ------------------------------------------------------------- */
+      openPreviewModal(service) {
+        const overlay = document.getElementById('previewModalOverlay');
+        const titleEl = document.getElementById('previewModalTitle');
+        const bodyEl = document.getElementById('previewModalBody');
+        if (!overlay || !titleEl || !bodyEl || !service) return;
+
+        titleEl.textContent = `📜 પેમ્ફ્લેટ પ્રીવ્યૂ: ${service.title}`;
+
+        const pujapoList = (service.pujapo || '')
+          .split(/[,;\n]+/)
+          .map(i => i.trim())
+          .filter(Boolean)
+          .map(i => `<li style="padding: 0.25rem 0; color: #2D1A10;">${i}</li>`)
+          .join('');
+
+        bodyEl.innerHTML = `
+          <div style="text-align: center; margin-bottom: 1.25rem;">
+            <div style="font-size: 1.5rem; font-weight: 800; color: #8B1E0F;">${service.title}</div>
+            <div style="font-size: 0.9rem; color: #6B5446; margin-top: 0.25rem;">વિભાગ: <strong>${service.category}</strong> • ${service.badge || 'ધાર્મિક વિધિ'}</div>
+          </div>
+
+          <div style="background: #FFFDF7; border: 1.5px solid #EAD8C2; border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem;">
+            <div style="font-weight: 800; color: #8B1E0F; font-size: 1.05rem; margin-bottom: 0.5rem; border-bottom: 1px solid #FDE68A; padding-bottom: 0.35rem;">
+              ૧. પૂજાપો / મુખ્ય સામગ્રી લિસ્ટ
+            </div>
+            <ul style="padding-left: 1.25rem; margin: 0; line-height: 1.6;">
+              ${pujapoList || '<li>સામગ્રી ઉપલબ્ધ નથી.</li>'}
+            </ul>
+          </div>
+
+          ${service.anajNaivedya ? `
+            <div style="background: #FFFDF7; border: 1.5px solid #EAD8C2; border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem;">
+              <div style="font-weight: 800; color: #8B1E0F; font-size: 1.05rem; margin-bottom: 0.5rem; border-bottom: 1px solid #FDE68A; padding-bottom: 0.35rem;">
+                ૨. અનાજ અને નૈવેદ્ય
+              </div>
+              <div style="color: #2D1A10; line-height: 1.6;">${service.anajNaivedya}</div>
+            </div>
+          ` : ''}
+
+          ${service.taiyari ? `
+            <div style="background: #FFFDF7; border: 1.5px solid #EAD8C2; border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem;">
+              <div style="font-weight: 800; color: #8B1E0F; font-size: 1.05rem; margin-bottom: 0.5rem; border-bottom: 1px solid #FDE68A; padding-bottom: 0.35rem;">
+                ૩. વાસણ અને ઘરની તૈયારી
+              </div>
+              <div style="color: #2D1A10; line-height: 1.6;">${service.taiyari}</div>
+            </div>
+          ` : ''}
+
+          <div style="text-align: center; margin-top: 1.5rem;">
+            <button class="admin-btn-primary" onclick="window.print()" style="margin: 0 auto;">
+              <span>🖨️ પેમ્ફ્લેટ પ્રિન્ટ / સેવ કરો</span>
+            </button>
+          </div>
+        `;
+
+        overlay.style.display = 'flex';
       }
     }
 
