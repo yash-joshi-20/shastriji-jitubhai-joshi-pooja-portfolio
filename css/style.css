@@ -359,22 +359,22 @@
 }
 
 /* =====================================================================
-   જમણો સ્તંભ: શાસ્ત્રીજી ઓરિજનલ ફોટો (Soft Feathered Gradient Merge)
+   જમણો સ્તંભ: શાસ્ત્રીજી મંદિર પોર્ટ્રેટ (Smooth Natural Temple Background)
    ===================================================================== */
 .hero-visual-col {
   position: relative;
   display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: flex-end;
-  padding: 1.5rem clamp(1rem, 3.5vw, 4rem) 1.5rem 0;
-  overflow: visible;
+  padding: 0;
+  overflow: hidden;
 }
 
-/* સોફ્ટ ડિવાઇન ક્વોટ (No hard boxes or borders - Sublime Typography) */
+/* સોફ્ટ ડિવાઇન ક્વોટ (Sublime Floating Typography - No Hard Boxes) */
 .hero-soft-quote {
   position: absolute;
-  left: 0;
-  top: 48%;
+  left: clamp(1rem, 2.8vw, 3.5rem);
+  top: 40%;
   transform: translateY(-50%);
   max-width: 255px;
   background: transparent;
@@ -391,7 +391,7 @@
   font-size: 3.8rem;
   line-height: 0.75;
   color: #D97706;
-  opacity: 0.85;
+  opacity: 0.9;
   display: block;
   margin-bottom: 0.35rem;
 }
@@ -404,6 +404,7 @@
   line-height: 1.62;
   margin: 0 0 0.65rem 0;
   letter-spacing: -0.2px;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.6);
 }
 
 .hero-quote-author {
@@ -421,54 +422,38 @@
   font-weight: 700;
 }
 
-/* વિઝ્યુઅલ રેપર અને પવિત્ર આભા (Aura Light) */
+/* વિઝ્યુઅલ રેપર અને શાસ્ત્રીજી મંદિર ઈમેજ */
 .hero-visual-wrapper {
   position: relative;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: flex-end;
   width: 100%;
-  max-width: 500px;
-  min-height: 420px;
+  height: 100%;
+  min-height: 480px;
+  overflow: hidden;
 }
 
-.hero-divine-aura {
-  position: absolute;
-  right: 6%;
-  top: 46%;
-  transform: translateY(-50%);
-  width: 420px;
-  height: 420px;
-  background: radial-gradient(circle at center, rgba(251, 191, 36, 0.32) 0%, rgba(245, 158, 11, 0.16) 42%, rgba(217, 119, 6, 0.05) 62%, transparent 75%);
-  filter: blur(40px);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 1;
-}
-
-/* શાસ્ત્રીજી ઓરિજનલ પોર્ટ્રેટ - સોફ્ટ ગ્રેડિએન્ટ મર્જ (Feathered Radial Dissolve) */
+/* શાસ્ત્રીજી ઓરિજનલ મંદિર પોર્ટ્રેટ - નેચરલ બેકગ્રાઉન્ડ મર્જ */
 .hero-visual-img {
   width: 100%;
-  max-width: 480px;
-  height: auto;
-  max-height: 500px;
+  height: 100%;
+  max-height: 520px;
   object-fit: cover;
-  object-position: center top;
+  object-position: right bottom;
   border: none !important;
   border-radius: 0 !important;
   box-shadow: none !important;
   display: block;
   position: relative;
   z-index: 2;
-  -webkit-mask-image: radial-gradient(ellipse 78% 74% at 60% 46%, #000000 34%, rgba(0, 0, 0, 0.85) 52%, rgba(0, 0, 0, 0.35) 70%, transparent 95%);
-  mask-image: radial-gradient(ellipse 78% 74% at 60% 46%, #000000 34%, rgba(0, 0, 0, 0.85) 52%, rgba(0, 0, 0, 0.35) 70%, transparent 95%);
-  filter: contrast(1.02) saturate(1.03);
-  transition: transform 0.4s ease, filter 0.4s ease;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.4) 6%, black 20%, black 100%);
+  mask-image: linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.4) 6%, black 20%, black 100%);
+  transition: transform 0.4s ease;
 }
 
 .hero-visual-img:hover {
   transform: scale(1.015);
-  filter: contrast(1.04) saturate(1.05);
 }
 
 /* નીચે ૪ પવિત્ર ફીચર કાર્ડ્સ રેપર (Full-Width Strip with Inner Max-Width) */
@@ -1905,7 +1890,7 @@ textarea.form-control {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 1.5rem 1.5rem 2.5rem;
+    padding: 1.5rem 1rem 0;
     min-height: auto;
     max-height: none;
   }
@@ -1925,19 +1910,14 @@ textarea.form-control {
   .hero-visual-wrapper {
     min-height: auto;
     justify-content: center;
-    max-width: 100%;
-  }
-  .hero-divine-aura {
-    right: auto;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 320px;
-    height: 320px;
+    width: 100%;
+    max-width: 540px;
   }
   .hero-visual-img {
-    max-width: 320px;
-    max-height: 350px;
-    object-position: center top;
+    max-height: 400px;
+    object-position: center bottom;
+    -webkit-mask-image: linear-gradient(to top, black 75%, transparent 100%), linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+    mask-image: linear-gradient(to top, black 75%, transparent 100%), linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
   }
   .hero-feature-cards-grid {
     grid-template-columns: repeat(2, 1fr);
