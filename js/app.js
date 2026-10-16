@@ -66,10 +66,9 @@ class App {
     const headerTitle = document.getElementById('headerShastrijiName');
     if (headerTitle) headerTitle.textContent = this.profile.name;
 
-    // Hero visual portrait (if custom photo uploaded in CMS)
+    // Hero visual portrait (Shastriji original photo)
     const visualImg = document.getElementById('heroVisualImg');
-    if (visualImg && this.profile.avatarUrl && this.profile.avatarUrl !== 'assets/images/shastriji-profile.jpg') {
-      // If user uploaded a new photo via CMS, display it
+    if (visualImg && this.profile.avatarUrl) {
       visualImg.src = this.profile.avatarUrl;
     }
 

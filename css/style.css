@@ -82,11 +82,9 @@
 }
 
 .btn-header-contact {
-  width: 44px;
-  height: 44px;
-  min-height: 44px;
-  min-width: 44px;
-  padding: 0;
+  height: 42px;
+  min-height: 42px;
+  padding: 0 1.25rem;
   background: linear-gradient(135deg, var(--color-maroon), var(--color-maroon-dark));
   color: #FFFFFF;
   border: 1.5px solid var(--color-border-ornate);
@@ -94,15 +92,19 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 0.5rem;
   cursor: pointer;
   box-shadow: 0 4px 12px rgba(139, 30, 15, 0.25);
   transition: all var(--transition-fast);
+  font-family: var(--font-gujarati);
+  font-size: 0.95rem;
+  font-weight: 700;
   flex-shrink: 0;
 }
 
 .btn-header-contact svg {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   stroke: #FFFFFF;
   color: #FFFFFF;
 }
@@ -117,6 +119,7 @@
 .btn-header-contact.revealed {
   background: var(--color-turmeric);
   border: 2px solid var(--color-maroon);
+  color: var(--color-maroon);
 }
 
 .btn-header-contact.revealed svg {
@@ -355,32 +358,82 @@
   flex-shrink: 0;
 }
 
-/* જમણો સ્તંભ: શાસ્ત્રીજી અને મંદિર વિઝ્યુઅલ */
+/* જમણો સ્તંભ: શાસ્ત્રીજી ઓરિજનલ ફોટો અને પવિત્ર અવતરણ */
 .hero-visual-col {
   position: relative;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: flex-end;
-  overflow: hidden;
+  padding: 1rem clamp(1rem, 3vw, 3rem) 1rem 0;
+}
+
+.hero-quote-card {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  max-width: 240px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1.5px solid #ECDCCB;
+  border-radius: 16px;
+  padding: 1.15rem 1.25rem;
+  box-shadow: 0 10px 28px rgba(139, 30, 15, 0.08);
+  z-index: 4;
+}
+
+.hero-quote-symbol {
+  font-size: 2.2rem;
+  line-height: 1;
+  color: #D97706;
+  font-family: Georgia, serif;
+  display: block;
+  margin-bottom: 0.2rem;
+}
+
+.hero-quote-quote {
+  font-family: var(--font-gujarati);
+  font-size: 0.96rem;
+  color: #3B2214;
+  line-height: 1.55;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+}
+
+.hero-quote-shastriji {
+  font-family: var(--font-gujarati);
+  font-size: 0.85rem;
+  color: #8B1E0F;
+  font-weight: 700;
 }
 
 .hero-visual-wrapper {
   position: relative;
-  width: 100%;
-  height: 100%;
-  min-height: 440px;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: flex-end;
+  width: auto;
+  max-width: 440px;
 }
 
 .hero-visual-img {
   width: 100%;
-  height: 100%;
-  max-height: 500px;
-  object-fit: contain;
-  object-position: right bottom;
+  max-width: 420px;
+  height: auto;
+  max-height: 460px;
+  object-fit: cover;
+  object-position: center top;
+  border-radius: 24px;
+  border: 2px solid #EAD8C1;
+  box-shadow: 0 16px 40px rgba(139, 30, 15, 0.14), 0 0 35px rgba(217, 119, 6, 0.12);
   display: block;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+.hero-visual-img:hover {
+  transform: scale(1.02);
+  box-shadow: 0 20px 48px rgba(139, 30, 15, 0.18), 0 0 45px rgba(217, 119, 6, 0.18);
 }
 
 /* નીચે ૪ પવિત્ર ફીચર કાર્ડ્સ રેપર (Full-Width Strip with Inner Max-Width) */
@@ -1599,82 +1652,204 @@ textarea.form-control {
   to { transform: translateY(0); opacity: 1; }
 }
 
-/* ફૂટર (Site Footer) */
+/* =====================================================================
+   ૪. વેબસાઈટ ફૂટર (Full Width Divine Footer)
+   ===================================================================== */
 .site-footer {
-  background: linear-gradient(180deg, var(--color-turmeric) 0%, #FDE68A 100%);
-  border-top: 3px double var(--color-maroon);
-  padding: 3.5rem 15px 2.5rem;
-  text-align: center;
-  color: var(--color-text-main);
+  width: 100%;
+  background: linear-gradient(180deg, #FBF4E7 0%, #F6EBD8 50%, #EFE1CB 100%);
+  border-top: 2px solid #E8D3B8;
+  padding: 4rem 1.5rem 2.5rem;
+  color: #2D1A10;
+  position: relative;
+  overflow: hidden;
 }
 
-.footer-om-logo {
-  width: 68px;
-  height: 68px;
-  margin: 0 auto 2.5rem;
+.footer-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+.footer-brand-wrap {
+  margin-bottom: 2.25rem;
+}
+
+.footer-om-ring {
+  width: 64px;
+  height: 64px;
+  border-radius: 9999px;
+  padding: 3px;
+  background: linear-gradient(135deg, #D97706, #8B1E0F);
+  box-shadow: 0 0 20px rgba(217, 119, 6, 0.35);
   display: flex;
   align-items: center;
   justify-content: center;
+  margin: 0 auto 1.25rem;
+  transition: transform 0.3s ease;
 }
 
-.footer-shastriji-name {
-  font-size: 1.5rem;
+.footer-om-ring:hover {
+  transform: rotate(6deg) scale(1.08);
+}
+
+.footer-om-icon {
+  width: 100%;
+  height: 100%;
+  border-radius: 9999px;
+  display: block;
+}
+
+.footer-mantra-shlok {
+  font-family: var(--font-gujarati);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #C2410C;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.45rem;
+}
+
+.footer-shastriji-title {
+  font-family: var(--font-gujarati);
+  font-size: clamp(1.6rem, 2.5vw, 2.1rem);
   font-weight: 800;
-  color: var(--color-maroon);
-  line-height: 1.5;
-  margin-top: 0;
-  margin-bottom: 0.85rem;
-  clear: both;
+  color: #8B1E0F;
+  margin: 0 0 0.6rem 0;
+  line-height: 1.3;
 }
 
-.footer-services-list {
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--color-text-sub);
-  margin-top: 0.25rem;
-  margin-bottom: 1.5rem;
+.footer-tagline {
+  font-family: var(--font-gujarati);
+  font-size: 1.02rem;
+  color: #5C4133;
+  margin: 0 auto;
+  max-width: 650px;
   line-height: 1.6;
+  font-weight: 500;
 }
 
-.footer-phone-cta {
-  margin: 0.5rem auto 1.5rem;
+/* ક્વિક કોન્ટેક્ટ અને એક્શન બટન્સ */
+.footer-cta-group {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 2.25rem 0 2rem;
+}
+
+.footer-action-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.6rem;
-  font-size: 1.25rem;
-  font-weight: 800;
-  color: var(--color-maroon);
+  gap: 0.65rem;
+  font-family: var(--font-gujarati);
+  font-size: 1.05rem;
+  font-weight: 700;
+  padding: 0.8rem 2rem;
+  border-radius: 9999px;
   text-decoration: none;
-  background: #FFFFFF;
-  padding: 0.6rem 1.6rem;
-  border-radius: var(--radius-full);
-  border: 2px solid var(--color-maroon);
-  box-shadow: 0 4px 14px rgba(139, 30, 15, 0.15);
-  transition: all var(--transition-fast);
+  cursor: pointer;
+  min-height: 52px;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.footer-phone-cta:hover {
-  background: var(--color-maroon);
+.footer-btn-call {
+  background: #8B1E0F;
   color: #FFFFFF;
+  border: 1.5px solid #6D1408;
+  box-shadow: 0 4px 16px rgba(139, 30, 15, 0.25);
+}
+
+.footer-btn-call:hover {
+  background: #6D1408;
   transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(139, 30, 15, 0.25);
+  box-shadow: 0 8px 24px rgba(139, 30, 15, 0.35);
+  color: #FFFFFF;
 }
 
-.footer-phone-cta svg {
-  color: var(--color-maroon);
-  transition: color var(--transition-fast);
-}
-
-.footer-phone-cta:hover svg {
+.footer-btn-call svg {
   color: #FFFFFF;
   stroke: #FFFFFF;
 }
 
-.footer-copyright {
-  font-size: 0.85rem;
-  color: var(--color-text-sub);
-  margin-top: 1rem;
+.footer-btn-wa {
+  background: #FFFFFF;
+  color: #125C2B;
+  border: 1.5px solid #25D366;
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.15);
+}
+
+.footer-btn-wa:hover {
+  background: #F0FDF4;
+  border-color: #16A34A;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(37, 211, 102, 0.25);
+}
+
+.footer-wa-svg {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+/* પવિત્ર મંગલ શ્લોક */
+.footer-shlok-strip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin: 1.5rem auto 2rem;
+  padding: 0.75rem 1.5rem;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px dashed #E2D0BA;
+  border-radius: 9999px;
+  max-width: fit-content;
+}
+
+.footer-shlok-ornament {
+  color: #D97706;
+  font-size: 0.95rem;
+}
+
+.footer-shlok-text {
+  font-family: var(--font-gujarati);
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: #8B1E0F;
+  letter-spacing: 0.3px;
+}
+
+.footer-divider-line {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, #E2CFB8 50%, transparent 100%);
+  margin: 1.5rem 0 1.25rem;
+}
+
+.footer-bottom-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding-top: 0.5rem;
+}
+
+.footer-copyright-text {
+  font-family: var(--font-gujarati);
+  font-size: 0.92rem;
+  color: #6B5446;
+  font-weight: 500;
+}
+
+.footer-location-text {
+  font-family: var(--font-gujarati);
+  font-size: 0.92rem;
+  color: #8B1E0F;
+  font-weight: 600;
 }
 
 /* રિસ્પોન્સિવ મીડિયા ક્વેરીઝ (Responsive Media Queries) */
@@ -1798,11 +1973,15 @@ textarea.form-control {
     width: 40px;
     height: 40px;
   }
+  .header-contact-label {
+    display: none;
+  }
   .btn-header-contact {
     width: 40px;
     height: 40px;
     min-width: 40px;
     min-height: 40px;
+    padding: 0;
   }
   .btn-header-contact svg {
     width: 18px;
@@ -1832,12 +2011,23 @@ textarea.form-control {
     min-width: 36px;
     min-height: 36px;
   }
-  .footer-om-logo {
-    width: 58px;
-    height: 58px;
-    margin: 0 auto 2rem;
+  .site-footer {
+    padding: 3rem 1rem 2rem;
   }
-  .footer-shastriji-name {
-    font-size: 1.25rem;
+  .footer-cta-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .footer-action-btn {
+    width: 100%;
+  }
+  .footer-shlok-strip {
+    border-radius: 14px;
+    padding: 0.75rem 1rem;
+  }
+  .footer-bottom-row {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
   }
 }
