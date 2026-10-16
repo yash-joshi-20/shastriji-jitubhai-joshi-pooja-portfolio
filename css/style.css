@@ -1645,205 +1645,686 @@ button.hero-feature-card {
   box-shadow: 0 4px 12px rgba(139, 30, 15, 0.18);
 }
 
-/* એડમિન CMS મોડલ અને ફોર્મ્સ (Admin CMS Panel) */
+/* =====================================================================
+   એડમિન CMS મોડલ અને ફોર્મ્સ (Sacred Divine Admin CMS Panel)
+   ===================================================================== */
 .admin-card {
-  max-width: 680px;
-}
-
-.admin-header {
-  text-align: center;
-  margin-bottom: 1.5rem;
-  border-bottom: 2px solid var(--color-turmeric);
-  padding-bottom: 1rem;
-}
-
-.admin-header h2 {
-  font-size: 1.6rem;
-  color: var(--color-maroon);
-}
-
-.admin-nav-tabs {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 1.5rem;
-  border-bottom: 2px solid var(--color-border-light);
-  padding-bottom: 0.5rem;
-  overflow-x: auto;
-}
-
-.admin-tab-btn {
-  min-height: 42px;
-  padding: 0.4rem 1rem;
-  border-radius: var(--radius-md);
-  font-family: var(--font-gujarati);
-  font-size: 0.95rem;
-  font-weight: 600;
-  border: none;
-  background: transparent;
-  color: var(--color-text-sub);
-  cursor: pointer;
-  white-space: nowrap;
-  transition: all var(--transition-fast);
-}
-
-.admin-tab-btn.active {
-  background: var(--color-maroon);
-  color: #FFFFFF;
-}
-
-.form-group {
-  margin-bottom: 1.25rem;
-}
-
-.form-label {
-  display: block;
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--color-maroon);
-  margin-bottom: 0.35rem;
-}
-
-.form-control {
-  width: 100%;
-  min-height: 46px;
-  padding: 0.65rem 0.9rem;
-  font-family: var(--font-gujarati);
-  font-size: 1rem;
-  color: var(--color-text-main);
+  max-width: 920px;
+  width: 95%;
+  padding: 0;
+  border-radius: var(--radius-lg);
   background: #FFFFFF;
-  border: 1.5px solid var(--color-border-ornate);
-  border-radius: var(--radius-sm);
-  outline: none;
-  transition: border-color var(--transition-fast);
+  box-shadow: 0 20px 60px rgba(74, 14, 7, 0.28), 0 0 0 1px #F3E4D0;
+  overflow: hidden;
+  max-height: 92vh;
+  display: flex;
+  flex-direction: column;
 }
 
-.form-control:focus {
-  border-color: var(--color-maroon);
-  box-shadow: 0 0 0 3px rgba(139, 30, 15, 0.15);
-}
-
-textarea.form-control {
-  min-height: 90px;
-  resize: vertical;
-}
-
-/* PIN ઈનપુટ સ્ક્રીન */
-.pin-screen-box {
+/* PIN ઈનપુટ સ્ક્રીન કાર્ડ */
+.pin-card-wrap {
+  max-width: 460px;
+  width: 92%;
+  padding: 2.25rem 2rem 2rem;
   text-align: center;
-  padding: 1.5rem 1rem;
+  border-radius: 20px;
+  background: linear-gradient(180deg, #FFFFFF 0%, #FFFDF8 100%);
+  border: 2px solid #EAD8C2;
+  box-shadow: 0 20px 50px rgba(139, 30, 15, 0.22);
+}
+
+.pin-screen-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.pin-om-symbol {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+  border: 2px solid #F59E0B;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  color: #8B1E0F;
+  margin-bottom: 1rem;
+  box-shadow: 0 6px 18px rgba(245, 158, 11, 0.25);
 }
 
 .pin-input-group {
   display: flex;
   justify-content: center;
-  gap: 0.75rem;
-  margin: 1.5rem 0;
+  gap: 0.85rem;
+  margin: 1.5rem 0 1rem;
 }
 
 .pin-digit-box {
-  width: 55px;
-  height: 60px;
+  width: 58px;
+  height: 64px;
   text-align: center;
-  font-size: 1.75rem;
+  font-size: 1.85rem;
   font-weight: 800;
-  border: 2px solid var(--color-maroon);
-  border-radius: var(--radius-md);
-  background: #FFFFFF;
-  color: var(--color-maroon);
+  border: 2px solid #D9C2A7;
+  border-radius: 12px;
+  background: #FFFDF9;
+  color: #8B1E0F;
   outline: none;
+  transition: all 0.2s ease;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.03);
 }
 
 .pin-digit-box:focus {
-  border-color: var(--color-saffron);
-  box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.25);
+  border-color: #D97706;
+  background: #FFFFFF;
+  box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.2);
+  transform: translateY(-2px);
 }
 
-/* એડમિન સર્વિસ લિસ્ટ */
-.admin-service-item {
+.pin-error-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1rem;
+  background: #FEF2F2;
+  border: 1px solid #FCA5A5;
+  border-radius: 8px;
+  color: #991B1B;
+  font-size: 0.92rem;
+  font-weight: 700;
+  margin-bottom: 1.25rem;
+  width: 100%;
+}
+
+.pin-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.pin-hint-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 1.5rem;
+  padding: 0.4rem 1rem;
+  background: #FEF3C7;
+  border: 1px dashed #F59E0B;
+  border-radius: 9999px;
+  font-size: 0.82rem;
+  color: #92400E;
+  font-weight: 700;
+}
+
+/* એડમિન ડેશબોર્ડ સ્ટીકી હેડર (Admin Sticky Header) */
+.admin-sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: linear-gradient(135deg, #8B1E0F 0%, #6D1408 100%);
+  color: #FFFFFF;
+  padding: 1rem 1.5rem;
+  border-bottom: 2px solid #D97706;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.85rem 1rem;
-  background: #FFFDF9;
-  border: 1px solid var(--color-border-light);
-  border-radius: 8px;
-  margin-bottom: 0.75rem;
+  gap: 1rem;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+}
+
+.admin-header-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.admin-header-om {
+  font-size: 1.8rem;
+  color: #FEF3C7;
+  line-height: 1;
+}
+
+.admin-header-title {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  letter-spacing: 0.2px;
+  line-height: 1.2;
+}
+
+.admin-header-sub {
+  font-size: 0.82rem;
+  color: #FDE68A;
+  margin-top: 0.15rem;
+}
+
+.admin-header-actions {
+  display: flex;
+  align-items: center;
   gap: 0.75rem;
 }
 
-.admin-item-title {
-  font-weight: 700;
-  color: var(--color-maroon);
-  font-size: 1.05rem;
-}
-
-.admin-item-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-shrink: 0;
-}
-
-.btn-icon-action {
-  width: 38px;
-  height: 38px;
-  min-width: 38px;
-  min-height: 38px;
-  padding: 0;
-  border-radius: var(--radius-sm);
+.admin-header-badge {
   display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 9999px;
+  font-weight: 700;
+}
+
+.admin-header-badge.badge-live {
+  background: rgba(34, 197, 94, 0.22);
+  color: #86EFAC;
+  border: 1px solid rgba(34, 197, 94, 0.45);
+}
+
+.admin-header-badge.badge-offline {
+  background: rgba(239, 68, 68, 0.22);
+  color: #FCA5A5;
+  border: 1px solid rgba(239, 68, 68, 0.45);
+}
+
+.admin-header-badge.badge-local {
+  background: rgba(245, 158, 11, 0.22);
+  color: #FDE68A;
+  border: 1px solid rgba(245, 158, 11, 0.45);
+}
+
+.admin-header-actions .modal-close-btn {
+  background: rgba(255, 255, 255, 0.15);
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all var(--transition-fast);
-  flex-shrink: 0;
-  border: 1.5px solid transparent;
+  transition: all 0.2s ease;
 }
 
-.btn-icon-action svg {
-  display: block;
+.admin-header-actions .modal-close-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.08);
 }
 
-#addNewServiceTopBtn.btn-icon-action {
-  width: 40px;
-  height: 40px;
-  min-width: 40px;
-  min-height: 40px;
-  border-radius: var(--radius-full);
-  background: linear-gradient(135deg, var(--color-maroon), var(--color-maroon-dark));
+/* એડમિન ટેબ્સ નેવિગેશન (Admin Tab Navigation) */
+.admin-nav-tabs {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background: #FAF5EB;
+  border-bottom: 1.5px solid #EBDBC8;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.admin-tab-btn {
+  min-height: 42px;
+  padding: 0.45rem 1.1rem;
+  border-radius: 8px;
+  font-family: var(--font-gujarati);
+  font-size: 0.95rem;
+  font-weight: 700;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #6B5446;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.admin-tab-btn:hover {
+  background: rgba(139, 30, 15, 0.08);
+  color: #8B1E0F;
+}
+
+.admin-tab-btn.active {
+  background: #8B1E0F;
   color: #FFFFFF;
-  border: 1px solid var(--color-border-ornate);
-  box-shadow: 0 4px 12px rgba(139, 30, 15, 0.25);
+  border-color: #8B1E0F;
+  box-shadow: 0 2px 8px rgba(139, 30, 15, 0.25);
 }
 
-#addNewServiceTopBtn.btn-icon-action:hover {
-  background: linear-gradient(135deg, var(--color-saffron), var(--color-saffron-dark));
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(217, 119, 6, 0.35);
+.admin-tab-btn.tab-logout {
+  margin-left: auto;
+  color: #DC2626;
+  border: 1px solid rgba(220, 38, 38, 0.2);
 }
 
-.edit-srv-btn.btn-icon-action {
+.admin-tab-btn.tab-logout:hover {
+  background: #FEE2E2;
+  color: #991B1B;
+  border-color: #EF4444;
+}
+
+/* એડમિન ડેશબોર્ડ સ્ક્રોલિંગ બોડી (Scrollable Body) */
+.admin-dashboard-body {
+  padding: 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* એડમિન સર્વિસ લિસ્ટ વ્યુ (Admin Services View) */
+.admin-services-view {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.admin-services-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px dashed #E2D0BA;
+}
+
+.admin-search-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 240px;
+}
+
+.admin-search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #A89078;
+}
+
+.admin-search-input {
+  width: 100%;
+  min-height: 42px;
+  padding: 0.5rem 1rem 0.5rem 2.5rem;
+  font-family: var(--font-gujarati);
+  font-size: 0.95rem;
+  border: 1.5px solid #E2D0BA;
+  border-radius: 9999px;
+  background: #FFFDF9;
+  color: #2D1A10;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.admin-search-input:focus {
+  border-color: #D97706;
   background: #FFFFFF;
-  border-color: var(--color-border-ornate);
-  color: var(--color-maroon);
+  box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.15);
 }
 
-.edit-srv-btn.btn-icon-action:hover {
-  background: var(--color-turmeric);
-  border-color: var(--color-maroon);
+.admin-services-meta-count {
+  font-size: 0.9rem;
+  color: #6B5446;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-admin-add {
+  min-height: 42px;
+  padding: 0.5rem 1.15rem;
+  border-radius: 8px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #8B1E0F 0%, #6D1408 100%);
+  color: #FFFFFF;
+  border: 1px solid #D97706;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(139, 30, 15, 0.25);
+  transition: all 0.2s ease;
+}
+
+.btn-admin-add:hover {
+  background: linear-gradient(135deg, #D97706 0%, #B45309 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(217, 119, 6, 0.3);
+}
+
+/* એડમિન સર્વિસ કાર્ડ (Admin Service Item Card) */
+.admin-service-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  padding: 1rem 1.25rem;
+  background: #FFFFFF;
+  border: 1.5px solid #EFE4D6;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+}
+
+.admin-service-card:hover {
+  border-color: #D97706;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(139, 30, 15, 0.08);
+}
+
+.admin-srv-thumb-wrap {
+  width: 68px;
+  height: 68px;
+  min-width: 68px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #FFF7ED;
+  border: 1.5px solid #FED7AA;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.admin-srv-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.admin-srv-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.admin-srv-badges {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.25rem;
+}
+
+.srv-tag-cat {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.15rem 0.55rem;
+  border-radius: 4px;
+  background: #FFFBEB;
+  color: #B45309;
+  border: 1px solid #FDE68A;
+}
+
+.srv-tag-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.15rem 0.55rem;
+  border-radius: 4px;
+  background: #FEF2F2;
+  color: #B91C1C;
+  border: 1px solid #FECACA;
+}
+
+.admin-srv-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #8B1E0F;
+  line-height: 1.3;
+  margin-bottom: 0.15rem;
+}
+
+.admin-srv-english {
+  font-size: 0.85rem;
+  color: #8C7A6B;
+  font-style: italic;
+  margin-bottom: 0.35rem;
+}
+
+.admin-srv-sub {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  font-size: 0.88rem;
+  color: #6B5446;
+}
+
+.admin-srv-price {
+  font-weight: 800;
+  color: #15803D;
+}
+
+.admin-srv-items-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: #8C7A6B;
+}
+
+.admin-srv-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-shrink: 0;
+}
+
+.btn-admin-edit {
+  min-height: 40px;
+  padding: 0.45rem 0.95rem;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  background: #FFFBEB;
+  border: 1.5px solid #FDE68A;
+  color: #B45309;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-admin-edit:hover {
+  background: #FEF3C7;
+  border-color: #F59E0B;
   transform: translateY(-1px);
 }
 
-.del-srv-btn.btn-icon-action {
-  background: #FFF5F5;
-  border-color: rgba(220, 38, 38, 0.4);
-  color: var(--color-danger);
+.btn-admin-del {
+  min-height: 40px;
+  padding: 0.45rem 0.95rem;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  background: #FEF2F2;
+  border: 1.5px solid #FECACA;
+  color: #DC2626;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-.del-srv-btn.btn-icon-action:hover {
-  background: var(--color-danger);
-  color: #FFFFFF;
-  border-color: var(--color-danger);
+.btn-admin-del:hover {
+  background: #FEE2E2;
+  border-color: #EF4444;
+  transform: translateY(-1px);
+}
+
+/* એડમિન ફોર્મ અને ફીલ્ડસેટ્સ (Structured Form Architecture) */
+.admin-form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.admin-form-header {
+  padding: 0.85rem 1.15rem;
+  background: #FFFDF7;
+  border-left: 4px solid #8B1E0F;
+  border-radius: 0 8px 8px 0;
+  margin-bottom: 0.5rem;
+  border-top: 1px solid #F3E8DB;
+  border-right: 1px solid #F3E8DB;
+  border-bottom: 1px solid #F3E8DB;
+}
+
+.admin-form-header-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #8B1E0F;
+}
+
+.admin-form-header-sub {
+  font-size: 0.88rem;
+  color: #6B5446;
+  margin-top: 0.15rem;
+}
+
+.admin-form-fieldset {
+  border: 1.5px solid #EAD8C2;
+  border-radius: 12px;
+  padding: 1.35rem 1.35rem 1.15rem;
+  background: #FFFFFF;
+  margin-bottom: 1.25rem;
+}
+
+.fieldset-legend {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.95rem;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #8B1E0F;
+  background: #FEF3C7;
+  border: 1px solid #FDE68A;
+  border-radius: 9999px;
+  box-shadow: 0 2px 6px rgba(245, 158, 11, 0.15);
+}
+
+.form-row-2col {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.form-row-3col {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.form-group {
+  margin-bottom: 1.15rem;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #8B1E0F;
+  margin-bottom: 0.4rem;
+}
+
+.form-control {
+  width: 100%;
+  min-height: 46px;
+  padding: 0.65rem 0.95rem;
+  font-family: var(--font-gujarati);
+  font-size: 0.98rem;
+  color: #2D1A10;
+  background: #FFFFFF;
+  border: 1.5px solid #E2D0BA;
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: all var(--transition-fast);
+}
+
+.form-control:focus {
+  border-color: #8B1E0F;
+  box-shadow: 0 0 0 3px rgba(139, 30, 15, 0.15);
+}
+
+textarea.form-control {
+  min-height: 95px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.form-hint {
+  font-size: 0.82rem;
+  color: #8C7A6B;
+  margin-top: 0.35rem;
+  line-height: 1.35;
+}
+
+.admin-form-actions-bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.85rem;
+  padding-top: 1.25rem;
+  border-top: 2px solid #EFE4D6;
+  margin-top: 1.5rem;
+}
+
+/* સામગ્રી લિસ્ટ સ્કેનર ટૂલ (Samagri Scanner Tools in Form) */
+.samagri-scanner-box {
+  padding: 1.15rem;
+  background: #FFFDF7;
+  border: 1.5px dashed #D97706;
+  border-radius: 10px;
+  text-align: center;
+  margin-bottom: 1.25rem;
+}
+
+.samagri-scanner-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 0.65rem;
+}
+
+/* વેબસાઈટ ફૂટર એડમિન ટ્રિગર લિંક (Subtle Footer Trigger) */
+.footer-admin-link-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer-admin-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: var(--font-gujarati);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #8C7A6B;
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid #E2D0BA;
+  border-radius: 9999px;
+  padding: 0.35rem 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.footer-admin-link:hover {
+  background: #FEF3C7;
+  color: #8B1E0F;
+  border-color: #D97706;
   transform: translateY(-1px);
 }
 
@@ -2278,17 +2759,46 @@ textarea.form-control {
     grid-template-columns: 1fr;
     gap: 0.5rem;
   }
-  .admin-service-item {
-    padding: 0.65rem 0.75rem;
+  .admin-card {
+    width: 100%;
+    max-height: 96vh;
+    border-radius: 12px;
   }
-  .admin-item-title {
-    font-size: 0.95rem;
+  .pin-card-wrap {
+    padding: 1.5rem 1rem;
+    width: 96%;
   }
-  .btn-icon-action {
-    width: 36px;
-    height: 36px;
-    min-width: 36px;
-    min-height: 36px;
+  .pin-digit-box {
+    width: 48px;
+    height: 56px;
+    font-size: 1.6rem;
+  }
+  .admin-sticky-header {
+    padding: 0.75rem 1rem;
+  }
+  .admin-header-title {
+    font-size: 1.1rem;
+  }
+  .admin-dashboard-body {
+    padding: 1rem 0.75rem;
+  }
+  .admin-service-card {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0.85rem;
+  }
+  .admin-srv-actions {
+    width: 100%;
+    justify-content: flex-end;
+    border-top: 1px dashed #E2D0BA;
+    padding-top: 0.5rem;
+  }
+  .form-row-2col,
+  .form-row-3col {
+    grid-template-columns: 1fr;
+  }
+  .admin-form-fieldset {
+    padding: 1rem 0.85rem;
   }
   .site-footer {
     padding: 3rem 1rem 2rem;
