@@ -67,6 +67,9 @@ html {
   font-size: 16px;
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 body {
@@ -75,8 +78,12 @@ body {
   color: var(--color-text-main);
   line-height: 1.65;
   min-height: 100vh;
+  width: 100%;
+  max-width: 100%;
   overflow-x: hidden;
   position: relative;
+  margin: 0;
+  padding: 0;
   background-image: 
     radial-gradient(var(--color-turmeric) 0.75px, transparent 0.75px),
     radial-gradient(var(--color-turmeric) 0.75px, var(--color-cream) 0.75px);
