@@ -1,11 +1,13 @@
 /**
  * શાસ્ત્રીજી જીતેન્દ્ર જોષી - ડાયનેમિક ડેટા મેનેજર (100% Firebase મુક્ત)
  * સોફ્ટ-કોડેડ JSON API + LocalStorage ફોલબેક સાથે સંપૂર્ણ ડાયનેમિક CRUD
+ * લાઈવ સર્વર / પોર્ટ ૫૫૦૦ / રીઅલ-ટાઇમ સિંક સાથે સંપૂર્ણ સુસંગત
  */
 
 const STORAGE_KEYS = {
   PROFILE: 'shastriji_profile_v2',
-  SERVICES: 'shastriji_services_v2'
+  SERVICES: 'shastriji_services_v2',
+  LAST_SYNC: 'shastriji_services_last_sync'
 };
 
 import { DEITY_REGISTRY, detectDeity, generateDeityImageFromTitle, renderSacredCanvasCard } from './deity-engine.js';
@@ -23,6 +25,59 @@ export function resolveDeityImage(title = '', category = '') {
   return match?.url || 'assets/images/card-anyapooja.png';
 }
 
+/**
+ * સ્માર્ટ બેકએન્ડ API બેઝ URL નિર્ધારિત કરો
+ * જ્યારે યુઝર VS Code Live Server (port 5500) અથવા ફાઈલમાંથી વેબસાઈટ ખોલે ત્યારે
+ * સીધા Node.js બેકએન્ડ (port 3000) સાથે કનેક્ટ થાય છે.
+ */
+export function getApiBaseUrl() {
+  if (typeof window === 'undefined') return '';
+  const port = window.location.port;
+  const proto = window.location.protocol;
+  const host = window.location.hostname || 'localhost';
+
+  // જો પહેલેથી જ પોર્ટ ૩૦૦૦ પર ચાલતું હોય તો સંબંધિત URL વાપરો
+  if (port === '3000') return '';
+
+  // જો લોકલ સ્ટેટિક ડેવ સર્વર (Live Server 5500, Vite 5173, વગેરે) અથવા file: પ્રોટોકોલ હોય
+  if (['5500', '5501', '5502', '5173', '8080', '5000', '3001'].includes(port) || proto === 'file:') {
+    const targetHost = (host === '127.0.0.1' || host === 'localhost') ? 'localhost' : host;
+    return `http://${targetHost}:3000`;
+  }
+
+  // પ્રોડક્શન હોસ્ટિંગ (Render, Vercel વગેરે જ્યાં ડિફોલ્ટ 80/443 હોય)
+  return '';
+}
+
+/**
+ * સર્વર API કોલ માટે સુરક્ષિત ફંક્શન (ઓટોમેટિક ફોલબેક અને ક્રોસ-ઓરિજિન હેન્ડલિંગ)
+ */
+export async function apiFetch(endpoint, options = {}) {
+  const baseUrl = getApiBaseUrl();
+  const primaryUrl = baseUrl ? `${baseUrl}${endpoint}` : endpoint;
+  try {
+    const res = await fetch(primaryUrl, options);
+    if (res.ok) return res;
+
+    // જો પ્રાથમિક કોલ નિષ્ફળ ગયો અને બેઝ URL ખાલી હતું, પરંતુ પોર્ટ ૩૦૦૦ નથી, તો http://localhost:3000 ટ્રાય કરો
+    if (!baseUrl && typeof window !== 'undefined' && window.location.port !== '3000') {
+      try {
+        const fallbackRes = await fetch(`http://localhost:3000${endpoint}`, options);
+        if (fallbackRes.ok) return fallbackRes;
+      } catch (e) {}
+    }
+    return res;
+  } catch (err) {
+    if (!baseUrl && typeof window !== 'undefined' && window.location.port !== '3000') {
+      try {
+        const fallbackRes = await fetch(`http://localhost:3000${endpoint}`, options);
+        if (fallbackRes.ok) return fallbackRes;
+      } catch (e2) {}
+    }
+    throw err;
+  }
+}
+
 // બ્રોડકાસ્ટ ચેનલ (સમાન બ્રાઉઝરમાં બધા ટેબ્સ વચ્ચે રીઅલ-ટાઇમ લાઈવ સિંક)
 const syncChannel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('shastriji_pooja_sync') : null;
 
@@ -33,7 +88,10 @@ class DatabaseManager {
     this.cachedServices = null;
     this.cachedProfile = null;
     this.initialized = false;
+    this.lastServicesHash = '';
+    this.pollingTimer = null;
     this.setupRealtimeListeners();
+    this.startHeartbeatPolling();
     this.init();
   }
 
@@ -45,6 +103,10 @@ class DatabaseManager {
         if (type === 'SERVICES_UPDATED') {
           if (Array.isArray(event.data.services)) {
             this.cachedServices = event.data.services;
+            try {
+              localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(this.cachedServices));
+              localStorage.setItem(STORAGE_KEYS.LAST_SYNC, Date.now().toString());
+            } catch (e) {}
             this.notifyServicesSubscribers(this.cachedServices);
           } else {
             this.getServices(true).then(services => this.notifyServicesSubscribers(services));
@@ -52,6 +114,9 @@ class DatabaseManager {
         } else if (type === 'PROFILE_UPDATED') {
           if (event.data.profile) {
             this.cachedProfile = event.data.profile;
+            try {
+              localStorage.setItem(STORAGE_KEYS.PROFILE, JSON.stringify(this.cachedProfile));
+            } catch (e) {}
             this.notifyProfileSubscribers(this.cachedProfile);
           } else {
             this.getProfile(true).then(profile => this.notifyProfileSubscribers(profile));
@@ -60,7 +125,7 @@ class DatabaseManager {
       };
     }
 
-    // ૨. લોકલ સ્ટોરેજ ઇવેન્ટ લિસનર
+    // ૨. લોકલ સ્ટોરેજ ઇવેન્ટ લિસનર (સેમ-ઓરિજિન ટેબ્સ વચ્ચે સિંક)
     if (typeof window !== 'undefined') {
       window.addEventListener('storage', (e) => {
         if (e.key === STORAGE_KEYS.SERVICES && e.newValue) {
@@ -77,6 +142,9 @@ class DatabaseManager {
             this.cachedProfile = parsed;
             this.notifyProfileSubscribers(parsed);
           } catch (err) {}
+        } else if (e.key === STORAGE_KEYS.LAST_SYNC) {
+          // જ્યારે અન્ય ટેબમાં છેલ્લો સિંક ટાઈમ બદલાય ત્યારે તાજો ડેટા ખેંચો
+          this.getServices(true).then(services => this.notifyServicesSubscribers(services));
         }
       });
 
@@ -94,9 +162,36 @@ class DatabaseManager {
     }
   }
 
+  /**
+   * એક્ટિવ હાર્ટબીટ પોલિંગ (દર ૨.૫ સેકન્ડે સર્વર ચેક કરે છે જેથી બે અલગ વિન્ડો કે
+   * અલગ પોર્ટ (૫૫૦૦ અને ૩૦૦૦) પર પણ ઇન્ડેક્સ પેજ ઓટોમેટિક અપડેટ થાય)
+   */
+  startHeartbeatPolling() {
+    if (typeof window === 'undefined') return;
+    if (this.pollingTimer) clearInterval(this.pollingTimer);
+
+    this.pollingTimer = setInterval(async () => {
+      try {
+        const res = await apiFetch(`/api/status?t=${Date.now()}`, { cache: 'no-store' });
+        if (res.ok) {
+          const status = await res.json();
+          const currentHash = status.servicesHash || `${status.servicesCount}`;
+          if (this.lastServicesHash && this.lastServicesHash !== currentHash) {
+            this.lastServicesHash = currentHash;
+            const freshServices = await this.getServices(true);
+            this.notifyServicesSubscribers(freshServices);
+          } else if (!this.lastServicesHash) {
+            this.lastServicesHash = currentHash;
+          }
+        }
+      } catch (e) {
+        // સર્વર કનેક્શન તપાસ ચૂકી જાય તો સાયલન્ટ ફોલબેક
+      }
+    }, 2500);
+  }
+
   async init() {
     try {
-      // First try to load from soft-coded server API or JSON
       await Promise.allSettled([this.getServices(), this.getProfile()]);
     } catch (e) {
       console.warn('ડેટાબેઝ પ્રારંભિક લોડિંગ સૂચના:', e);
@@ -132,10 +227,10 @@ class DatabaseManager {
   }
 
   // ---- પ્રોફાઈલ મેનેજમેન્ટ (PROFILE CRUD) ----
-  async getProfile() {
+  async getProfile(forceFresh = false) {
     // 1. Check Server API
     try {
-      const res = await fetch('/api/profile');
+      const res = await apiFetch(`/api/profile?t=${Date.now()}`, { cache: 'no-store' });
       if (res.ok) {
         const data = await res.json();
         if (data && Object.keys(data).length > 0) {
@@ -148,18 +243,20 @@ class DatabaseManager {
       // Server API unreachable, proceed to fallback
     }
 
-    // 2. Check LocalStorage
-    const local = localStorage.getItem(STORAGE_KEYS.PROFILE);
-    if (local) {
-      try {
-        this.cachedProfile = JSON.parse(local);
-        return this.cachedProfile;
-      } catch (e) {}
+    // 2. Check LocalStorage if not forced fresh
+    if (!forceFresh) {
+      const local = localStorage.getItem(STORAGE_KEYS.PROFILE);
+      if (local) {
+        try {
+          this.cachedProfile = JSON.parse(local);
+          return this.cachedProfile;
+        } catch (e) {}
+      }
     }
 
     // 3. Check data/profile.json file directly
     try {
-      const res = await fetch('data/profile.json');
+      const res = await fetch(`data/profile.json?t=${Date.now()}`, { cache: 'no-store' });
       if (res.ok) {
         const data = await res.json();
         this.cachedProfile = data;
@@ -198,7 +295,7 @@ class DatabaseManager {
 
     // Save to Server JSON via API
     try {
-      const res = await fetch('/api/profile', {
+      const res = await apiFetch('/api/profile', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(merged)
@@ -217,14 +314,18 @@ class DatabaseManager {
 
   // ---- પૂજા સેવાઓ મેનેજમેન્ટ (SERVICES CRUD) ----
   async getServices(forceFresh = false) {
-    // 1. Check Server API with cache busting
+    // 1. Check Server API with cache busting (Always primary source of truth)
     try {
-      const res = await fetch(`/api/services?t=${Date.now()}`, { cache: 'no-store' });
+      const res = await apiFetch(`/api/services?t=${Date.now()}`, { cache: 'no-store' });
       if (res.ok) {
         const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) {
+        if (Array.isArray(data)) {
           this.cachedServices = data;
-          localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(data));
+          this.lastServicesHash = `${data.length}_${data.map(s => s.id).join(',').slice(0, 50)}`;
+          try {
+            localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(data));
+            localStorage.setItem(STORAGE_KEYS.LAST_SYNC, Date.now().toString());
+          } catch (e) {}
           return data;
         }
       }
@@ -253,7 +354,9 @@ class DatabaseManager {
         const data = await res.json();
         if (Array.isArray(data)) {
           this.cachedServices = data;
-          localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(data));
+          try {
+            localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(data));
+          } catch (e) {}
           return data;
         }
       }
@@ -275,7 +378,6 @@ class DatabaseManager {
     let resolvedImage = serviceData.thumbnailUrl;
     if (!resolvedImage || resolvedImage === 'assets/images/card-ganesh.png') {
       const autoImage = resolveDeityImage(serviceData.title, serviceData.category);
-      // જો શીર્ષકમાં ગણેશ ન હોય અને ઓટો ઇમેજ મળતી હોય તો ઓટો ઇમેજ વાપરો
       const isGanesh = (serviceData.title || '').toLowerCase().includes('ગણેશ') || (serviceData.title || '').toLowerCase().includes('ગણપતિ');
       if (!isGanesh && autoImage) {
         resolvedImage = autoImage;
@@ -291,21 +393,35 @@ class DatabaseManager {
       createdAt: new Date().toISOString()
     };
 
-    // Update local cache
+    // Update local cache immediately
     const current = await this.getServices();
-    current.unshift(newService);
-    this.cachedServices = current;
-    localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(current));
-    this.notifyServicesSubscribers(current);
+    // Prepend new service at index 0 so it immediately appears first
+    const updatedList = [newService, ...current.filter(s => s.id !== newId)];
+    this.cachedServices = updatedList;
+    this.lastServicesHash = `${updatedList.length}_${updatedList.map(s => s.id).join(',').slice(0, 50)}`;
+
+    try {
+      localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(updatedList));
+      localStorage.setItem(STORAGE_KEYS.LAST_SYNC, Date.now().toString());
+    } catch (e) {}
+
+    // Notify all UI subscribers in this window/tab immediately
+    this.notifyServicesSubscribers(updatedList);
 
     // Broadcast immediately to index.html and all open tabs
     if (syncChannel) {
-      try { syncChannel.postMessage({ type: 'SERVICES_UPDATED', services: current }); } catch (e) {}
+      try {
+        syncChannel.postMessage({
+          type: 'SERVICES_UPDATED',
+          services: updatedList,
+          timestamp: Date.now()
+        });
+      } catch (e) {}
     }
 
-    // Save to Server JSON
+    // Save to Server JSON via API
     try {
-      const res = await fetch('/api/services', {
+      const res = await apiFetch('/api/services', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newService)
@@ -342,19 +458,34 @@ class DatabaseManager {
       id,
       updatedAt: new Date().toISOString()
     };
-    current[index] = updated;
-    this.cachedServices = current;
-    localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(current));
-    this.notifyServicesSubscribers(current);
+
+    const updatedList = [...current];
+    updatedList[index] = updated;
+    this.cachedServices = updatedList;
+    this.lastServicesHash = `${updatedList.length}_${updatedList.map(s => s.id).join(',').slice(0, 50)}`;
+
+    try {
+      localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(updatedList));
+      localStorage.setItem(STORAGE_KEYS.LAST_SYNC, Date.now().toString());
+    } catch (e) {}
+
+    // Notify all UI subscribers in this window/tab immediately
+    this.notifyServicesSubscribers(updatedList);
 
     // Broadcast immediately to index.html and all open tabs
     if (syncChannel) {
-      try { syncChannel.postMessage({ type: 'SERVICES_UPDATED', services: current }); } catch (e) {}
+      try {
+        syncChannel.postMessage({
+          type: 'SERVICES_UPDATED',
+          services: updatedList,
+          timestamp: Date.now()
+        });
+      } catch (e) {}
     }
 
-    // Save to Server JSON
+    // Save to Server JSON via API
     try {
-      const res = await fetch(`/api/services/${encodeURIComponent(id)}`, {
+      const res = await apiFetch(`/api/services/${encodeURIComponent(id)}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updated)
@@ -372,19 +503,32 @@ class DatabaseManager {
   // DELETE POOJA (પૂજા કાઢી નાખો)
   async deleteService(id) {
     let current = await this.getServices();
-    current = current.filter(s => s.id !== id);
-    this.cachedServices = current;
-    localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(current));
-    this.notifyServicesSubscribers(current);
+    const updatedList = current.filter(s => s.id !== id);
+    this.cachedServices = updatedList;
+    this.lastServicesHash = `${updatedList.length}_${updatedList.map(s => s.id).join(',').slice(0, 50)}`;
+
+    try {
+      localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(updatedList));
+      localStorage.setItem(STORAGE_KEYS.LAST_SYNC, Date.now().toString());
+    } catch (e) {}
+
+    // Notify all UI subscribers in this window/tab immediately
+    this.notifyServicesSubscribers(updatedList);
 
     // Broadcast immediately to index.html and all open tabs
     if (syncChannel) {
-      try { syncChannel.postMessage({ type: 'SERVICES_UPDATED', services: current }); } catch (e) {}
+      try {
+        syncChannel.postMessage({
+          type: 'SERVICES_UPDATED',
+          services: updatedList,
+          timestamp: Date.now()
+        });
+      } catch (e) {}
     }
 
-    // Delete on Server JSON
+    // Delete on Server JSON via API
     try {
-      await fetch(`/api/services/${encodeURIComponent(id)}`, {
+      await apiFetch(`/api/services/${encodeURIComponent(id)}`, {
         method: 'DELETE'
       });
     } catch (err) {
@@ -399,7 +543,7 @@ class DatabaseManager {
     if (typeof file === 'string') {
       if (file.startsWith('data:image')) {
         try {
-          const res = await fetch('/api/upload', {
+          const res = await apiFetch('/api/upload', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -426,7 +570,7 @@ class DatabaseManager {
 
         // Try server upload endpoint
         try {
-          const res = await fetch('/api/upload', {
+          const res = await apiFetch('/api/upload', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

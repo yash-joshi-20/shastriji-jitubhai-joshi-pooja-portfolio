@@ -47,6 +47,17 @@ function writeJson(filePath, data) {
   }
 }
 
+// Universal CORS middleware to allow cross-origin requests from VS Code Live Server (port 5500), Vite (port 5173), etc.
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(204);
+  }
+  next();
+});
+
 // Disable caching on all API endpoints so updates reflect immediately
 app.use('/api', (req, res, next) => {
   res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
@@ -55,13 +66,16 @@ app.use('/api', (req, res, next) => {
   next();
 });
 
-// 0. Server Status Endpoint
+// 0. Server Status Endpoint (used for real-time heartbeat sync)
 app.get('/api/status', (req, res) => {
   const services = readJson(SERVICES_FILE, []);
   const profile = readJson(PROFILE_FILE, {});
+  const serviceIds = services.map(s => s.id).join(',');
   res.json({
     status: 'ok',
+    timestamp: Date.now(),
     servicesCount: services.length,
+    servicesHash: `${services.length}_${serviceIds.slice(0, 50)}`,
     profileName: profile.name || 'શાસ્ત્રીજી જીતેન્દ્ર જોષી'
   });
 });

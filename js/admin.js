@@ -917,18 +917,9 @@ class AdminPanel {
           this.showToast('નવી પૂજા સફળતાપૂર્વક ઉમેરવામાં આવી!');
         }
 
-        // Broadcast instant live synchronization across open tabs/windows
-        if (window.BroadcastChannel) {
-          try {
-            const channel = new BroadcastChannel('shastriji_pooja_sync');
-            channel.postMessage({ type: 'services_updated', timestamp: Date.now() });
-            channel.close();
-          } catch (e) {
-            console.log('BroadcastChannel sync:', e);
-          }
+        if (this.onDataChangeCallback) {
+          try { this.onDataChangeCallback(); } catch (e) {}
         }
-
-        if (this.onDataChangeCallback) this.onDataChangeCallback();
         this.renderDashboard('services');
       } catch (err) {
         console.error('Save error:', err);

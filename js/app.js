@@ -43,17 +43,33 @@ class App {
     });
 
     // Real-time Dynamic Services Subscription
+    let prevServicesCount = 0;
     db.subscribeServices((services) => {
+      if (!Array.isArray(services)) return;
+      const countChanged = prevServicesCount > 0 && prevServicesCount !== services.length;
+      prevServicesCount = services.length;
+
       this.services = services;
+
+      // જો નવી પૂજા ઉમેરાય કે ડિલીટ થાય અને યુઝરે ચોક્કસ કેટેગરી ફિલ્ટર રાખ્યું હોય,
+      // તો આપમેળે 'બધી વિધિઓ' પર લાવી દો જેથી નવી આઈટમ હોમપેજ પર તુરંત આગળ દેખાય
+      if (countChanged && this.activeCategory !== "બધી વિધિઓ") {
+        this.activeCategory = "બધી વિધિઓ";
+      }
+
       this.renderCategoryPills();
       this.filterAndRenderServices();
     });
 
     // Initialize Admin Panel
     adminPanel.init(() => {
-      // Re-trigger fetch if needed
-      db.getProfile().then(p => { this.profile = p; this.renderHeroProfile(); this.renderFooter(); });
-      db.getServices().then(s => { this.services = s; this.filterAndRenderServices(); });
+      // Re-trigger fresh fetch on admin change
+      db.getProfile(true).then(p => { this.profile = p; this.renderHeroProfile(); this.renderFooter(); });
+      db.getServices(true).then(s => {
+        this.services = s;
+        this.renderCategoryPills();
+        this.filterAndRenderServices();
+      });
     });
 
     // Check if URL has #admin or ?admin -> redirect to full-screen dedicated portal

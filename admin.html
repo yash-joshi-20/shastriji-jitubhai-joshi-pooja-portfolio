@@ -107,7 +107,7 @@
 
   <!-- ૬. મોડ્યુલર જાવાસ્ક્રિપ્ટ લોજિક (Full UI/UX Pro Max Logic) -->
   <script type="module">
-    import { db, DEITY_GALLERY, resolveDeityImage, detectDeity, generateDeityImageFromTitle, renderSacredCanvasCard } from './js/db.js';
+    import { db, apiFetch, getApiBaseUrl, DEITY_GALLERY, resolveDeityImage, detectDeity, generateDeityImageFromTitle, renderSacredCanvasCard } from './js/db.js';
     import { CATEGORIES, DEFAULT_COMMON_SAMAGRI, toGujaratiNumber } from './js/data.js';
     import { ICONS } from './js/icons.js';
     import { mountCardGenerator } from './js/card-generator.js';
@@ -150,7 +150,7 @@
       async checkServerStatus() {
         const pillText = document.getElementById('adminServerStatusText');
         try {
-          const res = await fetch('/api/status', { cache: 'no-store' });
+          const res = await apiFetch(`/api/status?t=${Date.now()}`, { cache: 'no-store' });
           if (res.ok) {
             const data = await res.json();
             if (pillText) pillText.textContent = `લાઈવ સર્વર (${data.servicesCount || 'ડેટા'} સક્રિય)`;
