@@ -702,7 +702,6 @@ class App {
       });
     }
   }
-  }
 
   openPamphletModal(service) {
     this.activePamphletService = service;
@@ -879,8 +878,14 @@ class App {
   }
 }
 
-// Start app on DOMContentLoaded
-document.addEventListener('DOMContentLoaded', () => {
+// Start app reliably (whether DOMContentLoaded has already fired or is pending)
+function startApp() {
   const app = new App();
   app.init();
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', startApp);
+} else {
+  startApp();
+}
