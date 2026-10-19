@@ -8,29 +8,19 @@ const STORAGE_KEYS = {
   SERVICES: 'shastriji_services_v2'
 };
 
-// ૮ પવિત્ર દેવો અને પૂજા વિધિઓની હાઈ-રિઝોલ્યુશન ફોટો ગેલેરી
-export const DEITY_GALLERY = [
-  { id: 'ganesh', name: 'શ્રી ગણેશજી', icon: '🕉️', url: 'assets/images/card-ganesh.png', keywords: ['ગણેશ', 'ગણપતિ', 'વિનાયક', 'ganesh', 'ganpati'] },
-  { id: 'lakshmi', name: 'મા લક્ષ્મીજી', icon: '🌸', url: 'assets/images/card-lakshmi.png', keywords: ['લક્ષ્મી', 'મહાલક્ષ્મી', 'ધનતેરસ', 'દિવાળી', 'ધન', 'lakshmi', 'laxmi'] },
-  { id: 'navgrah', name: 'સૂર્યદેવ & નવગ્રહ', icon: '☀️', url: 'assets/images/card-navgrah.png', keywords: ['નવગ્રહ', 'ગ્રહ', 'સૂર્ય', 'શનિ', 'રાહુ', 'navgrah', 'surya'] },
-  { id: 'satyanarayan', name: 'શ્રી સત્યનારાયણ દેવ', icon: '🪷', url: 'assets/images/card-satyanarayan.png', keywords: ['સત્યનારાયણ', 'વિષ્ણુ', 'નારાયણ', 'કથા', 'satyanarayan'] },
-  { id: 'gruhpravesh', name: 'ગૃહપ્રવેશ વાસ્તુ કળશ', icon: '🛕', url: 'assets/images/card-gruhpravesh.png', keywords: ['વાસ્તુ', 'ગૃહપ્રવેશ', 'ઘર', 'મકાન', 'vastu', 'gruh'] },
-  { id: 'havan', name: 'પવિત્ર હવન & યજ્ઞ', icon: '🔥', url: 'assets/images/card-havan.png', keywords: ['હવન', 'યજ્ઞ', 'હોમ', 'ગાયત્રી', 'havan', 'yajna'] },
-  { id: 'vivah', name: 'વિવાહ સંસ્કાર હસ્તમેળાપ', icon: '💍', url: 'assets/images/card-vivah.png', keywords: ['વિવાહ', 'લગ્ન', 'સપ્તપદી', 'હસ્તમેળાપ', 'vivah', 'wedding'] },
-  { id: 'anyapooja', name: 'પવિત્ર દીપ & પૂજા આયોજન', icon: '🪔', url: 'assets/images/card-anyapooja.png', keywords: ['અન્ય', 'રુદ્ર', 'શિવ', 'મહાદેવ', 'કાળસર્પ', 'શ્રાધ્ધ', 'shiva'] }
-];
+import { DEITY_REGISTRY, detectDeity, generateDeityImageFromTitle, renderSacredCanvasCard } from './deity-engine.js';
+
+// ૧૫ પવિત્ર દેવો અને પૂજા વિધિઓની હાઈ-રિઝોલ્યુશન ફોટો ગેલેરી (Full Registry)
+export const DEITY_GALLERY = DEITY_REGISTRY;
+
+export { detectDeity, generateDeityImageFromTitle, renderSacredCanvasCard };
 
 /**
  * પૂજાના નામ અને શ્રેણી મુજબ આપમેળે યોગ્ય પવિત્ર દેવ ફોટો મેળવો
  */
 export function resolveDeityImage(title = '', category = '') {
-  const query = (title + ' ' + category).toLowerCase();
-  for (const deity of DEITY_GALLERY) {
-    if (deity.keywords.some(k => query.includes(k.toLowerCase()))) {
-      return deity.url;
-    }
-  }
-  return 'assets/images/card-anyapooja.png';
+  const match = detectDeity(title, category);
+  return match?.url || 'assets/images/card-anyapooja.png';
 }
 
 // બ્રોડકાસ્ટ ચેનલ (સમાન બ્રાઉઝરમાં બધા ટેબ્સ વચ્ચે રીઅલ-ટાઇમ લાઈવ સિંક)

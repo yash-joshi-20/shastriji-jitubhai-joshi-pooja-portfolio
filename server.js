@@ -74,12 +74,42 @@ app.get('/api/services', (req, res) => {
   res.json(services);
 });
 
+// Server-side deity image resolver
+const DEITY_MAP = [
+  { keywords: ['સરસ્વતી', 'શારદા', 'વીણા', 'saraswati', 'sharada'], url: 'assets/images/card-saraswati.png' },
+  { keywords: ['વિષ્ણુ', 'નારાયણ', 'લક્ષ્મીનારાયણ', 'vishnu', 'narayan'], url: 'assets/images/card-vishnu.png' },
+  { keywords: ['ગણેશ', 'ગણપતિ', 'વિનાયક', 'ganesh', 'ganpati'], url: 'assets/images/card-ganesh.png' },
+  { keywords: ['લક્ષ્મી', 'મહાલક્ષ્મી', 'ધનતેરસ', 'lakshmi', 'laxmi'], url: 'assets/images/card-lakshmi.png' },
+  { keywords: ['શિવ', 'મહાદેવ', 'રુદ્ર', 'રુદ્રાભિષેક', 'shiva', 'mahadev', 'rudra'], url: 'assets/images/card-shiva.png' },
+  { keywords: ['સત્યનારાયણ', 'satyanarayan'], url: 'assets/images/card-satyanarayan.png' },
+  { keywords: ['હનુમાન', 'મારુતિ', 'બજરંગબલી', 'hanuman'], url: 'assets/images/card-hanuman.png' },
+  { keywords: ['દુર્ગા', 'અંબા', 'નવચંડી', 'ચંડી', 'durga', 'amba'], url: 'assets/images/card-durga.png' },
+  { keywords: ['કૃષ્ણ', 'કાનહા', 'જન્માષ્ટમી', 'krishna'], url: 'assets/images/card-krishna.png' },
+  { keywords: ['રામ', 'રામચંદ્ર', 'રામદરબાર', 'ram'], url: 'assets/images/card-ram.png' },
+  { keywords: ['નવગ્રહ', 'સૂર્ય', 'navgrah', 'surya'], url: 'assets/images/card-navgrah.png' },
+  { keywords: ['વાસ્તુ', 'ગૃહપ્રવેશ', 'vastu', 'gruhpravesh'], url: 'assets/images/card-gruhpravesh.png' },
+  { keywords: ['હવન', 'યજ્ઞ', 'havan', 'yajna'], url: 'assets/images/card-havan.png' },
+  { keywords: ['વિવાહ', 'લગ્ન', 'vivah', 'wedding'], url: 'assets/images/card-vivah.png' }
+];
+
+function resolveServerDeityImage(title = '', category = '') {
+  const query = `${title || ''} ${category || ''}`.toLowerCase();
+  for (const item of DEITY_MAP) {
+    if (item.keywords.some(k => query.includes(k.toLowerCase()))) {
+      return item.url;
+    }
+  }
+  return 'assets/images/card-anyapooja.png';
+}
+
 // 2. Add new Pooja service
 app.post('/api/services', (req, res) => {
   const services = readJson(SERVICES_FILE, []);
+  const resolvedThumbnail = req.body.thumbnailUrl || resolveServerDeityImage(req.body.title, req.body.category);
   const newService = {
     id: req.body.id || `service_${Date.now()}`,
     ...req.body,
+    thumbnailUrl: resolvedThumbnail,
     createdAt: new Date().toISOString()
   };
   services.unshift(newService);
@@ -97,9 +127,11 @@ app.put('/api/services/:id', (req, res) => {
   if (index === -1) {
     return res.status(404).json({ error: 'પૂજા મળી નથી' });
   }
+  const resolvedThumbnail = req.body.thumbnailUrl || services[index].thumbnailUrl || resolveServerDeityImage(req.body.title || services[index].title, req.body.category || services[index].category);
   const updated = {
     ...services[index],
     ...req.body,
+    thumbnailUrl: resolvedThumbnail,
     id: req.params.id,
     updatedAt: new Date().toISOString()
   };

@@ -3,7 +3,7 @@
  * દિવ્ય ધાર્મિક થીમ, 100% શુદ્ધ ગુજરાતી ભાષામાં સંપૂર્ણ લાઈવ સંચાલન
  */
 
-import { db, DEITY_GALLERY, resolveDeityImage } from './db.js';
+import { db, DEITY_GALLERY, resolveDeityImage, detectDeity, generateDeityImageFromTitle } from './db.js';
 import { CATEGORIES, DEFAULT_COMMON_SAMAGRI, toGujaratiNumber } from './data.js';
 import { ICONS } from './icons.js';
 import { mountCardGenerator } from './card-generator.js';
@@ -566,11 +566,14 @@ class AdminPanel {
           <div class="form-row-2col">
             <div class="form-group">
               <label class="form-label">પૂજાનું ગુજરાતી નામ *</label>
-              <input type="text" class="form-control" id="fTitle" required value="${initialTitle}" placeholder="ઉદાહરણ: સત્યનારાયણ કથા / ગણેશ પૂજા">
+              <input type="text" class="form-control" id="fTitle" required value="${initialTitle}" placeholder="ઉદાહરણ: સરસ્વતી પૂજા / વિષ્ણુ પૂજા / ગણેશ પૂજા">
+              <div id="modalTitleAutoDeityBadge" class="deity-auto-gen-badge ready">
+                <span>🕉️ ટાઇટલ પરથી આપમેળે દેવ ઈમેજ તૈયાર થશે</span>
+              </div>
             </div>
             <div class="form-group">
               <label class="form-label">અંગ્રેજી નામ (English Title / Search Alias)</label>
-              <input type="text" class="form-control" id="fEnglishTitle" value="${initialEnTitle}" placeholder="ઉદાહરણ: Satyanarayan Dev Katha / Ganesh Pooja">
+              <input type="text" class="form-control" id="fEnglishTitle" value="${initialEnTitle}" placeholder="ઉદાહરણ: Saraswati Puja / Vishnu Pooja / Ganesh Pooja">
             </div>
           </div>
 
@@ -733,12 +736,26 @@ class AdminPanel {
     let selectedDeityUrl = service?.thumbnailUrl || (isEdit ? '' : resolveDeityImage(initialTitle, initialCategory));
     let selectedGeneratedImage = null;
 
-    // Helper to auto-match deity card on title input
-    const updateAutoDeityMatch = (titleText) => {
-      if (!titleText) return;
-      const autoUrl = resolveDeityImage(titleText, fCategoryEl?.value || '');
-      if (autoUrl) {
+    // Helper to auto-match deity card on title input with dynamic lifecycle
+    const modalBadgeEl = document.getElementById('modalTitleAutoDeityBadge');
+    let autoGenTimeout = null;
+
+    const updateAutoDeityMatch = (titleText, isTyping = false) => {
+      const fileInput = document.getElementById('fImageFile');
+      if (fileInput?.files && fileInput.files[0]) return;
+      if (selectedGeneratedImage) return;
+
+      if (isTyping && modalBadgeEl) {
+        modalBadgeEl.className = 'deity-auto-gen-badge generating';
+        modalBadgeEl.innerHTML = `<span>🎨 ટાઇટલ પરથી દિવ્ય ઈમેજ તૈયાર થઈ રહી છે...</span>`;
+      }
+
+      clearTimeout(autoGenTimeout);
+      autoGenTimeout = setTimeout(() => {
+        const matchedDeity = detectDeity(titleText, fCategoryEl?.value || '');
+        const autoUrl = matchedDeity?.url || 'assets/images/card-anyapooja.png';
         selectedDeityUrl = autoUrl;
+
         document.querySelectorAll('#modalDeityGalleryGrid .deity-gallery-card').forEach(c => {
           if (c.dataset.url === autoUrl) {
             c.classList.add('active');
@@ -746,11 +763,25 @@ class AdminPanel {
             c.classList.remove('active');
           }
         });
+
         const previewThumb = document.getElementById('imgPreviewThumb');
+        const previewStatus = document.getElementById('imgPreviewStatus');
+        const previewMeta = document.getElementById('imgPreviewMeta');
         if (previewThumb && !selectedGeneratedImage) {
           previewThumb.src = autoUrl;
         }
-      }
+        if (previewStatus) {
+          previewStatus.innerHTML = `${ICONS.check} <span>${matchedDeity.name}ની દિવ્ય ઈમેજ તૈયાર છે</span>`;
+        }
+        if (previewMeta) {
+          previewMeta.textContent = `ટાઇટલ "${titleText || 'પૂજા'}" પરથી આપમેળે પસંદ થયેલ • સેવ કરતાં આ જ ફોટો વેબસાઈટ પર લાઈવ થશે.`;
+        }
+
+        if (modalBadgeEl) {
+          modalBadgeEl.className = 'deity-auto-gen-badge ready';
+          modalBadgeEl.innerHTML = `<span>✓ ${matchedDeity.icon} ${matchedDeity.name}ની પવિત્ર ઈમેજ આપમેળે તૈયાર થઈ ગઈ છે</span>`;
+        }
+      }, isTyping ? 150 : 0);
     };
 
     // Wire Deity Gallery Cards
@@ -796,19 +827,20 @@ class AdminPanel {
     if (fTitleEl) {
       fTitleEl.addEventListener('input', (e) => {
         if (cardGenHandle) cardGenHandle.setTitle(e.target.value);
-        if (!isEdit || !service?.thumbnailUrl) {
-          updateAutoDeityMatch(e.target.value);
-        }
+        updateAutoDeityMatch(e.target.value, true);
       });
     }
     if (fCategoryEl) {
       fCategoryEl.addEventListener('change', (e) => {
         if (cardGenHandle) cardGenHandle.setCategory(e.target.value);
-        if (fTitleEl && (!isEdit || !service?.thumbnailUrl)) {
-          updateAutoDeityMatch(fTitleEl.value);
+        if (fTitleEl) {
+          updateAutoDeityMatch(fTitleEl.value, false);
         }
       });
     }
+
+    // Initial deity match on load
+    updateAutoDeityMatch(fTitleEl?.value || initialTitle, false);
 
     // Wire Scanner Button
     document.getElementById('fOpenScannerBtn')?.addEventListener('click', () => {

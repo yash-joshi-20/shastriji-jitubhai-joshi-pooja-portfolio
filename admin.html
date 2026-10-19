@@ -107,7 +107,7 @@
 
   <!-- ૬. મોડ્યુલર જાવાસ્ક્રિપ્ટ લોજિક (Full UI/UX Pro Max Logic) -->
   <script type="module">
-    import { db, DEITY_GALLERY, resolveDeityImage } from './js/db.js';
+    import { db, DEITY_GALLERY, resolveDeityImage, detectDeity, generateDeityImageFromTitle, renderSacredCanvasCard } from './js/db.js';
     import { CATEGORIES, DEFAULT_COMMON_SAMAGRI, toGujaratiNumber } from './js/data.js';
     import { ICONS } from './js/icons.js';
     import { mountCardGenerator } from './js/card-generator.js';
@@ -840,13 +840,16 @@
 
                     <div class="admin-form-group">
                       <label class="admin-form-label">પૂજાનું નામ (ગુજરાતી) *</label>
-                      <input type="text" class="admin-form-input" id="fTitle" required value="${service?.title || ''}" placeholder="ઉદાહરણ: શ્રી સત્યનારાયણ દેવ પૂજા">
-                      <div class="admin-form-hint">વેબસાઈટ અને પેમ્ફ્લેટમાં આ મુખ્ય શીર્ષક તરીકે દેખાશે.</div>
+                      <input type="text" class="admin-form-input" id="fTitle" required value="${service?.title || ''}" placeholder="ઉદાહરણ: સરસ્વતી પૂજા / વિષ્ણુ પૂજા / ગણેશ પૂજા">
+                      <div class="admin-form-hint">વેબસાઈટ અને પેમ્ફ્લેટમાં આ મુખ્ય શીર્ષક તરીકે દેખાશે. ટાઈટલ લખતાં જ સંબંધિત દેવનો ફોટો આપમેળે તૈયાર થશે.</div>
+                      <div id="titleAutoDeityBadge" class="deity-auto-gen-badge ready">
+                        <span>🕉️ ટાઇટલ પરથી આપમેળે દેવ ઈમેજ તૈયાર થશે</span>
+                      </div>
                     </div>
 
                     <div class="admin-form-group">
                       <label class="admin-form-label">પૂજાનું અંગ્રેજી નામ / સર્ચ કીવર્ડ્સ</label>
-                      <input type="text" class="admin-form-input" id="fEnglishTitle" value="${service?.englishTitle || ''}" placeholder="ઉદાહરણ: Satyanarayan Katha Pooja / Vastu / Havan">
+                      <input type="text" class="admin-form-input" id="fEnglishTitle" value="${service?.englishTitle || ''}" placeholder="ઉદાહરણ: Saraswati Puja / Vishnu Pooja / Ganesh / Havan">
                       <div class="admin-form-hint">ભક્તો અંગ્રેજીમાં ટાઈપ કરીને પણ આ પૂજા સરળતાથી શોધી શકશે.</div>
                     </div>
 
@@ -1090,37 +1093,62 @@
           }
         );
 
-        // Sync Title input with live card generator & live deity image detection
+        // Sync Title input with live card generator & live deity image auto-generation
         const fTitleEl = document.getElementById('fTitle');
         const fCategoryEl = document.getElementById('fCategory');
+        const titleBadgeEl = document.getElementById('titleAutoDeityBadge');
+        let autoGenTimeout = null;
 
-        const updateAutoDeityMatch = () => {
-          // Only auto-switch deity if user hasn't uploaded their own custom image
-          if (!fileInput.files || !fileInput.files[0]) {
-            if (!selectedGeneratedImage) {
-              const titleVal = fTitleEl?.value || '';
-              const catVal = fCategoryEl?.value || '';
-              const resolved = resolveDeityImage(titleVal, catVal);
-              selectedDeityUrl = resolved;
-              highlightDeityCard(resolved);
-              if (previewThumb) previewThumb.src = resolved;
-              if (previewStatus) previewStatus.innerHTML = `${ICONS.check} <span>પૂજા મુજબ આપમેળે દેવ ફોટો સેટ થયો</span>`;
-            }
+        const updateAutoDeityMatch = (isTyping = false) => {
+          // If user manually uploaded a custom file or generated a custom canvas, preserve their choice
+          if (fileInput.files && fileInput.files[0]) return;
+          if (selectedGeneratedImage) return;
+
+          const titleVal = fTitleEl?.value || '';
+          const catVal = fCategoryEl?.value || '';
+
+          if (isTyping && titleBadgeEl) {
+            titleBadgeEl.className = 'deity-auto-gen-badge generating';
+            titleBadgeEl.innerHTML = `<span>🎨 ટાઇટલ પરથી દિવ્ય ઈમેજ તૈયાર થઈ રહી છે...</span>`;
           }
+
+          clearTimeout(autoGenTimeout);
+          autoGenTimeout = setTimeout(async () => {
+            const matchedDeity = detectDeity(titleVal, catVal);
+            const resolvedUrl = matchedDeity?.url || 'assets/images/card-anyapooja.png';
+            selectedDeityUrl = resolvedUrl;
+            highlightDeityCard(resolvedUrl);
+
+            if (previewThumb) previewThumb.src = resolvedUrl;
+            if (previewStatus) {
+              previewStatus.innerHTML = `${ICONS.check} <span>${matchedDeity.name}ની દિવ્ય ઈમેજ તૈયાર છે</span>`;
+            }
+            if (previewMeta) {
+              previewMeta.textContent = `ટાઇટલ "${titleVal || 'પૂજા'}" પરથી આપમેળે પસંદ થયેલ • સેવ બટન દબાવતા જ આ ઈમેજ લાઈવ થશે.`;
+            }
+
+            if (titleBadgeEl) {
+              titleBadgeEl.className = 'deity-auto-gen-badge ready';
+              titleBadgeEl.innerHTML = `<span>✓ ${matchedDeity.icon} ${matchedDeity.name}ની પવિત્ર ઈમેજ આપમેળે તૈયાર થઈ ગઈ છે</span>`;
+            }
+          }, isTyping ? 150 : 0);
         };
 
         if (fTitleEl) {
           fTitleEl.addEventListener('input', (e) => {
             if (cardGenHandle) cardGenHandle.setTitle(e.target.value);
-            updateAutoDeityMatch();
+            updateAutoDeityMatch(true);
           });
         }
         if (fCategoryEl) {
           fCategoryEl.addEventListener('change', (e) => {
             if (cardGenHandle) cardGenHandle.setCategory(e.target.value);
-            updateAutoDeityMatch();
+            updateAutoDeityMatch(false);
           });
         }
+
+        // Run initial synchronization so that form starts with image already ready
+        updateAutoDeityMatch(false);
 
         // Wire Scanner Button
         document.getElementById('fOpenScannerBtn')?.addEventListener('click', () => {
