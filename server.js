@@ -216,6 +216,102 @@ app.post('/api/upload', (req, res) => {
   }
 });
 
+// 8. PaddleOCR (Python VENV) Image Scanning API
+app.post('/api/ocr/scan', async (req, res) => {
+  try {
+    const { image } = req.body;
+    if (!image) return res.status(400).json({ error: 'ઈમેજ ડેટા મળ્યો નથી' });
+
+    // Step A: Attempt fast proxy to Python PaddleOCR daemon on port 5001 if active
+    const http = require('http');
+    const tryProxyToPython = () => new Promise((resolve, reject) => {
+      const payload = JSON.stringify({ image });
+      const reqPy = http.request({
+        hostname: '127.0.0.1',
+        port: 5001,
+        path: '/api/ocr/scan',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': Buffer.byteLength(payload)
+        },
+        timeout: 4000
+      }, (resPy) => {
+        let data = '';
+        resPy.on('data', chunk => data += chunk);
+        resPy.on('end', () => {
+          try {
+            resolve(JSON.parse(data));
+          } catch (e) {
+            reject(e);
+          }
+        });
+      });
+      reqPy.on('error', reject);
+      reqPy.on('timeout', () => {
+        reqPy.destroy();
+        reject(new Error('Python daemon timeout'));
+      });
+      reqPy.write(payload);
+      reqPy.end();
+    });
+
+    try {
+      const pyResult = await tryProxyToPython();
+      if (pyResult && pyResult.success) {
+        return res.json(pyResult);
+      }
+    } catch (daemonErr) {
+      // Daemon not running on port 5001, proceed to on-demand CLI execution
+    }
+
+    // Step B: On-demand CLI execution using venv/Scripts/python.exe
+    const { execFile } = require('child_process');
+    const matches = image.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+    const buffer = matches ? Buffer.from(matches[2], 'base64') : Buffer.from(image, 'base64');
+
+    const tempScanFile = path.join(__dirname, `temp_scan_${Date.now()}_${Math.random().toString(36).substring(7)}.jpg`);
+    fs.writeFileSync(tempScanFile, buffer);
+
+    // Locate Python inside venv
+    const venvPythonWin = path.join(__dirname, 'venv', 'Scripts', 'python.exe');
+    const venvPythonNix = path.join(__dirname, 'venv', 'bin', 'python');
+    const pythonExe = fs.existsSync(venvPythonWin) ? venvPythonWin : (fs.existsSync(venvPythonNix) ? venvPythonNix : 'python');
+    const scriptPath = path.join(__dirname, 'ocr_service.py');
+
+    execFile(pythonExe, [scriptPath, '--file', tempScanFile], { maxBuffer: 10 * 1024 * 1024, env: { ...process.env, PYTHONIOENCODING: 'utf-8' } }, (err, stdout, stderr) => {
+      // Always cleanup temp scan file
+      if (fs.existsSync(tempScanFile)) {
+        try { fs.unlinkSync(tempScanFile); } catch (e) {}
+      }
+
+      if (err) {
+        console.error('Python OCR execution error:', err, stderr);
+        return res.status(500).json({ error: 'OCR પ્રોસેસિંગ નિષ્ફળ થઈ', details: stderr || err.message });
+      }
+
+      try {
+        // Find JSON block in stdout
+        const jsonStart = stdout.indexOf('{');
+        const jsonEnd = stdout.lastIndexOf('}');
+        if (jsonStart !== -1 && jsonEnd !== -1) {
+          const jsonStr = stdout.substring(jsonStart, jsonEnd + 1);
+          const parsedRes = JSON.parse(jsonStr);
+          return res.json(parsedRes);
+        }
+        res.status(500).json({ error: 'OCR આઉટપુટ ફોર્મેટ અમાન્ય છે' });
+      } catch (parseErr) {
+        console.error('OCR output parse error:', parseErr, stdout);
+        res.status(500).json({ error: 'OCR ડેટા પારસિંગ નિષ્ફળ' });
+      }
+    });
+
+  } catch (err) {
+    console.error('Scan endpoint error:', err);
+    res.status(500).json({ error: 'સર્વર એરર' });
+  }
+});
+
 // ================= STATIC FILES & ROUTING ================= //
 
 // Serve static assets from project root

@@ -332,14 +332,15 @@ export function openScannerModal({ onApply }) {
 
         <!-- Parsed Results Preview & Form Auto-fill (Hidden until scan complete) -->
         <div id="scanResultsArea" style="display: none; background: #FDFBF7; border: 2px solid #10B981; border-radius: var(--radius-md); padding: 1.25rem; margin-top: 1rem;">
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.85rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.85rem; flex-wrap: wrap; gap: 0.5rem;">
             <div style="font-weight: 800; color: #047857; font-size: 1.05rem; display: flex; align-items: center; gap: 0.4rem;">
               <span>✅</span> <span>સ્કેન સફળ! વિગત ચકાસો:</span>
+              <span id="ocrEngineBadge" style="display: none; font-size: 0.75rem; background: #DEF7EC; color: #03543F; border: 1px solid #31C48D; padding: 0.15rem 0.6rem; border-radius: 999px; font-weight: 700;"></span>
             </div>
             <span style="font-size: 0.8rem; color: var(--color-text-sub);">જરૂર હોય તો સુધારો કરી શકો છો</span>
           </div>
 
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem;">
+          <div style="display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem;">
             <div>
               <label style="font-size: 0.85rem; font-weight: 700; color: var(--color-maroon);">પૂજાનું નામ</label>
               <input type="text" id="resTitle" class="form-control" style="font-size: 0.9rem; min-height: 38px;">
@@ -352,6 +353,10 @@ export function openScannerModal({ onApply }) {
                 <option value="વ્રત અને ઉદ્યાપન">વ્રત અને ઉદ્યાપન</option>
                 <option value="સામાજિક વિધિ">સામાજિક વિધિ</option>
               </select>
+            </div>
+            <div>
+              <label style="font-size: 0.85rem; font-weight: 700; color: var(--color-maroon);">દક્ષિણા (Dakshina)</label>
+              <input type="text" id="resPrice" class="form-control" placeholder="દા.ત. ₹ ૨૧૦૦/-" style="font-size: 0.9rem; min-height: 38px;">
             </div>
           </div>
 
@@ -448,52 +453,88 @@ export function openScannerModal({ onApply }) {
     previewImg.style.transform = `rotate(${rotation}deg)`;
   });
 
-  // Perform Scan
+  // Perform Scan (Priority: PaddleOCR Backend in Python VENV -> Fallback: Tesseract.js)
   startScanBtn.addEventListener('click', async () => {
     if (!selectedImageSrc) return;
 
     startScanBtn.disabled = true;
     progressBox.style.display = 'block';
     resultsArea.style.display = 'none';
-    progressBar.style.width = '10%';
-    percentText.textContent = '૧૦%';
-    statusText.textContent = 'ઓસીઆર એન્જિન શરૂ થઈ રહ્યું છે...';
+    progressBar.style.width = '15%';
+    percentText.textContent = '૧૫%';
+    statusText.textContent = '🚀 PaddleOCR (Python VENV) એન્જિન શરૂ થઈ રહ્યું છે...';
 
+    // Preprocess image
+    const processedCanvas = scanner.preprocessImage(previewImg, rotation);
+    const dataUrl = processedCanvas.toDataURL('image/jpeg', 0.92);
+
+    let paddleSuccess = false;
+
+    // Step ૧: Call Backend PaddleOCR Service
     try {
-      const Tesseract = await scanner.ensureTesseract();
+      progressBar.style.width = '40%';
+      percentText.textContent = '૪૦%';
+      statusText.textContent = '🤖 PaddleOCR દ્વારા તસવીરમાંથી અક્ષરો ઓળખાઈ રહ્યા છે...';
 
-      progressBar.style.width = '25%';
-      percentText.textContent = '૨૫%';
-      statusText.textContent = 'તસવીર પ્રોસેસ થઈ રહી છે...';
-
-      // Preprocess image
-      const processedCanvas = scanner.preprocessImage(previewImg, rotation);
-
-      statusText.textContent = 'ગુજરાતી અને અંગ્રેજી અક્ષરો સ્કેન થઈ રહ્યા છે...';
-
-      // Run Tesseract OCR (with guj + eng for numbers and titles)
-      const res = await Tesseract.recognize(processedCanvas, 'guj+eng', {
-        logger: (m) => {
-          if (m.status === 'recognizing text' && m.progress) {
-            const p = Math.round(25 + m.progress * 70);
-            progressBar.style.width = `${p}%`;
-            percentText.textContent = `${p}%`;
-            statusText.textContent = `અક્ષરો સ્કેન થઈ રહ્યા છે... ${p}%`;
-          }
-        }
+      const resp = await fetch('/api/ocr/scan', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: dataUrl })
       });
 
-      progressBar.style.width = '100%';
-      percentText.textContent = '૧૦૦%';
-      statusText.textContent = '✨ સ્કેનિંગ સફળ!';
+      if (resp.ok) {
+        const ocrData = await resp.json();
+        if (ocrData.success && (ocrData.raw_text || (ocrData.lines && ocrData.lines.length))) {
+          paddleSuccess = true;
+          progressBar.style.width = '100%';
+          percentText.textContent = '૧૦૦%';
+          statusText.textContent = '✨ PaddleOCR (Python VENV) દ્વારા સફળ સ્કેનિંગ!';
 
-      const text = res.data && res.data.text ? res.data.text : '';
-      displayParsedResults(scanner.parseGujaratiText(text), text);
-    } catch (err) {
-      console.error('Scan Error:', err);
-      statusText.textContent = '⚠️ અક્ષરો ઓળખવામાં સમસ્યા આવી. લખાણ મોડનો ઉપયોગ કરો.';
-      progressBar.style.background = 'var(--color-danger)';
-    } finally {
+          const rawText = ocrData.raw_text || (ocrData.lines || []).map(l => l.text).join('\n');
+          const parsed = ocrData.parsed || scanner.parseGujaratiText(rawText);
+          displayParsedResults(parsed, rawText, 'PaddleOCR (Python VENV)');
+          return;
+        }
+      }
+    } catch (backendErr) {
+      console.warn('PaddleOCR backend unavailable, switching to local OCR fallback:', backendErr);
+    }
+
+    // Step ૨: Fallback to client-side OCR if Python service is unavailable
+    if (!paddleSuccess) {
+      statusText.textContent = 'સ્થાનિક OCR એન્જિન દ્વારા સ્કેનિંગ...';
+      try {
+        const Tesseract = await scanner.ensureTesseract();
+
+        progressBar.style.width = '55%';
+        percentText.textContent = '૫૫%';
+        statusText.textContent = 'ગુજરાતી અને અંગ્રેજી અક્ષરો સ્કેન થઈ રહ્યા છે...';
+
+        const res = await Tesseract.recognize(processedCanvas, 'guj+eng', {
+          logger: (m) => {
+            if (m.status === 'recognizing text' && m.progress) {
+              const p = Math.round(55 + m.progress * 40);
+              progressBar.style.width = `${p}%`;
+              percentText.textContent = `${p}%`;
+              statusText.textContent = `અક્ષરો સ્કેન થઈ રહ્યા છે... ${p}%`;
+            }
+          }
+        });
+
+        progressBar.style.width = '100%';
+        percentText.textContent = '૧૦૦%';
+        statusText.textContent = '✨ સ્કેનિંગ સફળ!';
+
+        const text = res.data && res.data.text ? res.data.text : '';
+        displayParsedResults(scanner.parseGujaratiText(text), text, 'Client-Side OCR');
+      } catch (err) {
+        console.error('Scan Error:', err);
+        statusText.textContent = '⚠️ અક્ષરો ઓળખવામાં સમસ્યા આવી. લખાણ મોડનો ઉપયોગ કરો.';
+        progressBar.style.background = 'var(--color-danger)';
+      } finally {
+        startScanBtn.disabled = false;
+      }
+    } else {
       startScanBtn.disabled = false;
     }
   });
@@ -506,20 +547,30 @@ export function openScannerModal({ onApply }) {
       return;
     }
     const parsed = scanner.parseGujaratiText(raw);
-    displayParsedResults(parsed, raw);
+    displayParsedResults(parsed, raw, 'ટેક્સ્ટ પાર્સર');
   });
 
-  function displayParsedResults(parsed, raw) {
+  function displayParsedResults(parsed, raw, engineName = '') {
     document.getElementById('resTitle').value = parsed.title || '';
     document.getElementById('resCategory').value = parsed.category || 'ધાર્મિક પૂજા';
+    const priceEl = document.getElementById('resPrice');
+    if (priceEl) priceEl.value = parsed.price || '';
     document.getElementById('resPujapo').value = parsed.pujapo || '';
     document.getElementById('resAnaj').value = parsed.anajNaivedya || '';
     document.getElementById('resTaiyari').value = parsed.taiyari || '';
     document.getElementById('resNotes').value = parsed.notes || '';
     document.getElementById('resRawText').value = raw || '';
 
+    // Show Engine Badge
+    const engineBadge = document.getElementById('ocrEngineBadge');
+    if (engineBadge) {
+      engineBadge.textContent = engineName ? `એન્જિન: ${engineName}` : '';
+      engineBadge.style.display = engineName ? 'inline-block' : 'none';
+    }
+
     resultsArea.style.display = 'block';
     resultsArea.scrollIntoView({ behavior: 'smooth' });
+    startScanBtn.disabled = false;
   }
 
   // Apply to form
@@ -527,6 +578,7 @@ export function openScannerModal({ onApply }) {
     const finalData = {
       title: document.getElementById('resTitle').value.trim(),
       category: document.getElementById('resCategory').value,
+      price: (document.getElementById('resPrice')?.value || '').trim(),
       pujapo: document.getElementById('resPujapo').value.trim(),
       anajNaivedya: document.getElementById('resAnaj').value.trim(),
       taiyari: document.getElementById('resTaiyari').value.trim(),
