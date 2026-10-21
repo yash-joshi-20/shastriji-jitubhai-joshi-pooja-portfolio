@@ -87,8 +87,12 @@ class App {
 
     // Hero visual portrait (Shastriji temple hero photo)
     const visualImg = document.getElementById('heroVisualImg');
+    const visualSourceMobile = document.getElementById('heroVisualSourceMobile');
     if (visualImg && this.profile.avatarUrl && this.profile.avatarUrl !== 'assets/images/shastriji-profile.jpg') {
       visualImg.src = this.profile.avatarUrl;
+      if (visualSourceMobile) {
+        visualSourceMobile.srcset = this.profile.avatarUrl;
+      }
     }
 
     // Hero Shastriji Name
